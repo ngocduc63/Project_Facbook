@@ -25,12 +25,7 @@ const Share = () => {
         console.log("File appended to FormData:", file)
       }
       
-      return makeRequest.post("/post-management/post/create", formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token.access_token}`,
-        },
-      });
+      return makeRequest.post("/post-management/post/create", formData);
     },
     {
       onSuccess: () => {

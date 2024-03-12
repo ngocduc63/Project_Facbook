@@ -7,11 +7,15 @@ import moment from "moment";
 
 const Comments = ({ postId }) => {
   const [desc, setDesc] = useState("");
-  const { currentUser } = useContext(AuthContext);
+  const dataLocal = useContext(AuthContext)
+  const requestData = {
+    'post_id': postId,
+    'page': 1
+  }
 
   const { isLoading, error, data } = useQuery(["comments"], () =>
-    makeRequest.get("/comments?postId=" + postId).then((res) => {
-      return res.data;
+    makeRequest.post("/post-management/post/comments", requestData).then((res) => {
+      return res.data.data;
     })
   );
 
@@ -38,7 +42,7 @@ const Comments = ({ postId }) => {
   return (
     <div className="comments">
       <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + dataLocal.currentUser.avatar} alt="" />
         <input
           type="text"
           placeholder="write a comment"
@@ -51,15 +55,15 @@ const Comments = ({ postId }) => {
         ? "Something went wrong"
         : isLoading
         ? "loading"
-        : data.map((comment) => (
+        : data.data.map((comment) => (
             <div className="comment">
-              <img src={"/upload/" + comment.profilePic} alt="" />
+              <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + comment.user.avatar} alt="" />
               <div className="info">
-                <span>{comment.name}</span>
-                <p>{comment.desc}</p>
+                <span>{comment.user.username}</span>
+                <p>{comment.content}</p>
               </div>
               <span className="date">
-                {moment(comment.createdAt).fromNow()}
+                {moment(comment.create_at).fromNow()}
               </span>
             </div>
           ))}
