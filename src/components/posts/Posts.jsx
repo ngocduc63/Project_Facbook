@@ -23,8 +23,7 @@ const Posts = ({userId}) => {
         ? "Something went wrong!"
         : isLoading
         ? "loading"
-        : data.message
-        // : data.map((post) => <Post post={post} key={post.id} />)
+        : data.data.map((post) => <Post post={post} key={post.id} />)
       }
     </div>
   );
