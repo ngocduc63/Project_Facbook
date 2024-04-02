@@ -10,7 +10,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+import useAxiosPrivate from "../../api/axiosPrivate";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
@@ -20,42 +20,43 @@ import { useState } from "react";
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
+  const axiosPrivate = useAxiosPrivate();
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isLoading, error, data } = useQuery(["user"], () =>
-    makeRequest.get("/users/find/" + userId).then((res) => {
-      return res.data;
+    axiosPrivate.get("/user-management/user/" + userId).then((res) => {
+      return res.data.data;
     })
   );
 
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(
-    ["relationship"],
-    () =>
-      makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
-        return res.data;
-      })
-  );
+  // const { isLoading: rIsLoading, data: relationshipData } = useQuery(
+  //   ["relationship"],
+  //   () =>
+  //     makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
+  //       return res.data;
+  //     })
+  // );
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(
-    (following) => {
-      if (following)
-        return makeRequest.delete("/relationships?userId=" + userId);
-      return makeRequest.post("/relationships", { userId });
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["relationship"]);
-      },
-    }
-  );
+  // const mutation = useMutation(
+  //   (following) => {
+  //     if (following)
+  //       return makeRequest.delete("/relationships?userId=" + userId);
+  //     return makeRequest.post("/relationships", { userId });
+  //   },
+  //   {
+  //     onSuccess: () => {
+  //       // Invalidate and refetch
+  //       queryClient.invalidateQueries(["relationship"]);
+  //     },
+  //   }
+  // );
 
-  const handleFollow = () => {
-    mutation.mutate(relationshipData.includes(currentUser.id));
-  };
+  // const handleFollow = () => {
+  //   mutation.mutate(relationshipData.includes(currentUser.id));
+  // };
 
   return (
     <div className="profile">
@@ -64,8 +65,8 @@ const Profile = () => {
       ) : (
         <>
           <div className="images">
-            <img src={"/upload/"+data.coverPic} alt="" className="cover" />
-            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" />
+            <img src={"http://127.0.0.1:5000/user-management/user/cover/"+data.cover_photo} alt="" className="cover" />
+            <img src={"http://127.0.0.1:5000/user-management/user/avatar/"+data.avatar} alt="" className="profilePic" />
           </div>
           <div className="profileContainer">
             <div className="uInfo">
@@ -98,7 +99,7 @@ const Profile = () => {
                     <span>{data.website}</span>
                   </div>
                 </div>
-                {rIsLoading ? (
+                {/* {rIsLoading ? (
                   "loading"
                 ) : userId === currentUser.id ? (
                   <button onClick={() => setOpenUpdate(true)}>update</button>
@@ -108,7 +109,7 @@ const Profile = () => {
                       ? "Following"
                       : "Follow"}
                   </button>
-                )}
+                )*/}
               </div>
               <div className="right">
                 <EmailOutlinedIcon />
