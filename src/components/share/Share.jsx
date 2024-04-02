@@ -5,8 +5,9 @@ import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+import useAxiosPrivate from "../../api/axiosPrivate";
 const Share = () => {
+  const axiosPrivate = useAxiosPrivate()
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
 
@@ -25,7 +26,7 @@ const Share = () => {
         console.log("File appended to FormData:", file)
       }
       
-      return makeRequest.post("/post-management/post/create", formData);
+      return axiosPrivate.post("/post-management/post/create", formData);
     },
     {
       onSuccess: () => {

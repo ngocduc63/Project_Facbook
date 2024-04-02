@@ -2,6 +2,19 @@ import makeRequest from "../axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 
+const updateAccessToken = async (newAccessToken) => {
+  const storedToken = localStorage.getItem("token") || null;
+  if (
+    storedToken !== "undefined" &&
+    storedToken !== "null" &&
+    storedToken.length > 0
+  ) {
+    const token = await JSON.parse(storedToken);
+    token.access_token = newAccessToken;
+    localStorage.setItem("token", JSON.stringify(token));
+  }
+};
+
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
 
@@ -13,7 +26,8 @@ const useAxiosPrivate = () => {
       storedToken !== "null" &&
       storedToken.length > 0
     ) {
-      accessToken = JSON.parse(storedToken).access_token;
+      const token = JSON.parse(storedToken);
+      accessToken = token.access_token;
     }
     const requestIntercept = makeRequest.interceptors.request.use(
       (config) => {
@@ -32,6 +46,7 @@ const useAxiosPrivate = () => {
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
+          await updateAccessToken(newAccessToken);
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return makeRequest(prevRequest);
         }
