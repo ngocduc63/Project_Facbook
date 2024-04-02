@@ -1,16 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
+const BASE_URL = 'http://localhost:5000';
 
-const storedToken = localStorage.getItem("token") || null;
-let access_token = "";
-console.log(storedToken);
-console.log(typeof storedToken);
+export default axios.create({
+    baseURL: BASE_URL
+});
 
-if (storedToken !== 'undefined' && storedToken !== "null"  && storedToken.length > 0) {
-    access_token = JSON.parse(storedToken).access_token;
-}
 export const makeRequest = axios.create({
-
-  baseURL: "http://localhost:5000",
-  withCredentials: true,
-  headers: {'Authorization': 'Bearer '+ access_token}
+    baseURL: BASE_URL,
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: true
 });

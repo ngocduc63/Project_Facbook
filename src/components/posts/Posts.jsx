@@ -1,15 +1,14 @@
 import Post from "../post/Post";
 import "./posts.scss";
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
-import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../context/authContext";
+import useAxiosPrivate from "../../api/axiosPrivate";
+import { useState, useEffect } from "react";
 
 const Posts = ({userId}) => {
   const [hasFetched, setHasFetched] = useState(false);
-  const dataLocal = useContext(AuthContext);
+  const axiosPrivate = useAxiosPrivate();
   const { isLoading, error, data, refetch } = useQuery(["posts"], () =>
-    makeRequest.get("/post-management/post/get-new-feed/1").then((res) => {
+    axiosPrivate.get("/post-management/post/get-new-feed/1").then((res) => {
       return res.data.data;
     })
   );
@@ -25,7 +24,7 @@ const Posts = ({userId}) => {
         ? "Something went wrong!"
         : isLoading
         ? "loading"
-        : data.data.map((post) => <Post post={post} key={post.id} />)
+        : data.datas.map((post) => <Post post={post} key={post.id} />)
       }
     </div>
   );
