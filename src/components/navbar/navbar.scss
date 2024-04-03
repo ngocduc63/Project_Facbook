@@ -64,6 +64,7 @@
         align-items: center;
         gap: 10px;
         font-weight: 500;
+        text-decoration: none ;
 
         @include tablet{
           display: none;
@@ -77,6 +78,7 @@
         }
 
         span {
+          color: themed('textColor')
         }
       }
     }

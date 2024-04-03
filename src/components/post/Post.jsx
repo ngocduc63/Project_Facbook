@@ -58,7 +58,6 @@ const Post = React.forwardRef(({ post }, ref) => {
   const handleDelete = () => {
     deleteMutation.mutate(post.id);
   };
-
   const postBody = (
     <div className="post">
       <div className="container">
@@ -67,7 +66,7 @@ const Post = React.forwardRef(({ post }, ref) => {
             <img src={"http://127.0.0.1:5000/user-management/user/avatar/"+post.user.avatar} alt="" />
             <div className="details">
               <Link
-                to={`/profile/${post.user_id}`}
+                to={`/profile/${post.user.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <span className="name">{post.user.username}</span>
@@ -76,7 +75,7 @@ const Post = React.forwardRef(({ post }, ref) => {
             </div>
           </div>
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.user_id === currentUser.id && (
+          {menuOpen && post.user.id === currentUser.id && (
             <button onClick={handleDelete}>delete</button>
           )}
         </div>
@@ -116,7 +115,7 @@ const Post = React.forwardRef(({ post }, ref) => {
         ? <article ref={ref}>{postBody}</article>
         : <article>{postBody}</article>
 
-        
+
   return content
 });
 

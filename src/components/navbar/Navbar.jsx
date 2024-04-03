@@ -22,7 +22,9 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>FACEBOOK</span>
         </Link>
-        <HomeOutlinedIcon />
+        <Link to="/">
+          <HomeOutlinedIcon />
+        </Link>
         {darkMode ? (
           <WbSunnyOutlinedIcon onClick={toggle} />
         ) : (
@@ -38,13 +40,13 @@ const Navbar = () => {
         <PersonOutlinedIcon />
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
-        <div className="user">
+        <Link to={`/profile/${currentUser.id}`} className="user">
           <img
             src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar}
             alt=""
           />
           <span>{currentUser.username}</span>
-        </div>
+        </Link>
       </div>
     </div>
   );
