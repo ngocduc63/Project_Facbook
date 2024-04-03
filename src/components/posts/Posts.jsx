@@ -1,31 +1,48 @@
 import Post from "../post/Post";
 import "./posts.scss";
-import { useQuery } from "@tanstack/react-query";
-import useAxiosPrivate from "../../api/axiosPrivate";
-import { useState, useEffect } from "react";
+import { useState, useRef, useCallback} from "react";
+import usePosts from "../../hooks/usePosts";
 
 const Posts = ({userId}) => {
-  const [hasFetched, setHasFetched] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
-  const { isLoading, error, data, refetch } = useQuery(["posts"], () =>
-    axiosPrivate.get("/post-management/post/get-new-feed/1").then((res) => {
-      return res.data.data;
+  const [pageNum, setPageNum] = useState(1)
+    const {
+        isLoading,
+        isError,
+        error,
+        results,
+        hasNextPage
+    } = usePosts(pageNum)
+
+    const intObserver = useRef()
+    const lastPostRef = useCallback(post => {
+        if (isLoading) return
+
+        if (intObserver.current) intObserver.current.disconnect()
+
+        intObserver.current = new IntersectionObserver(posts => {
+            if (posts[0].isIntersecting && hasNextPage) {
+                console.log('We are near the last post!')
+                setPageNum(prev => prev + 1)
+            }
+        })
+
+        if (post) intObserver.current.observe(post)
+    }, [isLoading, hasNextPage])
+
+    if (isError) return <p className='center'>Error: {error.message}</p>
+
+    const content = results.map((post, i) => {
+        if (results.length === i + 1) {
+            return <Post ref={lastPostRef} key={post.id} post={post} />
+        }
+        return <Post key={post.id} post={post} />
     })
-  );
-  useEffect(() => {
-    // Gọi lại dữ liệu chỉ khi chưa thực hiện cuộc gọi API
-    if (!hasFetched) {
-      refetch();
-    }
-  }, [hasFetched, refetch]);
+
   return (
     <div className="posts">
-      {error
-        ? "Something went wrong!"
-        : isLoading
-        ? "loading"
-        : data.datas.map((post) => <Post post={post} key={post.id} />)
-      }
+      {content}
+      {isLoading && <p className="center">Loading More Posts...</p>}
+      <p className="center"><a href="#top">Back to Top</a></p>
     </div>
   );
 };

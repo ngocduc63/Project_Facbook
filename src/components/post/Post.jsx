@@ -6,14 +6,14 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
-import { useState } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const Post = ({ post }) => {
+const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -59,7 +59,7 @@ const Post = ({ post }) => {
     deleteMutation.mutate(post.id);
   };
 
-  return (
+  const postBody = (
     <div className="post">
       <div className="container">
         <div className="user">
@@ -111,6 +111,13 @@ const Post = ({ post }) => {
       </div>
     </div>
   );
-};
+
+  const content = ref
+        ? <article ref={ref}>{postBody}</article>
+        : <article>{postBody}</article>
+
+        
+  return content
+});
 
 export default Post;
