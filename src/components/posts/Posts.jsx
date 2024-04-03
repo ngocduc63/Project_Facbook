@@ -2,6 +2,7 @@ import Post from "../post/Post";
 import "./posts.scss";
 import { useState, useRef, useCallback} from "react";
 import usePosts from "../../hooks/usePosts";
+import Loading from "../loading/Loading";
 
 const Posts = ({userId}) => {
   const [pageNum, setPageNum] = useState(1)
@@ -41,8 +42,8 @@ const Posts = ({userId}) => {
   return (
     <div className="posts">
       {content}
-      {isLoading && <p className="center">Loading More Posts...</p>}
-      <p className="center"><a href="#top">Back to Top</a></p>
+      {isLoading && <Loading/>}
+      <p className="center"><a href="#top" className="button-load">Lên đầu trang</a></p>
     </div>
   );
 };

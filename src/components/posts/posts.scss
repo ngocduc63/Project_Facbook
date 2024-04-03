@@ -3,3 +3,13 @@
   flex-direction: column;
   gap: 50px;
 }
+
+.button-load {
+  border: none;
+  background-color: #5271ff;
+  color: white !important;
+  text-decoration: none !important;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
