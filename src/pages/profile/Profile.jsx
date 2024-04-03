@@ -11,6 +11,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import { useState } from "react";
+import BeatLoader from "react-spinners/BeatLoader"
+import Loading from "../../components/loading/Loading";
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -53,14 +55,14 @@ const Profile = () => {
   //   mutation.mutate(relationshipData.includes(currentUser.id));
   // };
 
-    const logoutHandel = () => {
-      setTokenAndUser(null, null)
-    }
-
+  const logoutHandel = () => {
+    setTokenAndUser(null, null)
+  }
+  
   return (
     <div className="profile">
       {isLoading ? (
-        "loading"
+        <Loading />
       ) : (
         <>
           <div className="images">
