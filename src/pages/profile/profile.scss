@@ -87,6 +87,7 @@
           }
 
           .info {
+            margin-top: 20px;
             width: 100%;
             display: flex;
             align-items: center;
@@ -101,12 +102,12 @@
               span {
                 font-size: 12px;
               }
-            }
+            }           
           }
           button {
             border: none;
             background-color: #5271ff;
-            color: white;
+            color: white !important;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
