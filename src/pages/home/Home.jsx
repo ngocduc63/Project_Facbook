@@ -3,11 +3,13 @@ import Posts from "../../components/posts/Posts"
 import Share from "../../components/share/Share"
 import "./home.scss"
 
-const Home = () => {
+const Home = (props) => {
+  const { isRefecth } = props;
+
   return (
     <div className="home">
       <Share/>
-      <Posts/>
+      <Posts isRefecth={isRefecth}/>
     </div>
   )
 }

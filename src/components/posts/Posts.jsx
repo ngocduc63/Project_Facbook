@@ -1,19 +1,24 @@
 import Post from "../post/Post";
 import "./posts.scss";
-import { useState, useRef, useCallback} from "react";
+import { useState, useRef, useCallback, useEffect} from "react";
 import usePosts from "../../hooks/usePosts";
 import Loading from "../loading/Loading";
 
-const Posts = ({userId}) => {
+const Posts = ({userId, isRefecth}) => {
   const [pageNum, setPageNum] = useState(1)
+
+  useEffect(() =>{
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }, [isRefecth])
+
   const {
       isLoading,
       isError,
       error,
       results,
       hasNextPage
-  } = usePosts(pageNum)
-
+  } = usePosts(pageNum, isRefecth);
   const intObserver = useRef()
   const lastPostRef = useCallback(post => {
       if (isLoading) return

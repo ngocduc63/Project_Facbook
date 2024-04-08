@@ -11,17 +11,22 @@ import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 
-const Navbar = () => {
+const Navbar = (props) => {
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
+  const { isRefecth, setIsRefecth } = props;
+  const handleRefecth = () => {
+    setIsRefecth(!isRefecth);
+  }
+
 
   return (
     <div className="navbar">
       <div className="left">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none" }} onClick={handleRefecth}>
           <span>FACEBOOK</span>
         </Link>
-        <Link to="/">
+        <Link to="/" onClick={handleRefecth}>
           <HomeOutlinedIcon />
         </Link>
         {darkMode ? (

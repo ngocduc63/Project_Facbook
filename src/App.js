@@ -12,15 +12,16 @@ import RightBar from "./components/rightBar/RightBar";
 import Home from "./pages/home/Home";
 import Profile from "./pages/profile/Profile";
 import "./style.scss";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 function App() {
   const { currentUser } = useContext(AuthContext);
 
   const { darkMode } = useContext(DarkModeContext);
+
+  const [isRefecth, setIsRefecth] = useState(false);
 
   const queryClient = new QueryClient();
 
@@ -28,7 +29,7 @@ function App() {
     return (
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
-          <Navbar />
+          <Navbar isRefecth={isRefecth} setIsRefecth={setIsRefecth}/>
           <div style={{ display: "flex" }}>
             <LeftBar />
             <div style={{ flex: 6 }}>
@@ -68,7 +69,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: <Home isRefecth={isRefecth}/>,
         },
         {
           path: "/profile/:id",
