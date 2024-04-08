@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
+import {toast} from 'react-toastify'
+import Loading from '../../components/loading/Loading'
 
 const Register = () => {
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
-    password_hash: "",
+    password: "",
     birth_date: "",
     gender: ""
   });
-  const [err, setErr] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -23,18 +26,36 @@ const Register = () => {
     setInputs((prev) => ({ ...prev, [e.target.name]: value }));
   };
 
+  const toastEr = (mess) =>{
+    toast.error(mess, {
+      position: "top-right"
+    })
+  }
   const handleClick = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       await axios.post("http://127.0.0.1:5000/user-management/user/register", inputs);
-      console.log('Đăng ký thành công')
+      toast.success("Đăng kí thành công", {
+        position: "top-right"
+      })
+
+    setIsLoading(false);
+    navigate("/login")
     } catch (err) {
-      setErr(err.response.data);
+      const errCode = err.response.data.errorCode
+
+      if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
+      else if(errCode === 3) toastEr("Email chưa đúng định dạng")
+      else if(errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
+      else if(errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
+      else if(errCode === 9) toastEr("Tài khoản đã tồn tại")
+      else if(errCode === 13) toastEr("Không thể kết nối tới mát chủ")
+
+      setIsLoading(false);
     }
   };
 
-  console.log(err)
 
   return (
     <div className="register">
@@ -67,7 +88,7 @@ const Register = () => {
             <input
               type="password"
               placeholder="Password"
-              name="password_hash"
+              name="password"
               onChange={handleChange}
             />
             <input
@@ -95,8 +116,7 @@ const Register = () => {
               />
               <label htmlFor="female">Nữ</label>
             </div>
-            {err && err}
-            <button onClick={handleClick}>Register</button>
+            {isLoading ? <Loading/> : <button onClick={handleClick}>Register</button>}
           </form>
         </div>
       </div>
