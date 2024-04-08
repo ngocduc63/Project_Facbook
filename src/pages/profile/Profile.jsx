@@ -72,11 +72,16 @@ const Profile = () => {
           <div className="profileContainer">
             <div className="uInfo">
               <div className="center">
-                <span>{data.username}</span>
+                <span>{data.username} {data.nickname && <span>({data.nickname})</span> }</span>
+                {data.description && <span className="description">{data.description}</span>}
                 <div className="info">
-                  <div className="item">
+                  {/* <div className="item">
                     <PlaceIcon />
                     <span>{data.city}</span>
+                  </div> */}
+                  <div className="item">
+                    <span>Ngày sinh:</span>
+                    <span>{data.birth_date}</span>
                   </div>
                   {
                     currentUser.id === data.id && (
