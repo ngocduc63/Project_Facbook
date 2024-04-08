@@ -9,15 +9,20 @@ import Comments from "../comments/Comments";
 import React, { useState } from "react";
 import moment from "moment";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import useAxiosPrivate from "../../api/axiosPrivate";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const axiosPrivate = useAxiosPrivate()
 
   const { currentUser } = useContext(AuthContext);
+  const dataRequestLike = {
+    'id_post': post.id,
+    'category': 1
+  }
 
   // const { isLoading, error, data } = useQuery(["likes", post.id], () =>
   //   // makeRequest.get("/likes?postId=" + post.id).then((res) => {
@@ -25,39 +30,59 @@ const Post = React.forwardRef(({ post }, ref) => {
   //   // })
   // );
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const mutation = useMutation(
-    (liked) => {
-      // if (liked) return makeRequest.delete("/likes?postId=" + post.id);
-      // return makeRequest.post("/likes", { postId: post.id });
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        // queryClient.invalidateQueries(["likes"]);
-      },
-    }
-  );
-  const deleteMutation = useMutation(
-    (postId) => {
-      return makeRequest.delete("/posts/" + postId);
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["posts"]);
-      },
-    }
-  );
+  // const mutation = useMutation(
+  //   (liked) => {
+  //     // if (liked) return makeRequest.delete("/likes?postId=" + post.id);
+  //     // return makeRequest.post("/likes", { postId: post.id });
+  //   },
+  //   {
+  //     onSuccess: () => {
+  //       // Invalidate and refetch
+  //       // queryClient.invalidateQueries(["likes"]);
+  //     },
+  //   }
+  // );
+  // const deleteMutation = useMutation(
+  //   (postId) => {
+  //     return makeRequest.delete("/posts/" + postId);
+  //   },
+  //   {
+  //     onSuccess: () => {
+  //       // Invalidate and refetch
+  //       queryClient.invalidateQueries(["posts"]);
+  //     },
+  //   }
+  // );
 
-  // const handleLike = () => {
-  //   mutation.mutate(data.includes(currentUser.id));
+  const handleLike = () => {
+    axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
+      .then(res => {
+        const data = res.data;
+        console.log('like succcess');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
+  }
+
+  const handleUnLike = () => {
+    axiosPrivate.delete((`/post-management/post/unlike/${post.id}`))
+      .then(res => {
+        const data = res.data;
+        console.log('unlike success');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
+  }
+
+  // const handleDelete = () => {
+  //   deleteMutation.mutate(post.id);
   // };
-
-  const handleDelete = () => {
-    deleteMutation.mutate(post.id);
-  };
   const postBody = (
     <div className="post">
       <div className="container">
@@ -75,9 +100,9 @@ const Post = React.forwardRef(({ post }, ref) => {
             </div>
           </div>
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.user.id === currentUser.id && (
+          {/* {menuOpen && post.user.id === currentUser.id && (
             <button onClick={handleDelete}>delete</button>
-          )}
+          )} */}
         </div>
         <div className="content">
           <p>{post.title}</p>
@@ -85,16 +110,15 @@ const Post = React.forwardRef(({ post }, ref) => {
         </div>
         <div className="info">
           <div className="item">
-            {/* {isLoading ? (
-              "loading"
-            ) : data.includes(currentUser.id) ? (
+            {post.liked ? 
+             (
               <FavoriteOutlinedIcon
                 style={{ color: "red" }}
-                onClick={handleLike}
+                onClick={handleUnLike}
               />
             ) : (
               <FavoriteBorderOutlinedIcon onClick={handleLike} />
-            )} */}
+            )}
             {post?.num_like} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
