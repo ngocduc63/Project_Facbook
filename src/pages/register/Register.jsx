@@ -19,10 +19,9 @@ const Register = () => {
   const handleChange = (e) => {
     let value = e.target.value;
     if (e.target.type === 'date') {
-    const parts = value.split('-'); // Phân tách ngày, tháng và năm thành mảng
-    // Chuyển định dạng sang "DD/MM/YYYY"
-    value = `${parts[1]}/${parts[2]}/${parts[0]}`;
-  }
+      const parts = value.split('-'); 
+      value = `${parts[1]}/${parts[2]}/${parts[0]}`;
+    }
     setInputs((prev) => ({ ...prev, [e.target.name]: value }));
   };
 

@@ -1,0 +1,111 @@
+import { useState, useContext } from "react";
+import "./update.scss";
+import { convertToTime } from "../../helps/timer";
+import useAxiosPrivate from '../../api/axiosPrivate'
+import { toast } from 'react-toastify'
+import { AuthContext } from "../../context/authContext";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
+    const { setCurrentUser } = useContext(AuthContext);
+    const axiosPrivate = useAxiosPrivate()
+    const [cover, setCover] = useState(null);
+    const [profile, setProfile] = useState(null);
+
+    const toastEr = (mess) => {
+        toast.error(mess, {
+            position: "top-right"
+        })
+    }
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('file', profile);
+
+        axiosPrivate.post(('/user-management/user/update-avatar'), formData)
+            .then((res) =>{
+                setCurrentUser(res.data.data.user)
+                toast.success("Thay đổi ảnh đại diện thành công", {
+                position: "top-right"
+                })
+            setOpenUpdateImage(0);
+
+            })
+            .catch((err) => {
+                const errCode = err.response.data.errorCode
+
+                if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
+                else if(errCode === 10) toastEr("Không gửi được file ảnh")
+                else if(errCode === 11) toastEr("Không thể kết nối tới mát chủ")
+            })
+    }
+
+
+    return (
+        <div className="update">
+            <div className="wrapper">
+                <h1>Chỉnh sửa thông tin</h1>
+                <form>
+                    <div className="files">
+                        {!isUpdateAvartar &&
+                            <>
+                                <label htmlFor="cover">
+                                    <span>Ảnh bìa</span>
+                                    <div className="imgContainer">
+                                        <img
+                                            src={
+                                                cover
+                                                    ? URL.createObjectURL(cover)
+                                                    : "http://127.0.0.1:5000/user-management/user/cover/" + user.cover_photo
+                                            }
+                                            alt="cover"
+                                        />
+                                        <CloudUploadIcon className="icon" />
+                                    </div>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="cover"
+                                    style={{ display: "none" }}
+                                    onChange={(e) => setCover(e.target.files[0])}
+                                />
+                            </>
+                        }
+                        {isUpdateAvartar &&
+                            <>
+                                <label htmlFor="profile">
+                                    <span>Ảnh đại diện</span>
+                                    <div className="imgContainer">
+                                        <img
+                                            src={
+                                                profile
+                                                    ? URL.createObjectURL(profile)
+                                                    : "http://127.0.0.1:5000/user-management/user/avatar/" + user.avatar
+                                            }
+                                            alt="avartar"
+                                        />
+                                        <CloudUploadIcon className="icon" />
+                                    </div>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="profile"
+                                    style={{ display: "none" }}
+                                    onChange={(e) => setProfile(e.target.files[0])}
+                                />
+                            </>
+                        }
+                        </div>
+                        <button onClick={handleSubmit}>Xác nhận</button>
+                </form>
+                <button className="close" onClick={() => setOpenUpdateImage(0)}>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default UpdateImage

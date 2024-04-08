@@ -7,11 +7,10 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import React, { useState } from "react";
-import moment from "moment";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
+import { timeAgo } from "../../helps/timer";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -23,38 +22,6 @@ const Post = React.forwardRef(({ post }, ref) => {
     'id_post': post.id,
     'category': 1
   }
-
-  // const { isLoading, error, data } = useQuery(["likes", post.id], () =>
-  //   // makeRequest.get("/likes?postId=" + post.id).then((res) => {
-  //   //   return res.data;
-  //   // })
-  // );
-
-  // const queryClient = useQueryClient();
-
-  // const mutation = useMutation(
-  //   (liked) => {
-  //     // if (liked) return makeRequest.delete("/likes?postId=" + post.id);
-  //     // return makeRequest.post("/likes", { postId: post.id });
-  //   },
-  //   {
-  //     onSuccess: () => {
-  //       // Invalidate and refetch
-  //       // queryClient.invalidateQueries(["likes"]);
-  //     },
-  //   }
-  // );
-  // const deleteMutation = useMutation(
-  //   (postId) => {
-  //     return makeRequest.delete("/posts/" + postId);
-  //   },
-  //   {
-  //     onSuccess: () => {
-  //       // Invalidate and refetch
-  //       queryClient.invalidateQueries(["posts"]);
-  //     },
-  //   }
-  // );
 
   const handleLike = () => {
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
@@ -96,7 +63,7 @@ const Post = React.forwardRef(({ post }, ref) => {
               >
                 <span className="name">{post.user.username}</span>
               </Link>
-              <span className="date">{moment(post.created_at).fromNow()}</span>
+              <span className="date">{timeAgo(post.create_at)}</span>
             </div>
           </div>
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
