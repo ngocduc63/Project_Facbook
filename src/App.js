@@ -16,6 +16,9 @@ import { useContext, useState } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -96,9 +99,10 @@ function App() {
   ]);
 
   return (
-    <div>
+    <>
+      <ToastContainer autoClose={3000}/>
       <RouterProvider router={router} />
-    </div>
+    </>
   );
 }
 
