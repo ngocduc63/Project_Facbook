@@ -59,7 +59,7 @@ const Profile = () => {
               {openPopup ===  2 && (
                 <div className="body-edit body-edit-cover">
                   <div onClick={handleClosePopups}>Xem ảnh bìa</div>
-                  <div onClick={() => setOpenUpdateImage(2)}>Chỉnh sửa ảnh bìa</div>
+                  {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(2)}>Chỉnh sửa ảnh bìa</div>}
                 </div>
               )}
             </div>
@@ -69,7 +69,7 @@ const Profile = () => {
               {openPopup ===  1 && (
                 <div className="body-edit">
                   <div onClick={handleClosePopups} >Xem ảnh đại diện</div>
-                  <div onClick={() => setOpenUpdateImage(1)}>Chỉnh sửa ảnh đại điện</div>
+                  {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(1)}>Chỉnh sửa ảnh đại điện</div>}
                 </div>
               )}
             </div>

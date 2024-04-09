@@ -22,9 +22,9 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('file', profile);
+        isUpdateAvartar ? formData.append('file', profile) : formData.append('file', cover);
 
-        axiosPrivate.post(('/user-management/user/update-avatar'), formData)
+        axiosPrivate.post((isUpdateAvartar ? '/user-management/user/update-avatar' : '/user-management/user/update-cover'), formData)
             .then((res) =>{
                 setCurrentUser(res.data.data.user)
                 toast.success("Thay đổi ảnh đại diện thành công", {
