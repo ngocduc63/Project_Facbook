@@ -1,179 +1,217 @@
-@import "../../style.scss";
+@import '../../style.scss';
 
 .profile {
-  @include themify($themes) {
-    background-color: themed("bgSoft");
+    @include themify($themes) {
+        background-color: themed('bgSoft');
 
-    .images {
-      width: 100%;
-      height: 300px;
-      position: relative;
-
-      .body-cover {
-        position: relative;
-      }
-      .body-avartar {
-        position: relative;
-      }
-      .cover {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        cursor: pointer;
-      }
-
-      .profilePic {
-        width: 50%;
-        max-width: 200px;
-        max-height: 200px;
-        border-radius: 50%;
-        object-fit: cover;
-        position: absolute;
-        left: 0;
-        right: 0;
-        margin: auto;
-        top: 200px;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-        cursor: pointer;
-      }
-      
-      .body-edit {
-        position: absolute;
-        right: 50%;
-        bottom: -150px;
-        transform: translateX(120%);
-        max-width: 300px;
-        background-color: themed('bg');
-        -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
-        -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
-        box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
-
-        div {
-          border-radius: 4px;
-          padding: 10px 20px;
-          cursor: pointer;
-        }
-        div:hover {
-          background-color: #5271ff;
-          cursor: pointer;
-        }
-      }
-
-      .body-edit-cover {
-        right: 32%;
-        bottom: 10px;
-      }
-      
-    }
-    .profileContainer {
-      padding: 20px 70px;
-
-      @include mobile{
-        padding: 10px;
-      }
-
-      @include tablet{
-        padding: 20px;
-      }
-
-      .uInfo {
-        min-height: 180px;
-        -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
-        -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
-        box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
-        border-radius: 20px;
-        background-color: themed("bg");
-        color: themed("textColor");
-        padding: 30px;
-        padding-top: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-
-        @include mobile{
-          flex-direction: column;
-          height: 30vh;
-          padding: 20px;
-          margin-top: 100px;
-        }
-
-        .left {
-          flex: 1;
-          display: flex;
-          gap: 10px;
-
-          @include tablet{
-            flex-wrap: wrap;
-          }
-
-          a{
-            color: themed("textColorSoft");
-          }
-        }
-
-        .center {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-
-          span {
-            font-size: 30px;
-            font-weight: 500;
-          }
-          .description {
-            font-size: 16px;
-            font-weight: 300;
-          }
-
-          .info {
-            margin-top: 20px;
+        .images {
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
+            height: 300px;
+            position: relative;
 
-            .item {
-              display: flex;
-              align-items: center;
-              gap: 5px;
-              color: themed("textColorSoft");
+            .body-cover {
+                position: relative;
+            }
+            .body-avartar {
+                position: relative;
+            }
+            .cover {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                cursor: pointer;
+            }
 
-              span {
-                font-size: 14px;
-              }
-            }           
-          }
-          button {
-            border: none;
-            background-color: #5271ff;
-            color: white !important;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-          }
-          
-          .button-exit {
-            padding: 6px 30px;
-            background-color: #ff5252;
-          }
-          
+            .profilePic {
+                width: 50%;
+                max-width: 200px;
+                max-height: 200px;
+                border-radius: 50%;
+                object-fit: cover;
+                position: absolute;
+                left: 0;
+                right: 0;
+                margin: auto;
+                top: 200px;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+                cursor: pointer;
+            }
+
+            .body-edit {
+                position: absolute;
+                right: 50%;
+                bottom: -150px;
+                transform: translateX(120%);
+                max-width: 300px;
+                background-color: themed('bg');
+                -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+                -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+                box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+                border-radius: 4px;
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+
+                div {
+                    border-radius: 4px;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    color: themed('textColor');
+                }
+                div:hover {
+                    background-color: #5271ff;
+                    cursor: pointer;
+                }
+            }
+
+            .body-edit-cover {
+                right: 32%;
+                bottom: 10px;
+            }
         }
+        .profileContainer {
+            padding: 20px 70px;
 
-        .right {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          gap: 10px;
+            @include mobile {
+                padding: 10px;
+            }
+
+            @include tablet {
+                padding: 20px;
+            }
+
+            .uInfo {
+                min-height: 180px;
+                -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                border-radius: 20px;
+                background-color: themed('bg');
+                color: themed('textColor');
+                padding: 30px;
+                padding-top: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+
+                @include mobile {
+                    flex-direction: column;
+                    height: 30vh;
+                    padding: 20px;
+                    margin-top: 100px;
+                }
+
+                .left {
+                    flex: 1;
+                    display: flex;
+                    gap: 10px;
+
+                    @include tablet {
+                        flex-wrap: wrap;
+                    }
+
+                    a {
+                        color: themed('textColorSoft');
+                    }
+                }
+
+                .center {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    row-gap: 10px;
+
+                    span {
+                        font-size: 30px;
+                        font-weight: 500;
+                    }
+                    .description {
+                        font-size: 16px;
+                        font-weight: 300;
+                    }
+
+                    .info {
+                        margin-top: 20px;
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
+
+                        .item {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                            color: themed('textColorSoft');
+
+                            span {
+                                font-size: 14px;
+                            }
+                        }
+                    }
+
+                    .buttons {
+                        display: flex;
+                        column-gap: 16px;
+                        min-height: 40px;
+                        position: relative;
+
+                        .popup-unfriend {
+                            width: 80%;
+                            max-width: 150px;
+                            height: 80px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background-color: themed('bg');
+                            position: absolute;
+                            top: 40px;
+                            left: 20px;
+                            -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                            -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                            box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                            border-radius: 6px;
+
+                            button {
+                                height: 40px;
+                            }
+                        }
+                    }
+                    button {
+                        border: none;
+                        background-color: #5271ff;
+                        color: white !important;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .button-exit {
+                        padding: 6px 30px;
+                        background-color: #ff5252;
+                    }
+
+                    .button-mess {
+                        display: flex;
+                        column-gap: 10px;
+                        span {
+                            font-size: 16px;
+                        }
+                    }
+                }
+
+                .right {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 10px;
+                }
+            }
         }
-      }
     }
-  }
 }

@@ -17,6 +17,10 @@ $themes: (
   ),
 );
 
+.cur-point {
+  cursor: pointer;
+}
+
 @mixin themify($themes) {
   @each $theme, $map in $themes {
     .theme-#{$theme} & {

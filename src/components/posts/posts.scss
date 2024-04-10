@@ -1,15 +1,15 @@
-.posts{
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
+.posts {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
 }
 
 .button-load {
-  border: none;
-  background-color: #5271ff;
-  color: white !important;
-  text-decoration: none !important;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+    border: none;
+    background-color: #5271ff;
+    color: white !important;
+    text-decoration: none !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
