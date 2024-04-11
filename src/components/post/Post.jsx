@@ -32,7 +32,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       .catch(err => {
         console.log(err);
       })
-    
+
   }
 
   const handleUnLike = () => {
@@ -44,7 +44,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       .catch(err => {
         console.log(err);
       })
-    
+
   }
 
   // const handleDelete = () => {
@@ -55,7 +55,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={"http://127.0.0.1:5000/user-management/user/avatar/"+post.user.avatar} alt="" />
+            <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.user.avatar} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.user.id}`}
@@ -77,15 +77,15 @@ const Post = React.forwardRef(({ post }, ref) => {
         </div>
         <div className="info">
           <div className="item">
-            {post.liked ? 
-             (
-              <FavoriteOutlinedIcon
-                style={{ color: "red" }}
-                onClick={handleUnLike}
-              />
-            ) : (
-              <FavoriteBorderOutlinedIcon onClick={handleLike} />
-            )}
+            {post.liked ?
+              (
+                <FavoriteOutlinedIcon
+                  style={{ color: "red" }}
+                  onClick={handleUnLike}
+                />
+              ) : (
+                <FavoriteBorderOutlinedIcon onClick={handleLike} />
+              )}
             {post?.num_like} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
@@ -103,8 +103,8 @@ const Post = React.forwardRef(({ post }, ref) => {
   );
 
   const content = ref
-        ? <article ref={ref}>{postBody}</article>
-        : <article>{postBody}</article>
+    ? <article ref={ref}>{postBody}</article>
+    : <article>{postBody}</article>
 
 
   return content

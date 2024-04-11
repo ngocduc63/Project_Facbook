@@ -11,6 +11,11 @@
 
             .body-cover {
                 position: relative;
+                height: 300px;
+
+                img {
+                    object-fit: cover;
+                }
             }
             .body-avartar {
                 position: relative;
