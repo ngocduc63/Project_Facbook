@@ -1,16 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import { AuthContextProvider } from "./context/authContext";
-import { DarkModeContextProvider } from "./context/darkModeContext";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { AuthContextProvider } from './context/authContext';
+import { DarkModeContextProvider } from './context/darkModeContext';
+import { RefecthInviteContextProvider } from './context/refecthInvite';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <DarkModeContextProvider>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-    </DarkModeContextProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <DarkModeContextProvider>
+            <AuthContextProvider>
+                <RefecthInviteContextProvider>
+                    <App />
+                </RefecthInviteContextProvider>
+            </AuthContextProvider>
+        </DarkModeContextProvider>
+    </React.StrictMode>,
 );

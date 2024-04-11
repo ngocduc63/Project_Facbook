@@ -1,13 +1,15 @@
 import "./rightBar.scss";
 import useAxiosPrivate from "../../api/axiosPrivate";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, memo, useContext } from "react";
 import { toast } from "react-toastify"
 import { Link } from "react-router-dom";
+import { RefecthInviteContext } from "../../context/refecthInvite"
 
 const RightBar = () => {
   const axiosPrivate = useAxiosPrivate();
   const [listInvite, setListInvite] = useState([])
   const [pageInvite, setPageInvite] = useState(1)
+  const { isRefecthInvite } = useContext(RefecthInviteContext)
 
   useEffect(() => {
     const fetchInviteList = async () => {
@@ -23,7 +25,7 @@ const RightBar = () => {
     };
 
     fetchInviteList();
-  }, [axiosPrivate, pageInvite]);
+  }, [axiosPrivate, pageInvite, isRefecthInvite]);
 
   const deleteListInvite = (friend_id) => {
     let newList = listInvite.filter(item => item.friend_id !== friend_id);
@@ -119,4 +121,4 @@ const RightBar = () => {
   );
 };
 
-export default RightBar;
+export default memo(RightBar);

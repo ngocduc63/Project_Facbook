@@ -13,6 +13,8 @@ import { AuthContext } from './context/authContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Notification from './pages/notification/Notification';
+import React, { memo } from 'react';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -23,7 +25,7 @@ function App() {
 
     const queryClient = new QueryClient();
 
-    const Layout = () => {
+    const Layout = memo(() => {
         return (
             <QueryClientProvider client={queryClient}>
                 <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
@@ -35,10 +37,11 @@ function App() {
                         </div>
                         <RightBar />
                     </div>
+                    <Notification />
                 </div>
             </QueryClientProvider>
         );
-    };
+    });
 
     const ProtectedRoute = ({ children }) => {
         if (!currentUser) {
