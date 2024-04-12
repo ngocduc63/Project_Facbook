@@ -1,82 +1,115 @@
 import { useContext, useState, useEffect } from "react";
 import "./comments.scss";
 import { AuthContext } from "../../context/authContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import moment from "moment";
-import useComments from "../../hooks/useComments";
 import Loading from "../loading/Loading";
+import { timeAgo } from '../../helps/timer';
+import useAxiosPrivate from '../../api/axiosPrivate'
+import { toast } from 'react-toastify';
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const Comments = ({ postId }) => {
   const [desc, setDesc] = useState("");
-  const dataLocal = useContext(AuthContext)
-  const [requestData, setRequestData] = useState({
-    'post_id': postId,
-    'page': 1
-  })
+  const { currentUser } = useContext(AuthContext);
+  const axiosPrivate = useAxiosPrivate();
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [pageNum, setPageNum] = useState(1);
+  const [refecthComment, setRefecthComment] = useState(false);
 
-  const {
-    isLoading,
-    isError,
-    error,
-    results,
-    hasNextPage
-  } = useComments(requestData)
+  useEffect(() => {
+    setPageNum(1);
+    setResults([])
+  }, [refecthComment])
 
-  // const isLoading = false
-  // const error = false
-  // const results = [];
-  // const queryClient = useQueryClient();
+  useEffect(() => {
+    if (isLoading) return;
+    setIsLoading(true)
 
-  // const mutation = useMutation(
-  //   (newComment) => {
-  //     return axiosPrivate.post("/comments", newComment);
-  //   },
-  //   {
-  //     onSuccess: () => {
-  //       // Invalidate and refetch
-  //       queryClient.invalidateQueries(["comments"]);
-  //     },
-  //   }
-  // );
+    const controller = new AbortController()
+    const { signal } = controller
 
-  // const handleClick = async (e) => {
-  //   e.preventDefault();
-  //   mutation.mutate({ desc, postId });
-  //   setDesc("");
-  // };
+    axiosPrivate.post(('/post-management/post/comments'), {
+      'post_id': postId,
+      'page': pageNum
+    }, { signal })
+      .then(response => {
+        const data = response.data;
 
-  if (isError) return <p className='center'>Error: {error.message}</p>
+        setResults(prev => [...prev, ...data.data.datas])
+        setHasNextPage(pageNum <= data.data.maxPage - 1)
+        setIsLoading(false)
+      })
+      .catch(e => {
 
-  const content = results.map((comment, i) => {
+        setIsLoading(false)
+        if (signal.aborted) return
+      })
+
+    return () => controller.abort()
+
+  }, [axiosPrivate, pageNum, refecthComment])
+
+
+  const content = results.map((comment) => {
     return (
       <div className="comment" key={comment.id}>
-        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + comment.user.avatar} alt="" />
+        <div className="image">
+          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + comment.user.avatar} alt="" />
+        </div>
         <div className="info">
           <span>{comment.user.username}</span>
           <p>{comment.content}</p>
         </div>
         <span className="date">
-          {moment(comment.create_at).fromNow()}
+          {timeAgo(comment.create_at)}
         </span>
-    </div>
+      </div>
     )
-})
+  })
+
+  const handleComment = () => {
+    if (desc.trim() === '') return;
+
+    axiosPrivate.post(('/post-management/post/comment'), { 'id_post': postId, 'content': desc })
+      .then((response) => {
+        toast.success("comment posted successfully", {
+          position: 'top-right'
+        });
+        setDesc('')
+        setRefecthComment(!refecthComment)
+      })
+      .catch((err) => {
+        toast.error("comment posted error", {
+          position: 'top-right'
+        });
+      });
+  }
 
   return (
     <div className="comments">
       <div className="write">
-        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + dataLocal.currentUser.avatar} alt="" />
+        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
         <input
           type="text"
           placeholder="write a comment"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
         />
-        {/* <button onClick={handleClick}>Send</button> */}
-        <button >Send</button>
+        <button onClick={handleComment}>Bình luận</button>
       </div>
-      {content}
-      {isLoading && <Loading/>}
+      <div className="list-comment">
+        <InfiniteScroll
+          dataLength={results.length}
+          next={() => setPageNum(pageNum + 1)}
+          hasMore={hasNextPage}
+          loader={<Loading />}
+          height={300}
+          className="content-comment"
+        >
+          {content}
+        </InfiniteScroll>
+      </div>
     </div>
   );
 };

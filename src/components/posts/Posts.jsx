@@ -26,23 +26,43 @@ const Posts = ({ userId, isRefecth }) => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    axiosPrivate
-      .get(`/post-management/post/get-new-feed/${pageNum}`, { signal })
-      .then((response) => {
-        const data = response.data;
+    if (userId) {
+      axiosPrivate.post(('/post-management/post/get-user-posts'),
+        {
+          'user_id': userId,
+          'page': pageNum
+        }, { signal })
+        .then((response) => {
+          const data = response.data;
 
-        setResults((prev) => [...prev, ...data.data.datas]);
-        setHasNextPage(pageNum <= data.data.maxPage - 1);
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        if (signal.aborted) return;
-        setError({ message: e.message });
-      });
+          setResults((prev) => [...prev, ...data.data.datas]);
+          setHasNextPage(pageNum <= data.data.maxPage - 1);
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          if (signal.aborted) return;
+          setError({ message: e.message });
+        });
+    } else {
+      axiosPrivate
+        .get(`/post-management/post/get-new-feed/${pageNum}`, { signal })
+        .then((response) => {
+          const data = response.data;
+
+          setResults((prev) => [...prev, ...data.data.datas]);
+          setHasNextPage(pageNum <= data.data.maxPage - 1);
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          if (signal.aborted) return;
+          setError({ message: e.message });
+        });
+    }
 
     return () => controller.abort();
-  }, [axiosPrivate, pageNum]);
+  }, [axiosPrivate, pageNum, userId]);
 
   const content = results.map((post, i) => {
     if (results.length === i + 1) {
@@ -62,7 +82,6 @@ const Posts = ({ userId, isRefecth }) => {
       >
         {content}
       </InfiniteScroll>
-      {isLoading && <Loading />}
       <p className="center"><a href="#top" className="button-load">Lên đầu trang</a></p>
     </>
   );

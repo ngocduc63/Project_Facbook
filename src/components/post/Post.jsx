@@ -22,6 +22,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [like, setLike] = useState(0);
   const { currentUser } = useContext(AuthContext);
   const { setData, postId } = useContext(NotifiPostContext);
+  const [numComment, setNumComment] = useState(post.num_comment);
   const dataRequestLike = {
     'id_post': post.id,
     'category': 1
@@ -40,10 +41,13 @@ const Post = React.forwardRef(({ post }, ref) => {
     const handleNotification = (data) => {
       setData(data)
 
-      if (data.post_id === post.id && data.hasOwnProperty('mess')) {
+      if (data.post_id === post.id && data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
         setDataPost(data)
 
         if (currentUser.id === data.user_id) setLike(prve => prve + 1)
+      }
+      else if (data.hasOwnProperty('num_comment')) {
+        setNumComment(data.num_comment)
       }
     };
     socket.on("notification_post", handleNotification);
@@ -105,7 +109,22 @@ const Post = React.forwardRef(({ post }, ref) => {
         </div>
         <div className="content">
           <p>{post.title}</p>
-          <img src={"http://127.0.0.1:5000/post-management/post/image/" + post.image} alt="" />
+          {
+            (
+              post.category === 0 && <img src={"http://127.0.0.1:5000/post-management/post/image/" + post.image} alt="" />
+            )
+          }
+          {
+            (
+              post.category === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.image} alt="" />
+            )
+          }
+          {
+            (
+              post.category === 2 && <img src={"http://127.0.0.1:5000/user-management/user/cover/" + post.image} alt="" />
+            )
+          }
+
         </div>
         <div className="info">
           <div className="item">
@@ -122,7 +141,7 @@ const Post = React.forwardRef(({ post }, ref) => {
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            See Comments
+            {numComment} Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />
