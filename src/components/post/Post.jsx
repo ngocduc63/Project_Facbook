@@ -6,28 +6,60 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import { NotifiPostContext } from "../../context/notifiPostContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { timeAgo } from "../../helps/timer";
+import socket from "../../helps/socket"
 
 const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate()
-
+  const [dataPost, setDataPost] = useState({});
+  const [like, setLike] = useState(0);
   const { currentUser } = useContext(AuthContext);
+  const { setData, postId } = useContext(NotifiPostContext);
   const dataRequestLike = {
     'id_post': post.id,
     'category': 1
   }
 
+  useEffect(() => {
+
+    const joinRoomNotifi = (room) => {
+      if (room !== "") {
+        socket.emit("join_notification_post", room);
+      }
+    };
+
+    joinRoomNotifi({ post_id: post.id })
+
+    const handleNotification = (data) => {
+      setData(data)
+
+      if (data.post_id === post.id && data.hasOwnProperty('mess')) {
+        setDataPost(data)
+
+        if (currentUser.id === data.user_id) setLike(prve => prve + 1)
+      }
+    };
+    socket.on("notification_post", handleNotification);
+
+    return () => {
+      socket.emit("leave_notification_post", { post_id: post.id });
+      socket.off("notification_post", handleNotification);
+    };
+
+  }, [currentUser, post.id, setData, postId]);
+
   const handleLike = () => {
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
       .then(res => {
-        const data = res.data;
-        console.log('like succcess');
+        // const data = res.data;
+        // console.log('like succcess');
       })
       .catch(err => {
         console.log(err);
@@ -38,8 +70,8 @@ const Post = React.forwardRef(({ post }, ref) => {
   const handleUnLike = () => {
     axiosPrivate.delete((`/post-management/post/unlike/${post.id}`))
       .then(res => {
-        const data = res.data;
-        console.log('unlike success');
+        // const data = res.data;
+        // console.log('unlike success');
       })
       .catch(err => {
         console.log(err);
@@ -77,7 +109,7 @@ const Post = React.forwardRef(({ post }, ref) => {
         </div>
         <div className="info">
           <div className="item">
-            {post.liked ?
+            {(like % 2 === 0 ? post.liked : !post.liked) ?
               (
                 <FavoriteOutlinedIcon
                   style={{ color: "red" }}
@@ -86,7 +118,7 @@ const Post = React.forwardRef(({ post }, ref) => {
               ) : (
                 <FavoriteBorderOutlinedIcon onClick={handleLike} />
               )}
-            {post?.num_like} Likes
+            {dataPost.num_like ? dataPost.num_like : post?.num_like} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
