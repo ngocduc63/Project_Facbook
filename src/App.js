@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Notification from './pages/notification/Notification';
+import MessagePopup from './components/message/Message';
 import React, { memo } from 'react';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                             <Outlet />
                         </div>
                         <RightBar />
+                        <MessagePopup />
                     </div>
                     <Notification />
                 </div>
