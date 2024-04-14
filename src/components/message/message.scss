@@ -43,6 +43,18 @@
                     font-weight: 600;
                 }
             }
+            .right-content {
+                .icon {
+                    color: themed('primary');
+                    padding: 3px;
+                }
+
+                .icon:hover {
+                    cursor: pointer;
+                    background-color: themed('border');
+                    border-radius: 50%;
+                }
+            }
         }
 
         .content::-webkit-scrollbar-track {
@@ -80,7 +92,7 @@
                 span {
                     max-width: 60%;
                     padding: 4px 6px;
-                    background-color: #0084ff;
+                    background-color: themed('primary');
                     color: #fff;
                     padding: 6px 10px;
                     font-size: 15px;
@@ -139,7 +151,14 @@
                 font-size: 14px;
             }
             .send-icon {
-                color: #0084ff;
+                text-align: center;
+                padding: 4px 6px;
+                color: themed('primary');
+            }
+            .send-icon:hover {
+                cursor: pointer;
+                background-color: themed('border');
+                border-radius: 50%;
             }
         }
     }

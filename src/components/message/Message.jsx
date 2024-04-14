@@ -1,28 +1,43 @@
-import { useEffect, useState, useContext, useCallback } from 'react';
 import '../message/message.scss'
+import { useEffect, useState, useContext, useCallback } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import useAxiosPrivate from '../../api/axiosPrivate';
-import { AuthContext } from '../../context/authContext'
+import { AuthContext } from '../../context/authContext';
+import { ChatContext } from '../../context/chatContext';
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from '../loading/Loading';
 import SendIcon from '@mui/icons-material/Send';
+import RemoveIcon from '@mui/icons-material/Remove';
 import socket from '../../helps/socket';
 
-function MessagePopup() {
+function MessagePopup({ isShowPopupMess = false }) {
     const maxRows = 5;
     const axiosPrivate = useAxiosPrivate();
     const { currentUser } = useContext(AuthContext);
+    const { roomCurrent, setRoomCurrent, setDataHidden } = useContext(ChatContext);
     const [dataMess, setDataMess] = useState([])
+    const [friendRoom, setFriendRoom] = useState({})
     const [hasNextPage, setHasNextPage] = useState(false);
     const [pageNum, setPageNum] = useState(1)
     const [inputValue, setInputValue] = useState('');
     const [textareaHeight, setTextareaHeight] = useState(22);
     const [sucessData, setSucessData] = useState(0);
+    const [showPopupMess, setShowPopupMess] = useState(isShowPopupMess);
 
     useEffect(() => {
+        if (roomCurrent) {
+            setShowPopupMess(true)
+            setSucessData(0)
+        }
+    }, [roomCurrent]);
+
+    useEffect(() => {
+        if (!roomCurrent) return;
+
         const abortController = new AbortController();
 
         axiosPrivate.post(('/chat-management/room'), {
-            "room_id": "661a203219a18a12031224c7",
+            "room_id": `${roomCurrent}`,
             "page": pageNum
         }, {
             signal: abortController.signal,
@@ -30,6 +45,7 @@ function MessagePopup() {
             .then((response) => {
                 const data = response.data;
                 setDataMess(prev => [...prev, ...data.data.datas]);
+                setFriendRoom(data.data.friend)
                 setHasNextPage(pageNum <= data.data.maxPage - 1);
                 setSucessData(1)
             })
@@ -39,18 +55,21 @@ function MessagePopup() {
 
         return () => {
             abortController.abort();
+            setDataMess([])
         };
-    }, [axiosPrivate, pageNum]);
+    }, [axiosPrivate, pageNum, roomCurrent]);
 
 
     useEffect(() => {
+        if (!roomCurrent) return;
+
         const joinRoomNotifi = (room) => {
             if (room !== "") {
                 socket.emit("join_room", room);
             }
         };
 
-        joinRoomNotifi({ 'room': '661a203219a18a12031224c7' })
+        joinRoomNotifi({ 'room': `${roomCurrent}` })
 
         const handleNotification = (data) => {
             setDataMess(prevData => [data, ...prevData]);
@@ -60,12 +79,13 @@ function MessagePopup() {
         return () => {
             socket.off("receive_message", handleNotification);
         };
-    }, [sucessData])
+    }, [sucessData, roomCurrent])
 
     const handelSendMessage = () => {
+        if (inputValue.trim() === '') return;
         socket.emit("send_message", {
             "sender": `${currentUser.id}`,
-            "room_id": "661a203219a18a12031224c7",
+            "room_id": `${roomCurrent}`,
             "text": inputValue.trim()
         })
         setInputValue('')
@@ -80,12 +100,16 @@ function MessagePopup() {
             }
             event.preventDefault();
         }
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            handelSendMessage();
+        }
     };
 
     const handleChange = (event) => {
         const { value } = event.target;
         setInputValue(value);
-        // Tính toán số dòng mới
         const rows = value.split('\n').length;
         const newHeight = rows * 16;
         if (newHeight <= maxRows * 16) {
@@ -95,7 +119,8 @@ function MessagePopup() {
     };
 
     const content = useCallback(() => {
-        if (sucessData !== 1 || dataMess.length <= 0) return <Loading />;
+        if (sucessData !== 1) return;
+        console.log('m', dataMess);
         const content_user = (data) => {
             return (
                 <>
@@ -112,7 +137,7 @@ function MessagePopup() {
             return (
                 <>
                     <div className='image'>
-                        <img src={"http://127.0.0.1:5000/user-management/user/avatar/Anh_chup_man_hinh_2021-11-19_193445_2_1712821061.png"} alt="" />
+                        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />
                     </div>
                     <div className='friend-chat'>
                         {
@@ -152,18 +177,38 @@ function MessagePopup() {
         return content_mess;
     }, [dataMess, sucessData, currentUser])
 
+    const handelClosePopupuMess = () => {
+        setRoomCurrent('')
+        setShowPopupMess(false)
+    }
+
+    const handelHidenPopupMess = () => {
+        setDataHidden(prev => {
+            const existingItemIndex = prev.findIndex(item => item.room === roomCurrent);
+            if (existingItemIndex !== -1) {
+                const existingItem = prev[existingItemIndex];
+                const updatedPrev = prev.filter((_, index) => index !== existingItemIndex);
+                return [...updatedPrev, existingItem];
+            } else {
+                return [...prev, { 'room': roomCurrent, 'friend': friendRoom }];
+            }
+        });
+        setRoomCurrent('')
+        setShowPopupMess(false)
+    }
+
     return (
-        <div className="message-popup">
+        showPopupMess && <div className="message-popup">
             <div className='header'>
-                <div className='right-content'>
-                    <div className='image'>
-                        <img src={"http://127.0.0.1:5000/user-management/user/avatar/Anh_chup_man_hinh_2021-11-19_193445_2_1712821061.png"} alt="" />
-                    </div>
-                    <span className='name-room'>Nguyen ngoc duc</span>
-                </div>
                 <div className='left-content'>
-                    <button>-</button>
-                    <button>X</button>
+                    <div className='image'>
+                        {sucessData === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />}
+                    </div>
+                    {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
+                </div>
+                <div className='right-content'>
+                    <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
+                    <CloseIcon onClick={handelClosePopupuMess} className='icon' />
                 </div>
             </div>
             <InfiniteScroll

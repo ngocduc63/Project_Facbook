@@ -4,12 +4,15 @@ import { useEffect, useState, memo, useContext } from "react";
 import { toast } from "react-toastify"
 import { Link } from "react-router-dom";
 import { RefecthInviteContext } from "../../context/refecthInvite"
+import { ChatContext } from '../../context/chatContext'
+import CloseIcon from '@mui/icons-material/Close';
 
 const RightBar = () => {
   const axiosPrivate = useAxiosPrivate();
   const [listInvite, setListInvite] = useState([])
   const [pageInvite, setPageInvite] = useState(1)
   const { isRefecthInvite } = useContext(RefecthInviteContext)
+  const { dataHiden, setDataHidden, setRoomCurrent } = useContext(ChatContext);
 
   useEffect(() => {
     const fetchInviteList = async () => {
@@ -65,6 +68,29 @@ const RightBar = () => {
       })
   }
 
+
+
+
+  const IconMess = ({ data, index }) => {
+    const handelCloseDataPopupMess = (e) => {
+      e.preventDefault()
+      setDataHidden(prev => prev.filter(item => data.room !== item.room))
+    }
+
+    const handelShowPopupMess = () => {
+      setRoomCurrent(data.room)
+    }
+
+    return (
+      <div key={index} className="main">
+        <div className="icon-close" onClick={handelCloseDataPopupMess}><CloseIcon className="icon-close" /></div>
+        <div className="image" onClick={handelShowPopupMess}>
+          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + data.friend.avatar} alt="" />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="rightBar">
       <div className="container">
@@ -114,7 +140,14 @@ const RightBar = () => {
               <span>User</span> */}
             {/* </div> */}
           </div>
-
+        </div>
+      </div>
+      <div className="mess-hiden">
+        <div className="content">
+          {dataHiden.map((data, index) => (
+            <IconMess data={data} index={index} />
+          )
+          )}
         </div>
       </div>
     </div >

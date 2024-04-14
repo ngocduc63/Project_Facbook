@@ -146,6 +146,16 @@
                     color: themed('textColor');
                 }
             }
+
+            .icon-exit {
+                padding: 8px;
+            }
+
+            .icon-exit:hover {
+                background-color: #ff5252;
+                cursor: pointer;
+                border-radius: 50%;
+            }
         }
     }
 }

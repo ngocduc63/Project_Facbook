@@ -1,11 +1,11 @@
 import "./navbar.scss";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -21,7 +21,7 @@ const Navbar = (props) => {
   const [inputSearch, setInputSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resultSearch, setResultSearch] = useState([]);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, setTokenAndUser } = useContext(AuthContext);
   const { isRefecth, setIsRefecth } = props;
 
   const handleRefecth = () => {
@@ -75,6 +75,10 @@ const Navbar = (props) => {
     setIsLoading(false)
   }, 200)
 
+  const handelLogout = () => {
+    setTokenAndUser(null, null)
+  }
+
   return (
     <div className="navbar">
       <div className="left">
@@ -115,7 +119,6 @@ const Navbar = (props) => {
         </div>
       </div>
       <div className="right">
-        <PersonOutlinedIcon />
         <ChatBubbleOutlineIcon />
         <NotificationsOutlinedIcon />
         <Link to={`/profile/${currentUser.id}`} className="user">
@@ -125,6 +128,7 @@ const Navbar = (props) => {
           />
           <span>{currentUser.username}</span>
         </Link>
+        <ExitToAppIcon onClick={handelLogout} className="icon-exit" />
       </div>
     </div>
   );

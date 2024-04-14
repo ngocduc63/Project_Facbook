@@ -1,39 +1,48 @@
 import { useEffect, useState, useContext, memo } from "react";
 import { AuthContext } from "../../context/authContext";
+import { ChatContext } from "../../context/chatContext";
 import socket from "../../helps/socket";
 import { toast } from "react-toastify"
 import { RefecthInviteContext } from '../../context/refecthInvite';
 
-const joinRoomNotifi = (room) => {
-    if (room !== "") {
-        socket.emit("join_notification_add_friend", room);
-    }
-};
-
-const showNotifications = (mess, toggle) => {
-    toast.info(mess, {
-        position: "top-right",
-        onOpen: () => {
-            toggle()
-        }
-    })
-}
-
 function Notification() {
     const { currentUser } = useContext(AuthContext);
+    const { setRoomNoti } = useContext(ChatContext);
     const { toggle } = useContext(RefecthInviteContext);
+
     useEffect(() => {
-        joinRoomNotifi({ user_id: currentUser.id })
-        const handleNotification = (data) => {
-            showNotifications(data.description, toggle)
+        const joinRoomNotifi = (room) => {
+            if (room !== "") {
+                socket.emit("join_notification", room);
+            }
         };
-        socket.on("join_notification_add_friend", handleNotification);
+
+        joinRoomNotifi({ user_id: currentUser.id })
+
+        const showNotifications = (data, toggle) => {
+            if (data.hasOwnProperty('room')) {
+                setRoomNoti(data)
+                return;
+            }
+
+            toast.info(data?.description, {
+                position: "top-right",
+                onOpen: () => {
+                    toggle()
+                }
+            })
+        }
+
+        const handleNotification = (data) => {
+            showNotifications(data, toggle)
+        };
+        socket.on("join_notification", handleNotification);
 
         return () => {
-            socket.off("join_notification_add_friend", handleNotification);
+            socket.off("join_notification", handleNotification);
         };
 
-    }, [currentUser, toggle]);
+    }, [currentUser, toggle, setRoomNoti]);
 
     return (
         <>

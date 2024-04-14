@@ -11,10 +11,11 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Update from "../../components/update/Update";
 import UpdateImage from "../../components/update/UpdateImage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Loading from "../../components/loading/Loading";
 import { convertToDate } from "../../helps/timer";
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
+import { ChatContext } from "../../context/chatContext";
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -24,6 +25,7 @@ const Profile = () => {
   const [isRefetch, setIsRefetch] = useState(false);
   const [showPopupUnfriend, setShowPopupUnfriend] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+  const { setRoomCurrent } = useContext(ChatContext);
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
@@ -99,6 +101,15 @@ const Profile = () => {
         toast.error("Hủy lời mời thất bại", {
           position: "top-right"
         })
+      })
+  }
+
+  const handelShowPopupMess = () => {
+    axiosPrivate.get((`/friend-management/get-room/${userId}`))
+      .then((response) => {
+        setRoomCurrent(response?.data?.data?.room_id)
+      })
+      .catch((error) => {
       })
   }
 
@@ -183,7 +194,7 @@ const Profile = () => {
                                   </>
                                 )
                               }
-                              <button className="item button-mess">
+                              <button className="item button-mess" onClick={handelShowPopupMess}>
                                 <span>Nhắn tin</span>
                                 <ChatBubbleOutlineIcon />
                               </button>
@@ -224,4 +235,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default memo(Profile);

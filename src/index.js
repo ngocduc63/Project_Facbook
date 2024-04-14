@@ -5,6 +5,7 @@ import { AuthContextProvider } from './context/authContext';
 import { DarkModeContextProvider } from './context/darkModeContext';
 import { RefecthInviteContextProvider } from './context/refecthInvite';
 import { NotifiPostContextProvider } from './context/notifiPostContext';
+import { ChatContextProvider } from './context/chatContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +14,9 @@ root.render(
             <AuthContextProvider>
                 <RefecthInviteContextProvider>
                     <NotifiPostContextProvider>
-                        <App />
+                        <ChatContextProvider>
+                            <App />
+                        </ChatContextProvider>
                     </NotifiPostContextProvider>
                 </RefecthInviteContextProvider>
             </AuthContextProvider>
