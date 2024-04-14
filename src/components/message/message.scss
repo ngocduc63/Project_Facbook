@@ -6,7 +6,7 @@
         right: 6%;
         bottom: 0;
         width: 360px;
-        height: 420px;
+        padding-bottom: 10px;
         background-color: themed('bg');
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
@@ -65,6 +65,7 @@
         .content {
             margin-top: 6px;
             padding: 0 10px;
+            padding-bottom: 10px;
             display: flex;
             flex-direction: column-reverse;
             row-gap: 10px;
@@ -119,6 +120,26 @@
                         border-radius: 16px;
                     }
                 }
+            }
+        }
+
+        .input-mess {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            textarea {
+                width: 70%;
+                border: none;
+                outline: none;
+                padding: 10px 16px;
+                background-color: themed('border');
+                border-radius: 20px;
+                max-height: 80px;
+                resize: none;
+                font-size: 14px;
+            }
+            .send-icon {
+                color: #0084ff;
             }
         }
     }

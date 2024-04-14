@@ -39,7 +39,7 @@ function App() {
                         <RightBar />
                         <MessagePopup />
                     </div>
-                    <Notification />
+                    {currentUser && <Notification />}
                 </div>
             </QueryClientProvider>
         );
