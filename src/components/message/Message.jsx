@@ -31,6 +31,7 @@ function MessagePopup({ isShowPopupMess = false }) {
         }
     }, [roomCurrent]);
 
+
     useEffect(() => {
         if (!roomCurrent) return;
 
@@ -55,7 +56,6 @@ function MessagePopup({ isShowPopupMess = false }) {
 
         return () => {
             abortController.abort();
-            setDataMess([])
         };
     }, [axiosPrivate, pageNum, roomCurrent]);
 
@@ -120,7 +120,7 @@ function MessagePopup({ isShowPopupMess = false }) {
 
     const content = useCallback(() => {
         if (sucessData !== 1) return;
-        console.log('m', dataMess);
+
         const content_user = (data) => {
             return (
                 <>
@@ -175,7 +175,7 @@ function MessagePopup({ isShowPopupMess = false }) {
         })
 
         return content_mess;
-    }, [dataMess, sucessData, currentUser])
+    }, [dataMess, sucessData, currentUser, friendRoom])
 
     const handelClosePopupuMess = () => {
         setRoomCurrent('')

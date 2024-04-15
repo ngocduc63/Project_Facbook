@@ -7,7 +7,6 @@ export const ChatContextProvider = ({ children }) => {
     const [dataHiden, setDataHidden] = useState([]);
 
     const setRoomNoti = (data) => {
-        console.log(roomCurrent);
         if (roomCurrent) {
             setDataHidden((prev) => {
                 const existingItemIndex = prev.findIndex((item) => item.room === data.room);
@@ -23,10 +22,6 @@ export const ChatContextProvider = ({ children }) => {
             setRoomCurrent(data.room);
         }
     };
-
-    useEffect(() => {
-        console.log('rr', roomCurrent);
-    }, [roomCurrent]);
 
     return (
         <ChatContext.Provider value={{ roomCurrent, setRoomCurrent, dataHiden, setDataHidden, setRoomNoti }}>
