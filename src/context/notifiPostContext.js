@@ -14,7 +14,7 @@ export const NotifiPostContextProvider = ({ children }) => {
         if (!data || data === null || data.mess === 'un_like') return;
         if (data.create_post !== currentUser.id || data.user_id === currentUser.id) return;
 
-        toast.info(data.mess, {
+        toast.info(`${data.user_name} ${data.mess}`, {
             position: 'top-right',
             onOpen: () => {
                 setPostId(data.post_id);

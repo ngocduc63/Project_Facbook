@@ -9,7 +9,7 @@ import Loading from '../loading/Loading';
 import SendIcon from '@mui/icons-material/Send';
 import RemoveIcon from '@mui/icons-material/Remove';
 import socket from '../../helps/socket';
-import { memo } from 'react';
+import ContentMess from './ContentMess';
 
 function MessagePopup({ isShowPopupMess = false }) {
     const maxRows = 5;
@@ -36,7 +36,6 @@ function MessagePopup({ isShowPopupMess = false }) {
 
 
     useEffect(() => {
-        console.log(roomCurrent)
         if (!roomCurrent) return;
 
         const abortController = new AbortController();
@@ -121,77 +120,77 @@ function MessagePopup({ isShowPopupMess = false }) {
 
     };
 
-    const Content = memo(({ dataMess, friendRoom }) => {
-        if (sucessData !== 1) return;
+    // const Content = memo(({ dataMess, friendRoom }) => {
+    //     if (sucessData !== 1) return;
 
-        const loadMess = (data) => {
-            if (data.includes('\n')) {
-                const lines = data.split('\n');
-                return (
-                    lines.map((line, index) => (
-                        <p key={index}>{line}</p>
-                    ))
-                );
-            } else {
-                return <p>{data}</p>
-            }
-        }
+    //     const loadMess = (data) => {
+    //         if (data.includes('\n')) {
+    //             const lines = data.split('\n');
+    //             return (
+    //                 lines.map((line, index) => (
+    //                     <p key={index}>{line}</p>
+    //                 ))
+    //             );
+    //         } else {
+    //             return <p>{data}</p>
+    //         }
+    //     }
 
-        const content_user = (data) => {
-            return (
-                <>
-                    {
-                        data.map((data) => {
-                            return <div key={data.created_at}>{loadMess(data.text)}</div>
-                        })
-                    }
-                </>
-            )
-        }
+    //     const content_user = (data) => {
+    //         return (
+    //             <>
+    //                 {
+    //                     data.map((data) => {
+    //                         return <div key={data.created_at}>{loadMess(data.text)}</div>
+    //                     })
+    //                 }
+    //             </>
+    //         )
+    //     }
 
-        const content_friend = (data) => {
-            return (
-                <>
-                    <div className='image'>
-                        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />
-                    </div>
-                    <div className='friend-chat'>
-                        {
-                            data.map((data) => {
-                                return <div key={data.created_at}>{loadMess(data.text)}</div>
-                            })
-                        }
-                    </div>
-                </>
-            )
-        }
+    //     const content_friend = (data) => {
+    //         return (
+    //             <>
+    //                 <div className='image'>
+    //                     <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />
+    //                 </div>
+    //                 <div className='friend-chat'>
+    //                     {
+    //                         data.map((data) => {
+    //                             return <div key={data.created_at}>{loadMess(data.text)}</div>
+    //                         })
+    //                     }
+    //                 </div>
+    //             </>
+    //         )
+    //     }
 
-        let content_mess = [];
-        let data_chat = [];
-        let next_sender = 1;
-        let key = 0;
+    //     let content_mess = [];
+    //     let data_chat = [];
+    //     let next_sender = 1;
+    //     let key = 0;
 
-        dataMess.forEach((data, index) => {
-            next_sender = dataMess[index + 1]?.sender;
-            if (next_sender !== data.sender || index + 1 === dataMess.length) {
-                data_chat.push(data)
-                if (+data.sender === currentUser.id) {
-                    content_mess.push(<div key={key} className='content-user'>{content_user(data_chat.reverse(), key)}</div>)
-                    key++;
-                } else {
-                    content_mess.push(<div key={key} className='content-friend'>{content_friend(data_chat.reverse(), key)}</div>)
-                    key++;
-                }
-                data_chat = [];
-            }
-            else {
-                data_chat.push(data)
+    //     dataMess.forEach((data, index) => {
+    //         next_sender = dataMess[index + 1]?.sender;
+    //         if (next_sender !== data.sender || index + 1 === dataMess.length) {
+    //             data_chat.push(data)
+    //             if (+data.sender === currentUser.id) {
+    //                 content_mess.push(<div key={key} className='content-user'>{content_user(data_chat.reverse(), key)}</div>)
+    //                 key++;
+    //             } else {
+    //                 content_mess.push(<div key={key} className='content-friend'>{content_friend(data_chat.reverse(), key)}</div>)
+    //                 key++;
+    //             }
+    //             data_chat = [];
+    //         }
+    //         else {
+    //             data_chat.push(data)
 
-            }
-        })
+    //         }
+    //     })
 
-        return content_mess;
-    })
+    //     return content_mess;
+    // })
 
     const handelClosePopupuMess = () => {
         setRoomCurrent('')
@@ -236,7 +235,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 className="content"
                 height={320}
             >
-                <Content dataMess={dataMess} friendRoom={friendRoom} />
+                <ContentMess dataMess={dataMess} friendRoom={friendRoom} currentUser={currentUser} />
             </InfiniteScroll>
             <div className='input-mess'>
                 <textarea
