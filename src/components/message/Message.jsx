@@ -29,13 +29,14 @@ function MessagePopup({ isShowPopupMess = false }) {
         if (roomCurrent) {
             setShowPopupMess(true)
             setSucessData(0)
-        } else {
-            setShowPopupMess(false)
+            setPageNum(1)
+            setDataMess([]);
         }
     }, [roomCurrent]);
 
 
     useEffect(() => {
+        console.log(roomCurrent)
         if (!roomCurrent) return;
 
         const abortController = new AbortController();
@@ -242,6 +243,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                     value={inputValue}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
+                    placeholder='Aa'
                     style={{
                         height: `${textareaHeight}px`,
                         overflowY: (textareaHeight >= maxRows * 16) ? 'scroll' : 'hidden',
