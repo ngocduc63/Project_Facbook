@@ -9,6 +9,7 @@ import Loading from '../loading/Loading';
 import SendIcon from '@mui/icons-material/Send';
 import RemoveIcon from '@mui/icons-material/Remove';
 import socket from '../../helps/socket';
+import { memo } from 'react';
 
 function MessagePopup({ isShowPopupMess = false }) {
     const maxRows = 5;
@@ -28,6 +29,8 @@ function MessagePopup({ isShowPopupMess = false }) {
         if (roomCurrent) {
             setShowPopupMess(true)
             setSucessData(0)
+        } else {
+            setShowPopupMess(false)
         }
     }, [roomCurrent]);
 
@@ -51,7 +54,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 setSucessData(1)
             })
             .catch((error) => {
-
+                setShowPopupMess(false);
             });
 
         return () => {
@@ -89,19 +92,18 @@ function MessagePopup({ isShowPopupMess = false }) {
             "text": inputValue.trim()
         })
         setInputValue('')
+        setTextareaHeight(22)
     }
 
     const handleKeyDown = (event) => {
         if (event.keyCode === 13 && event.shiftKey) {
+            event.preventDefault();
             setInputValue(inputValue + '\n');
             const newHeight = textareaHeight + 16;
             if (newHeight <= maxRows * 16) {
                 setTextareaHeight(newHeight);
             }
-            event.preventDefault();
-        }
-
-        if (event.keyCode === 13) {
+        } else if (event.keyCode === 13) {
             event.preventDefault();
             handelSendMessage();
         }
@@ -118,15 +120,28 @@ function MessagePopup({ isShowPopupMess = false }) {
 
     };
 
-    const content = useCallback(() => {
+    const Content = memo(({ dataMess, friendRoom }) => {
         if (sucessData !== 1) return;
+
+        const loadMess = (data) => {
+            if (data.includes('\n')) {
+                const lines = data.split('\n');
+                return (
+                    lines.map((line, index) => (
+                        <p key={index}>{line}</p>
+                    ))
+                );
+            } else {
+                return <p>{data}</p>
+            }
+        }
 
         const content_user = (data) => {
             return (
                 <>
                     {
                         data.map((data) => {
-                            return <span key={data.created_at}>{data.text}</span>
+                            return <div key={data.created_at}>{loadMess(data.text)}</div>
                         })
                     }
                 </>
@@ -142,7 +157,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                     <div className='friend-chat'>
                         {
                             data.map((data) => {
-                                return <span key={data.created_at}>{data.text}</span>
+                                return <div key={data.created_at}>{loadMess(data.text)}</div>
                             })
                         }
                     </div>
@@ -175,7 +190,7 @@ function MessagePopup({ isShowPopupMess = false }) {
         })
 
         return content_mess;
-    }, [dataMess, sucessData, currentUser, friendRoom])
+    })
 
     const handelClosePopupuMess = () => {
         setRoomCurrent('')
@@ -220,7 +235,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 className="content"
                 height={320}
             >
-                {content()}
+                <Content dataMess={dataMess} friendRoom={friendRoom} />
             </InfiniteScroll>
             <div className='input-mess'>
                 <textarea

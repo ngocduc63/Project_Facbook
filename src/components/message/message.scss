@@ -89,7 +89,7 @@
                 flex-direction: column;
                 row-gap: 5px;
                 align-items: flex-end;
-                span {
+                div {
                     max-width: 60%;
                     padding: 4px 6px;
                     background-color: themed('primary');
@@ -122,7 +122,7 @@
                     flex-direction: column;
                     row-gap: 5px;
                     align-items: flex-start;
-                    span {
+                    div {
                         max-width: 60%;
                         background-color: themed('border');
                         color: themed('textColor');
