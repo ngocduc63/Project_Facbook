@@ -6,7 +6,7 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import { NotifiPostContext } from "../../context/notifiPostContext";
@@ -23,6 +23,8 @@ const Post = React.forwardRef(({ post }, ref) => {
   const { currentUser } = useContext(AuthContext);
   const { setData, postId } = useContext(NotifiPostContext);
   const [numComment, setNumComment] = useState(post.num_comment);
+  const [isDelete, setIsDelete] = useState(false);
+
   const dataRequestLike = {
     'id_post': post.id,
     'category': 1
@@ -80,12 +82,17 @@ const Post = React.forwardRef(({ post }, ref) => {
       .catch(err => {
         console.log(err);
       })
-
   }
 
-  // const handleDelete = () => {
-  //   deleteMutation.mutate(post.id);
-  // };
+  const handleDelete = () => {
+    axiosPrivate.delete((`/post-management/post/delete/${post.id}`))
+      .then(res => {
+        setIsDelete(true)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  };
   const postBody = (
     <div className="post">
       <div className="container">
@@ -102,10 +109,15 @@ const Post = React.forwardRef(({ post }, ref) => {
               <span className="date">{timeAgo(post.create_at)}</span>
             </div>
           </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {/* {menuOpen && post.user.id === currentUser.id && (
-            <button onClick={handleDelete}>delete</button>
-          )} */}
+          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" />
+          <div className="menu">
+            {menuOpen && post.user.id === currentUser.id && (
+              <>
+                <button onClick={handleDelete}>Sửa bài viết</button>
+                <button onClick={handleDelete}>Xóa bài viết</button>
+              </>
+            )}
+          </div>
         </div>
         <div className="content">
           <p>{post.title}</p>
@@ -153,12 +165,7 @@ const Post = React.forwardRef(({ post }, ref) => {
     </div>
   );
 
-  const content = ref
-    ? <article ref={ref}>{postBody}</article>
-    : <article>{postBody}</article>
-
-
-  return content
+  return !isDelete && <article>{postBody}</article>
 });
 
 export default Post;

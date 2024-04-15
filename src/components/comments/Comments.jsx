@@ -73,9 +73,6 @@ const Comments = ({ postId }) => {
 
     axiosPrivate.post(('/post-management/post/comment'), { 'id_post': postId, 'content': desc })
       .then((response) => {
-        toast.success("comment posted successfully", {
-          position: 'top-right'
-        });
         setDesc('')
         setRefecthComment(!refecthComment)
       })
