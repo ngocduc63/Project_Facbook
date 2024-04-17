@@ -13,17 +13,19 @@ import { NotifiPostContext } from "../../context/notifiPostContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { timeAgo } from "../../helps/timer";
 import socket from "../../helps/socket"
+import UpdatePost from "../update/UpdatePost";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate()
-  const [dataPost, setDataPost] = useState({});
+  const [dataPost, setDataPost] = useState(post);
   const [like, setLike] = useState(0);
   const { currentUser } = useContext(AuthContext);
   const { setData, postId } = useContext(NotifiPostContext);
   const [numComment, setNumComment] = useState(post.num_comment);
   const [isDelete, setIsDelete] = useState(false);
+  const [showPopupUpdate, setShowPopupUpdate] = useState(false);
 
   const dataRequestLike = {
     'id_post': post.id,
@@ -93,76 +95,87 @@ const Post = React.forwardRef(({ post }, ref) => {
         console.log(err);
       })
   };
+
+  const handleUpdate = () => {
+    setShowPopupUpdate(true);
+  };
+
   const postBody = (
-    <div className="post">
-      <div className="container">
-        <div className="user">
-          <div className="userInfo">
-            <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.user.avatar} alt="" />
-            <div className="details">
-              <Link
-                to={`/profile/${post.user.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <span className="name">{post.user.username}</span>
-              </Link>
-              <span className="date">{timeAgo(post.create_at)}</span>
+    <>
+      {showPopupUpdate && <UpdatePost post={post} setShowPopupUpdate={setShowPopupUpdate} setDataPost={setDataPost} dataPost={dataPost} />}
+      <div className="post">
+        <div className="container">
+          <div className="user">
+            <div className="userInfo">
+              <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.user.avatar} alt="" />
+              <div className="details">
+                <Link
+                  to={`/profile/${post.user.id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <span className="name">{post.user.username}</span>
+                </Link>
+                <span className="date">{timeAgo(post.create_at)}</span>
+              </div>
             </div>
-          </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" />
-          <div className="menu">
-            {menuOpen && post.user.id === currentUser.id && (
+            {post.user.id === currentUser.id && (
               <>
-                <button onClick={handleDelete}>Sửa bài viết</button>
-                <button onClick={handleDelete}>Xóa bài viết</button>
+                <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" />
+                {menuOpen && (
+                  <div className="menu">
+                    <>
+                      <button onClick={handleUpdate}>Sửa bài viết</button>
+                      <button onClick={handleDelete}>Xóa bài viết</button>
+                    </>
+                  </div>
+                )}
               </>
             )}
           </div>
-        </div>
-        <div className="content">
-          <p>{post.title}</p>
-          {
-            (
-              post.category === 0 && <img src={"http://127.0.0.1:5000/post-management/post/image/" + post.image} alt="" />
-            )
-          }
-          {
-            (
-              post.category === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.image} alt="" />
-            )
-          }
-          {
-            (
-              post.category === 2 && <img src={"http://127.0.0.1:5000/user-management/user/cover/" + post.image} alt="" />
-            )
-          }
-
-        </div>
-        <div className="info">
-          <div className="item">
-            {(like % 2 === 0 ? post.liked : !post.liked) ?
+          <div className="content">
+            <p>{dataPost.title ? dataPost.title : post.title}</p>
+            {
               (
-                <FavoriteOutlinedIcon
-                  style={{ color: "red" }}
-                  onClick={handleUnLike}
-                />
-              ) : (
-                <FavoriteBorderOutlinedIcon onClick={handleLike} />
-              )}
-            {dataPost.num_like ? dataPost.num_like : post?.num_like} Likes
+                post.category === 0 && <img src={"http://127.0.0.1:5000/post-management/post/image/" + (dataPost.image ?? post.image)} alt="" />
+              )
+            }
+            {
+              (
+                post.category === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + (dataPost.image ?? post.image)} alt="" />
+              )
+            }
+            {
+              (
+                post.category === 2 && <img src={"http://127.0.0.1:5000/user-management/user/cover/" + (dataPost.image ?? post.image)} alt="" />
+              )
+            }
           </div>
-          <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
-            <TextsmsOutlinedIcon />
-            {numComment} Comments
+          <div className="info">
+            <div className="item">
+              {(like % 2 === 0 ? post.liked : !post.liked) ?
+                (
+                  <FavoriteOutlinedIcon
+                    style={{ color: "red" }}
+                    onClick={handleUnLike}
+                  />
+                ) : (
+                  <FavoriteBorderOutlinedIcon onClick={handleLike} />
+                )}
+              {dataPost.num_like ? dataPost.num_like : post?.num_like} Likes
+            </div>
+            <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
+              <TextsmsOutlinedIcon />
+              {numComment} Comments
+            </div>
+            <div className="item">
+              <ShareOutlinedIcon />
+              Share
+            </div>
           </div>
-          <div className="item">
-            <ShareOutlinedIcon />
-            Share
-          </div>
+          {commentOpen && <Comments postId={post.id} />}
         </div>
-        {commentOpen && <Comments postId={post.id} />}
       </div>
-    </div>
+    </>
   );
 
   return !isDelete && <article>{postBody}</article>

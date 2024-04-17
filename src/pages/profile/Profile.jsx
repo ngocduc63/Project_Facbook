@@ -48,10 +48,20 @@ const Profile = () => {
   }
 
   const handelOpenPopupAvatar = () => {
+    if (openPopup === 1) {
+      handleClosePopups()
+      return;
+    }
+
     setOpenPopup(1)
   }
 
   const handelOpenPopupCover = () => {
+    if (openPopup === 2) {
+      handleClosePopups()
+      return;
+    }
+
     setOpenPopup(2)
   }
 
