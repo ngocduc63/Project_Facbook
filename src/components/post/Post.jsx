@@ -89,6 +89,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const handleDelete = () => {
     axiosPrivate.delete((`/post-management/post/delete/${post.id}`))
       .then(res => {
+        setMenuOpen(false);
         setIsDelete(true)
       })
       .catch(err => {
@@ -98,6 +99,7 @@ const Post = React.forwardRef(({ post }, ref) => {
 
   const handleUpdate = () => {
     setShowPopupUpdate(true);
+    setMenuOpen(false);
   };
 
   const postBody = (

@@ -2,10 +2,10 @@ import { useContext, useState, useEffect } from "react";
 import "./comments.scss";
 import { AuthContext } from "../../context/authContext";
 import Loading from "../loading/Loading";
-import { timeAgo } from '../../helps/timer';
 import useAxiosPrivate from '../../api/axiosPrivate'
 import { toast } from 'react-toastify';
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Comment from "./Comment";
 
 const Comments = ({ postId }) => {
   const [desc, setDesc] = useState("");
@@ -23,9 +23,6 @@ const Comments = ({ postId }) => {
   }, [refecthComment])
 
   useEffect(() => {
-    if (isLoading) return;
-    setIsLoading(true)
-
     const controller = new AbortController()
     const { signal } = controller
 
@@ -48,25 +45,11 @@ const Comments = ({ postId }) => {
 
     return () => controller.abort()
 
-  }, [axiosPrivate, pageNum, refecthComment])
+  }, [axiosPrivate, pageNum, refecthComment, isLoading, postId])
 
 
-  const content = results.map((comment) => {
-    return (
-      <div className="comment" key={comment.id}>
-        <div className="image">
-          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + comment.user.avatar} alt="" />
-        </div>
-        <div className="info">
-          <span>{comment.user.username}</span>
-          <p>{comment.content}</p>
-        </div>
-        <span className="date">
-          {timeAgo(comment.create_at)}
-        </span>
-      </div>
-    )
-  })
+
+  const content = results.map((comment) => <Comment comment={comment} currentUser={currentUser} key={comment.id} />)
 
   const handleComment = () => {
     if (desc.trim() === '') return;
