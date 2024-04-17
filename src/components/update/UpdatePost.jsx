@@ -14,7 +14,7 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
     }
 
     useEffect(() => {
-        setInput(dataPost.title);
+        if (dataPost) setInput(dataPost.title);
     }, [dataPost])
 
     const handelSummit = () => {
