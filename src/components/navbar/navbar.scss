@@ -25,6 +25,12 @@
                 color: themed('logo');
             }
 
+            .icon-home {
+                display: flex;
+                align-items: center;
+                color: themed('textColor');
+            }
+
             .search {
                 display: flex;
                 align-items: center;
@@ -122,6 +128,12 @@
 
             @include mobile {
                 display: none;
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                color: themed('textColor');
             }
 
             .user {

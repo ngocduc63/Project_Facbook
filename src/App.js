@@ -16,6 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Notification from './pages/notification/Notification';
 import MessagePopup from './components/message/Message';
 import React, { memo } from 'react';
+import Chat from './pages/chat/Chat';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -94,6 +95,14 @@ function App() {
                 <RedirectRoute>
                     <Register />
                 </RedirectRoute>
+            ),
+        },
+        {
+            path: '/chat',
+            element: (
+                <ProtectedRoute>
+                    <Chat />
+                </ProtectedRoute>
             ),
         },
     ]);

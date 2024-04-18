@@ -85,7 +85,7 @@ const Navbar = (props) => {
         <Link to="/" style={{ textDecoration: "none" }} onClick={handleRefecth}>
           <span>FACEBOOK</span>
         </Link>
-        <Link to="/" onClick={handleRefecth}>
+        <Link to="/" onClick={handleRefecth} className="icon-home">
           <HomeOutlinedIcon />
         </Link>
         {darkMode ? (
@@ -119,7 +119,9 @@ const Navbar = (props) => {
         </div>
       </div>
       <div className="right">
-        <ChatBubbleOutlineIcon />
+        <Link to='/chat' target="_blank" >
+          <ChatBubbleOutlineIcon />
+        </Link>
         <NotificationsOutlinedIcon />
         <Link to={`/profile/${currentUser.id}`} className="user">
           <img
