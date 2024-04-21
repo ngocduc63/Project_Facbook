@@ -82,7 +82,7 @@ const RightBar = () => {
     }
 
     return (
-      <div key={index} className="main">
+      <div className="main">
         <div className="icon-close" onClick={handelCloseDataPopupMess}><CloseIcon className="icon-close" /></div>
         <div className="image" onClick={handelShowPopupMess}>
           <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + data.friend.avatar} alt="" />
@@ -145,7 +145,7 @@ const RightBar = () => {
       <div className="mess-hiden">
         <div className="content">
           {dataHiden.map((data, index) => (
-            <IconMess data={data} index={index} />
+            <IconMess data={data} key={index} />
           )
           )}
         </div>

@@ -1,44 +1,31 @@
-import '../message/message.scss'
-import { useEffect, useState, useContext } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import useAxiosPrivate from '../../api/axiosPrivate';
+import './chatContent.scss'
+import { useContext, useEffect, useState } from 'react';
+import { MessageContext } from '../../context/messageContext'
 import { AuthContext } from '../../context/authContext';
-import { ChatContext } from '../../context/chatContext';
+import useAxiosPrivate from '../../api/axiosPrivate';
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from '../loading/Loading';
-import RemoveIcon from '@mui/icons-material/Remove';
-import socket from '../../helps/socket';
-import ContentMess from './ContentMess';
+import ContentMess from '../message/ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
+import socket from '../../helps/socket';
 
-function MessagePopup({ isShowPopupMess = false }) {
-    const axiosPrivate = useAxiosPrivate();
+function ChatContent() {
     const { currentUser } = useContext(AuthContext);
-    const { roomCurrent, setRoomCurrent, setDataHidden } = useContext(ChatContext);
+    const { currentRoom, setCurrentRoom } = useContext(MessageContext);
+    const axiosPrivate = useAxiosPrivate();
+    const [pageNum, setPageNum] = useState(1)
     const [dataMess, setDataMess] = useState([])
     const [friendRoom, setFriendRoom] = useState({})
     const [hasNextPage, setHasNextPage] = useState(false);
-    const [pageNum, setPageNum] = useState(1)
     const [sucessData, setSucessData] = useState(0);
-    const [showPopupMess, setShowPopupMess] = useState(isShowPopupMess);
 
     useEffect(() => {
-        if (roomCurrent) {
-            setShowPopupMess(true)
-            setSucessData(0)
-            setPageNum(1)
-            setDataMess([]);
-        }
-    }, [roomCurrent]);
-
-
-    useEffect(() => {
-        if (!roomCurrent) return;
+        if (!currentRoom) return;
 
         const abortController = new AbortController();
 
         axiosPrivate.post(('/chat-management/room'), {
-            "room_id": `${roomCurrent}`,
+            "room_id": `${currentRoom}`,
             "page": pageNum
         }, {
             signal: abortController.signal,
@@ -51,17 +38,20 @@ function MessagePopup({ isShowPopupMess = false }) {
                 setSucessData(1)
             })
             .catch((error) => {
-                setShowPopupMess(false);
+
             });
 
         return () => {
             abortController.abort();
         };
-    }, [axiosPrivate, pageNum, roomCurrent]);
-
+    }, [axiosPrivate, pageNum, currentRoom]);
 
     useEffect(() => {
-        if (!roomCurrent) return;
+        setDataMess([])
+    }, [currentRoom]);
+
+    useEffect(() => {
+        if (!currentRoom) return;
 
         const joinRoomNotifi = (room) => {
             if (room !== "") {
@@ -69,7 +59,7 @@ function MessagePopup({ isShowPopupMess = false }) {
             }
         };
 
-        joinRoomNotifi({ 'room': `${roomCurrent}` })
+        joinRoomNotifi({ 'room': `${currentRoom}` })
 
         const handleNotification = (data) => {
             setDataMess(prevData => [data, ...prevData]);
@@ -79,40 +69,19 @@ function MessagePopup({ isShowPopupMess = false }) {
         return () => {
             socket.off("receive_message", handleNotification);
         };
-    }, [sucessData, roomCurrent])
+    }, [currentRoom])
 
     const handelSendMessage = (inputValue) => {
         if (inputValue.trim() === '') return;
         socket.emit("send_message", {
             "sender": `${currentUser.id}`,
-            "room_id": `${roomCurrent}`,
+            "room_id": `${currentRoom}`,
             "text": inputValue.trim()
         })
     }
 
-
-    const handelClosePopupuMess = () => {
-        setRoomCurrent('')
-        setShowPopupMess(false)
-    }
-
-    const handelHidenPopupMess = () => {
-        setDataHidden(prev => {
-            const existingItemIndex = prev.findIndex(item => item.room === roomCurrent);
-            if (existingItemIndex !== -1) {
-                const existingItem = prev[existingItemIndex];
-                const updatedPrev = prev.filter((_, index) => index !== existingItemIndex);
-                return [...updatedPrev, existingItem];
-            } else {
-                return [...prev, { 'room': roomCurrent, 'friend': friendRoom }];
-            }
-        });
-        setRoomCurrent('')
-        setShowPopupMess(false)
-    }
-
     return (
-        showPopupMess && <div className="message-popup">
+        <div className="chat-content">
             <div className='header'>
                 <div className='left-content'>
                     <div className='image'>
@@ -121,10 +90,11 @@ function MessagePopup({ isShowPopupMess = false }) {
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
                 </div>
                 <div className='right-content'>
-                    <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
-                    <CloseIcon onClick={handelClosePopupuMess} className='icon' />
+                    {/* <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
+                    <CloseIcon onClick={handelClosePopupuMess} className='icon' /> */}
                 </div>
             </div>
+
             <InfiniteScroll
                 dataLength={dataMess.length}
                 inverse={true}
@@ -132,13 +102,13 @@ function MessagePopup({ isShowPopupMess = false }) {
                 hasMore={hasNextPage}
                 loader={<Loading />}
                 className="content"
-                height={320}
+                height={(window.innerHeight * 2 / 3) - 30}
             >
                 <ContentMess dataMess={dataMess} friendRoom={friendRoom} currentUser={currentUser} />
             </InfiniteScroll>
-            <InputCustom handelSendMessage={handelSendMessage} />
+            <InputCustom maxRow={3} handelSendMessage={handelSendMessage} />
         </div>
     );
 }
 
-export default MessagePopup;
+export default ChatContent;

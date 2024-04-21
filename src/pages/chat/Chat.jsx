@@ -3,27 +3,53 @@ import SearchIcon from '@mui/icons-material/Search';
 import useAxiosPrivate from '../../api/axiosPrivate';
 import { AuthContext } from '../../context/authContext';
 import { useState, useEffect, useContext } from 'react';
+import { MessageContext } from '../../context/messageContext'
+import { ChatContext } from '../../context/chatContext'
+import ChatContent from '../../components/chatContent/ChatContent';
+import Notification from '../notification/Notification';
 
 function Chat() {
   const { currentUser } = useContext(AuthContext);
+  const { currentRoom, setCurrentRoom } = useContext(MessageContext);
+  const { listRoom, setListRoom } = useContext(ChatContext);
   const axiosPrivate = useAxiosPrivate();
-  const [dataListRoom, setDataListRoom] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Message';
+
+    return () => {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
     axiosPrivate.get(('/chat-management/chat-list'), { signal })
       .then((response) => {
-        setDataListRoom(JSON.parse(response.data?.data))
+        const data = JSON.parse(response.data?.data)
+        setListRoom(data);
+        setIsLoading(true);
       })
       .catch((error) => {
         if (signal.aborted) return
       })
 
     return () => controller.abort()
-  }, [axiosPrivate]);
+  }, [axiosPrivate, setListRoom]);
 
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+  useEffect(() => {
+    if (!isLoading) return;
+
+    setCurrentRoom(listRoom[0]?._id?.room_id?.$oid);
+  }, [isLoading])
+
+
+  const handleSelect = (data) => {
+    setCurrentRoom(data?._id?.room_id?.$oid);
+  }
+
   return (
     <div className='body-chat'>
       <div className='chat-container'>
@@ -44,31 +70,25 @@ function Chat() {
             </div>
           </div>
           {
-            dataListRoom.map((data, index) => {
+            listRoom.map((data, index) => {
               const friend = data._id.username_friend.user_id === currentUser.id ? data._id.username_key : data._id.username_friend
               return (
                 <div
                   className="item"
                   key={index}
-                  // onClick={() => handleSelect(chat)}
-                  style={{
-                    // backgroundColor: '#5183fe',
-                    backgroundColor: 'tranparent',
-                  }}
+                  onClick={() => handleSelect(data)}
                 >
+                  {currentRoom === data?._id?.room_id?.$oid && <div className='bg-focus'></div>}
                   <img src={"http://localhost:5000/user-management/user/avatar/" + friend.avatar} alt="" />
                   <div className="texts">
                     <span>
-                      {/* {chat.user.blocked.includes(currentUser.id) */}
-                      {/* ? "User" */}
-                      {/* : chat.user.username} */}
                       {friend.username}
                     </span>
                     {/* <p>{chat.lastMessage}</p> */}
                     {data.last_mess.sender !== 0 &&
                       <div className='description'>
-                        <p className='sender'>{data.last_mess?.sender === friend.user_id ? friend.username : 'Bạn'}:</p>
-                        <p className='text' >{data.last_mess?.text}</p>
+                        <p className='sender'>{+data.last_mess?.sender === friend.user_id ? friend.username : 'Bạn'}: {data.last_mess?.text}</p>
+
                       </div>
                     }
                   </div>
@@ -77,7 +97,10 @@ function Chat() {
             })
           }
         </div>
-        <div className='mess-container' style={{ flex: 3 }}></div>
+        <div className='mess-container' style={{ flex: 3 }}>
+          <ChatContent />
+        </div>
+        <Notification />
       </div>
 
     </div>

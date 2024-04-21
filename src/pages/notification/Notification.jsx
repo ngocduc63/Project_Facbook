@@ -7,7 +7,7 @@ import { RefecthInviteContext } from '../../context/refecthInvite';
 
 function Notification() {
     const { currentUser } = useContext(AuthContext);
-    const { setRoomNoti } = useContext(ChatContext);
+    const { setRoomNoti, updateListRoom } = useContext(ChatContext);
     const { toggle } = useContext(RefecthInviteContext);
 
     useEffect(() => {
@@ -20,8 +20,18 @@ function Notification() {
         joinRoomNotifi({ user_id: currentUser.id })
 
         const showNotifications = (data, toggle) => {
-            if (data.hasOwnProperty('room')) {
-                setRoomNoti(data)
+            try {
+                data = JSON.parse(data);
+            }
+            catch (err) {
+            }
+
+            if (data.hasOwnProperty('_id')) {
+                if (+data?.last_mess?.sender !== currentUser?.id) {
+                    const friend = data?._id?.username_key?.user_id === currentUser.id ? data._id.username_friend : data._id.username_key;
+                    setRoomNoti(data, friend);
+                }
+                updateListRoom(data)
                 return;
             }
 

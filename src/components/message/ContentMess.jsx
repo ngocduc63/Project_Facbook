@@ -18,8 +18,8 @@ function CotentMess({ dataMess, friendRoom, currentUser }) {
         return (
             <>
                 {
-                    data.map((data) => {
-                        return <div key={data.created_at}>{loadMess(data.text)}</div>
+                    data.map((data, index) => {
+                        return <div key={index}>{loadMess(data.text)}</div>
                     })
                 }
             </>
@@ -34,8 +34,8 @@ function CotentMess({ dataMess, friendRoom, currentUser }) {
                 </div>
                 <div className='friend-chat'>
                     {
-                        data.map((data) => {
-                            return <div key={data.created_at}>{loadMess(data.text)}</div>
+                        data.map((data, index) => {
+                            return <div key={index}>{loadMess(data.text)}</div>
                         })
                     }
                 </div>
