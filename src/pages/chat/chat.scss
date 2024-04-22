@@ -22,6 +22,7 @@
             flex: 1.4;
             overflow-y: scroll;
             border-right: 1px solid #dddddd35;
+            overflow-x: hidden;
 
             header {
                 display: flex;
@@ -118,6 +119,7 @@
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
+                    width: 98%;
 
                     span {
                         font-weight: 500;
@@ -133,7 +135,7 @@
                             font-size: 14px;
                             white-space: nowrap;
                             display: inline-block;
-                            max-width: 100%;
+                            max-width: 80%;
                             overflow: hidden;
                             text-overflow: ellipsis;
                         }

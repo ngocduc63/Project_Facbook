@@ -11,7 +11,7 @@ import socket from '../../helps/socket';
 
 function ChatContent() {
     const { currentUser } = useContext(AuthContext);
-    const { currentRoom, setCurrentRoom } = useContext(MessageContext);
+    const { currentRoom, isChangeRoom, setIsChangeRoom } = useContext(MessageContext);
     const axiosPrivate = useAxiosPrivate();
     const [pageNum, setPageNum] = useState(1)
     const [dataMess, setDataMess] = useState([])
@@ -20,7 +20,14 @@ function ChatContent() {
     const [sucessData, setSucessData] = useState(0);
 
     useEffect(() => {
+        setDataMess([])
+        setSucessData(0)
+    }, [currentRoom]);
+
+    useEffect(() => {
         if (!currentRoom) return;
+        if (isChangeRoom)
+            setPageNum(1);
 
         const abortController = new AbortController();
 
@@ -36,6 +43,7 @@ function ChatContent() {
                 setFriendRoom(data.data.friend)
                 setHasNextPage(pageNum <= data.data.maxPage - 1);
                 setSucessData(1)
+                setIsChangeRoom(false)
             })
             .catch((error) => {
 
@@ -45,10 +53,6 @@ function ChatContent() {
             abortController.abort();
         };
     }, [axiosPrivate, pageNum, currentRoom]);
-
-    useEffect(() => {
-        setDataMess([])
-    }, [currentRoom]);
 
     useEffect(() => {
         if (!currentRoom) return;
@@ -84,6 +88,7 @@ function ChatContent() {
         <div className="chat-content">
             <div className='header'>
                 <div className='left-content'>
+                    {sucessData === 0 && <Loading />}
                     <div className='image'>
                         {sucessData === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />}
                     </div>
