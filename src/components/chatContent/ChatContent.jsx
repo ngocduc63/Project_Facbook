@@ -9,31 +9,36 @@ import ContentMess from '../message/ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
 import socket from '../../helps/socket';
 
-function ChatContent() {
+function ChatContent({ currentRoom }) {
     const { currentUser } = useContext(AuthContext);
-    const { currentRoom, isChangeRoom, setIsChangeRoom } = useContext(MessageContext);
     const axiosPrivate = useAxiosPrivate();
     const [pageNum, setPageNum] = useState(1)
     const [dataMess, setDataMess] = useState([])
     const [friendRoom, setFriendRoom] = useState({})
     const [hasNextPage, setHasNextPage] = useState(false);
     const [sucessData, setSucessData] = useState(0);
+    const [roomChange, setRoomChange] = useState(false);
 
     useEffect(() => {
+        if (!currentRoom) return;
+
         setDataMess([])
         setSucessData(0)
+        setPageNum(1)
+        setRoomChange(true)
     }, [currentRoom]);
 
     useEffect(() => {
         if (!currentRoom) return;
-        if (isChangeRoom)
-            setPageNum(1);
+
+        let page = pageNum;
+        if (roomChange) page = 1;
 
         const abortController = new AbortController();
 
         axiosPrivate.post(('/chat-management/room'), {
             "room_id": `${currentRoom}`,
-            "page": pageNum
+            "page": page,
         }, {
             signal: abortController.signal,
         })
@@ -42,8 +47,8 @@ function ChatContent() {
                 setDataMess(prev => [...prev, ...data.data.datas]);
                 setFriendRoom(data.data.friend)
                 setHasNextPage(pageNum <= data.data.maxPage - 1);
-                setSucessData(1)
-                setIsChangeRoom(false)
+                setSucessData(1);
+                setRoomChange(false);
             })
             .catch((error) => {
 

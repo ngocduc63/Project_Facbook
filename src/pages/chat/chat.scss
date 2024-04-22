@@ -71,11 +71,6 @@
                         color: white;
                         flex: 1;
                     }
-
-                    img {
-                        width: 20px;
-                        height: 20px;
-                    }
                 }
 
                 .add {
@@ -88,56 +83,83 @@
                 }
             }
 
-            .item {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                padding: 20px;
-                cursor: pointer;
-                border-bottom: 1px solid #dddddd35;
-                position: relative;
+            .list-room::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                border-radius: 10px;
+                background-color: #f5f5f5;
+            }
 
-                .bg-focus {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    width: calc(100% - 20px);
-                    height: calc(100% - 20px);
-                    background: #3578e5;
-                    z-index: -1;
-                    border-radius: 12px;
-                }
+            .list-room::-webkit-scrollbar {
+                width: 5px;
+                background-color: #f5f5f5;
+            }
 
-                img {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
+            .list-room::-webkit-scrollbar-thumb {
+                border-radius: 2px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                background-color: #999;
+            }
 
-                .texts {
+            .list-room {
+                width: 100%;
+                overflow-x: hidden !important;
+
+                .item {
                     display: flex;
-                    flex-direction: column;
+                    align-items: center;
                     gap: 10px;
-                    width: 98%;
+                    padding: 18px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #dddddd35;
+                    position: relative;
 
-                    span {
-                        font-weight: 500;
+                    .bg-focus {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        width: calc(100% - 20px);
+                        height: calc(100% - 20px);
+                        background: #3578e5;
+                        z-index: -1;
+                        border-radius: 12px;
                     }
 
-                    .description {
-                        display: flex;
-                        column-gap: 5px;
-                        align-items: center;
-                        width: 100%;
+                    .image {
+                        width: 50px;
+                        height: 50px;
 
-                        .sender {
-                            font-size: 14px;
-                            white-space: nowrap;
-                            display: inline-block;
-                            max-width: 80%;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                            object-fit: cover;
+                        }
+                    }
+
+                    .texts {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        width: calc(100% - 70px);
+
+                        span {
+                            font-weight: 500;
+                        }
+
+                        .description {
+                            display: flex;
+                            column-gap: 5px;
+                            align-items: center;
+                            width: calc(100% + 40px);
+
+                            .sender {
+                                font-size: 14px;
+                                white-space: nowrap;
+                                display: inline-block;
+                                max-width: 80%;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
                         }
                     }
                 }
