@@ -162,6 +162,13 @@
                             }
                         }
                     }
+
+                    .icon-watched {
+                        position: absolute;
+                        right: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
                 }
             }
         }

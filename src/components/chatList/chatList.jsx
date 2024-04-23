@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/authContext';
 import Loading from '../../components/loading/Loading';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { MessageContext } from '../../context/messageContext';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     const { currentUser } = useContext(AuthContext);
@@ -40,38 +41,60 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
         return () => controller.abort()
     }, [axiosPrivate, setListRoom, pageNum]);
 
+    const handelClickRoomChat = (data) => {
+        // set watched chat room
+        const roomCurrent = listRoom.find((room) => room._id?.room_id?.$oid === data._id?.room_id?.$oid);
+
+        if (roomCurrent) {
+            const index = listRoom.indexOf(roomCurrent);
+            if (index > -1) {
+                const listRoomNew = [...listRoom];
+                listRoomNew[index].last_mess.watched = 1;
+                setListRoom(listRoomNew);
+            }
+        }
+
+        handleSelectRoomChat(data)
+    }
 
     const content = listRoom.map((data, index) => {
-        const friend = data._id.username_friend.user_id === currentUser.id ? data._id.username_key : data._id.username_friend
+        const friend = data._id.username_friend.user_id === currentUser.id ? data._id.username_key : data._id.username_friend;
+        const watched = +data?.last_mess?.sender !== currentUser.id && data?.last_mess?.watched === 0;
         return (
             <div
                 className="item"
                 key={index}
-                onClick={() => handleSelectRoomChat(data)}
+                onClick={() => handelClickRoomChat(data)}
             >
                 {currentRoom === data?._id?.room_id?.$oid && <div className='bg-focus'></div>}
                 <div className='image'>
                     <img src={"http://localhost:5000/user-management/user/avatar/" + friend.avatar} alt="" />
                 </div>
                 <div className="texts">
-                    <span>
+                    <span style={{ fontWeight: watched && 700 }}>
                         {friend.username}
                     </span>
                     {/* <p>{chat.lastMessage}</p> */}
                     {data.last_mess.sender !== 0 &&
-                        <div className='description'>
+                        <div className='description' style={{ fontWeight: watched && 600 }}>
                             <p className='sender'>{+data.last_mess?.sender === friend.user_id ? friend.username : 'Bạn'}: {data.last_mess?.text}</p>
-
                         </div>
                     }
                 </div>
+                {watched &&
+                    (
+                        <div className='icon-watched'>
+                            <FiberManualRecordIcon style={{ color: '#0084ff' }} />
+                        </div>
+                    )
+                }
             </div>
         )
     })
 
     return (
         <>
-            {!isLoading && isChatPage && <Loading />}
+            {!isLoading && <Loading />}
             <InfiniteScroll
                 dataLength={listRoom.length}
                 next={() => setPageNum(pageNum + 1)}

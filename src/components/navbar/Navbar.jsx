@@ -8,7 +8,7 @@ import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useCallback } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
@@ -17,6 +17,7 @@ import Loading from "../../components/loading/Loading";
 import ChatList from "../chatList/chatList";
 import { ChatContext } from "../../context/chatContext";
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
+import { debounce } from 'lodash';
 
 const Navbar = (props) => {
   const axiosPrivate = useAxiosPrivate();
@@ -51,22 +52,11 @@ const Navbar = (props) => {
     if (e.keyCode === 13) {
       handelResetSearch();
     }
-
   }
 
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  };
+  const debounceSearch = useCallback(debounce((nextValue) => fetchUser(nextValue), 300), [])// eslint-disable-line react-hooks/exhaustive-deps
 
-  const debounceSearch = debounce((input) => {
+  const fetchUser = debounce((input) => {
     axiosPrivate.get(`/user-management/user/find/${input}`)
       .then(res => {
         setResultSearch(res.data.data)
@@ -78,7 +68,7 @@ const Navbar = (props) => {
       });
 
     setIsLoading(false)
-  }, 200)
+  }, 1000)
 
   const handelLogout = () => {
     setTokenAndUser(null, null)
