@@ -14,6 +14,9 @@ import { AuthContext } from "../../context/authContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { toast } from 'react-toastify';
 import Loading from "../../components/loading/Loading";
+import ChatList from "../chatList/chatList";
+import { ChatContext } from "../../context/chatContext";
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 
 const Navbar = (props) => {
   const axiosPrivate = useAxiosPrivate();
@@ -23,6 +26,8 @@ const Navbar = (props) => {
   const [resultSearch, setResultSearch] = useState([]);
   const { currentUser, setTokenAndUser } = useContext(AuthContext);
   const { isRefecth, setIsRefecth } = props;
+  const [showPopupChatList, setShowPopupChatList] = useState(false);
+  const { setRoomCurrent } = useContext(ChatContext);
 
   const handleRefecth = () => {
     setIsRefecth(!isRefecth);
@@ -79,6 +84,19 @@ const Navbar = (props) => {
     setTokenAndUser(null, null)
   }
 
+  const handelShowPopupChatList = () => {
+    setShowPopupChatList(!showPopupChatList)
+  }
+
+  const handelSelectRoomChat = (data) => {
+    setShowPopupChatList(false)
+    setRoomCurrent(data?._id?.room_id?.$oid)
+  }
+
+  const handelOpenChatPage = (e) => {
+    window.open('/chat', '_blank');
+  }
+
   return (
     <div className="navbar">
       <div className="left">
@@ -119,9 +137,18 @@ const Navbar = (props) => {
         </div>
       </div>
       <div className="right">
-        <Link to='/chat' target="_blank" >
-          <ChatBubbleOutlineIcon />
-        </Link>
+        <div className="icon-chat">
+          <ChatBubbleOutlineIcon style={{ cursor: 'pointer' }} onClick={handelShowPopupChatList} />
+          {showPopupChatList && (
+            <div className="content-chat-list">
+              <header>
+                <span>Đoạn chat</span>
+                <ZoomOutMapIcon style={{ cursor: 'pointer' }} onClick={handelOpenChatPage} />
+              </header>
+              <ChatList handleSelectRoomChat={handelSelectRoomChat} />
+            </div>
+          )}
+        </div>
         <NotificationsOutlinedIcon />
         <Link to={`/profile/${currentUser.id}`} className="user">
           <img
