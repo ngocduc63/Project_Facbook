@@ -115,6 +115,7 @@ function MessagePopup({ isShowPopupMess = false }) {
         showPopupMess && <div className="message-popup">
             <div className='header'>
                 <div className='left-content'>
+                    {sucessData === 0 && <Loading />}
                     <div className='image'>
                         {sucessData === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />}
                     </div>

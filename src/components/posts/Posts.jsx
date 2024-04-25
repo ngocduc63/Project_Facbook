@@ -17,7 +17,7 @@ const Posts = ({ userId, isRefecth }) => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
     setResults([])
-  }, [isRefecth])
+  }, [isRefecth, userId])
 
   useEffect(() => {
     setIsLoading(true);

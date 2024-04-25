@@ -14,6 +14,8 @@ import useAxiosPrivate from "../../api/axiosPrivate";
 import { timeAgo } from "../../helps/timer";
 import socket from "../../helps/socket"
 import UpdatePost from "../update/UpdatePost";
+import Loading from "../loading/Loading";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -26,6 +28,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [numComment, setNumComment] = useState(post.num_comment);
   const [isDelete, setIsDelete] = useState(false);
   const [showPopupUpdate, setShowPopupUpdate] = useState(false);
+  const [showPopupLikes, setShowPopupLikes] = useState(false);
 
   const dataRequestLike = {
     'id_post': post.id,
@@ -102,6 +105,67 @@ const Post = React.forwardRef(({ post }, ref) => {
     setMenuOpen(false);
   };
 
+  const handelShowPopupLikes = () => {
+    setShowPopupLikes(!showPopupLikes)
+  }
+
+  const ContentListLikes = ({ postId }) => {
+    const [hasNextPage, setHasNextPage] = useState(false);
+    const [pageNum, setPageNum] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const [dataLikes, setDataLikes] = useState([])
+
+    useEffect(() => {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      axiosPrivate.post(('/post-management/post/likes'),
+        {
+          'post_id': postId,
+          'page': pageNum
+        }, { signal })
+        .then((response) => {
+          const data = response.data;
+
+          setDataLikes((prev) => [...prev, ...data.data.datas]);
+          setHasNextPage(pageNum <= data.data.maxPage - 1);
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          if (signal.aborted) return;
+        });
+
+      return () => controller.abort();
+    }, [postId, pageNum]);
+
+    const content = dataLikes.map((like) => {
+      return (
+        <Link className="item-like" key={like.id} to={`/profile/${like.user.id}`}>
+          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + like.user.avatar} alt="" />
+          <div className="details">
+            <span className="name">{like.user.username}</span>
+          </div>
+        </Link>
+      )
+    })
+
+    return (
+      <>
+        {isLoading && <Loading />}
+        <InfiniteScroll
+          dataLength={dataLikes.length}
+          next={() => setPageNum(pageNum + 1)}
+          hasMore={hasNextPage}
+          loader={<Loading />}
+          className="popup-likes"
+          height={350}
+        >
+          {content}
+        </InfiniteScroll>
+      </>
+    )
+  }
+
   const postBody = (
     <>
       {showPopupUpdate && <UpdatePost post={post} setShowPopupUpdate={setShowPopupUpdate} setDataPost={setDataPost} dataPost={dataPost} />}
@@ -163,7 +227,10 @@ const Post = React.forwardRef(({ post }, ref) => {
                 ) : (
                   <FavoriteBorderOutlinedIcon onClick={handleLike} />
                 )}
-              {dataPost.num_like ? dataPost.num_like : post?.num_like} Likes
+              <span onClick={handelShowPopupLikes}>{dataPost.num_like ? dataPost.num_like : post?.num_like} Likes</span>
+              {showPopupLikes && (
+                <ContentListLikes postId={post.id} />
+              )}
             </div>
             <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
               <TextsmsOutlinedIcon />
