@@ -35,6 +35,7 @@ function Notification() {
                 return;
             }
 
+            if (data?.created_by?.id === currentUser?.id) return;
             toast.info(data?.description, {
                 position: "top-right",
                 onOpen: () => {
