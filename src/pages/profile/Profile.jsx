@@ -157,6 +157,9 @@ const Profile = () => {
                 {data.description && <span className="description">{data.description}</span>}
                 <div className="info">
                   <div className="item">
+                    <span>Bạn bè: {data.num_friend}</span>
+                  </div>
+                  <div className="item">
                     <span>Ngày sinh:</span>
                     <span>{convertToDate(data.birth_date)}</span>
                   </div>
