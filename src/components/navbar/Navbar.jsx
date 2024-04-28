@@ -18,8 +18,10 @@ import ChatList from "../chatList/chatList";
 import { ChatContext } from "../../context/chatContext";
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { debounce } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = (props) => {
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { toggle, darkMode } = useContext(DarkModeContext);
   const [inputSearch, setInputSearch] = useState('');
@@ -50,6 +52,7 @@ const Navbar = (props) => {
 
   const handelSearch = (e) => {
     if (e.keyCode === 13) {
+      navigate(`search/${inputSearch}`)
       handelResetSearch();
     }
   }

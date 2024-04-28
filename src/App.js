@@ -17,6 +17,7 @@ import Notification from './pages/notification/Notification';
 import MessagePopup from './components/message/Message';
 import React, { memo } from 'react';
 import Chat from './pages/chat/Chat';
+import Search from './components/search/Search';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -78,6 +79,10 @@ function App() {
                 {
                     path: '/profile/:id',
                     element: <Profile />,
+                },
+                {
+                    path: '/search/:username',
+                    element: <Search />,
                 },
             ],
         },
