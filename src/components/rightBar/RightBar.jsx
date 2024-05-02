@@ -127,10 +127,11 @@ const RightBar = () => {
             )}
           </div>
 
-          <div className="item">
+          {/* online friend */}
+          {/* <div className="item">
             <span>Online Friends</span>
             <div className="user">
-              {/* <div className="userInfo">
+              <div className="userInfo">
                 <img
                   src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
                   alt=""
@@ -146,10 +147,10 @@ const RightBar = () => {
                   alt=""
                 />
                 <div className="online" />
-                <span>User</span> */}
-              {/* </div> */}
+                <span>User</span>
+              </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="mess-hiden">
           <div className="content">

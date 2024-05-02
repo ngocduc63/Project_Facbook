@@ -16,6 +16,7 @@ import Loading from "../../components/loading/Loading";
 import { convertToDate } from "../../helps/timer";
 import { toast } from 'react-toastify';
 import { ChatContext } from "../../context/chatContext";
+import useLogout from '../../api/logout'
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -26,6 +27,8 @@ const Profile = () => {
   const [showPopupUnfriend, setShowPopupUnfriend] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const { setRoomCurrent } = useContext(ChatContext);
+  const logout = useLogout();
+
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
@@ -39,8 +42,14 @@ const Profile = () => {
     refetch();
   }, [userId, isRefetch, refetch]);
 
-  const handelLogout = () => {
-    setTokenAndUser(null, null)
+  const handelLogout = async () => {
+    const isSuccess = await logout();
+
+    if (isSuccess) {
+      toast.success('Đăng xuất thành công', { position: 'top-right' })
+    } else {
+      toast.error('Đăng xuất thất bại', { position: 'top-right' })
+    }
   }
 
   const handelUpdateProfile = () => {

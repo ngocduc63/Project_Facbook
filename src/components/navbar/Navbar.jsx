@@ -19,8 +19,10 @@ import { ChatContext } from "../../context/chatContext";
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import useLogout from '../../api/logout'
 
 const Navbar = (props) => {
+  const logout = useLogout();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { toggle, darkMode } = useContext(DarkModeContext);
@@ -73,8 +75,14 @@ const Navbar = (props) => {
     setIsLoading(false)
   }, 1000)
 
-  const handelLogout = () => {
-    setTokenAndUser(null, null)
+  const handelLogout = async () => {
+    const isSuccess = await logout();
+
+    if (isSuccess) {
+      toast.success('Đăng xuất thành công', { position: 'top-right' })
+    } else {
+      toast.error('Đăng xuất thất bại', { position: 'top-right' })
+    }
   }
 
   const handelShowPopupChatList = () => {

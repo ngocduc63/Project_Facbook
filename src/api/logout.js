@@ -1,8 +1,9 @@
+import { useContext } from 'react';
 import axios from '../axios';
-import useLogout from './logout';
+import { AuthContext } from '../context/authContext';
 
-const useRefreshToken = () => {
-    const logout = useLogout();
+const useLogout = () => {
+    const { setTokenAndUser } = useContext(AuthContext);
     const storedToken = localStorage.getItem('token') || null;
     let refreshToken = '';
     if (storedToken && storedToken !== 'undefined' && storedToken !== 'null' && storedToken.length > 0) {
@@ -11,9 +12,9 @@ const useRefreshToken = () => {
         refreshToken = token.refresh_token;
     }
 
-    const refresh = async () => {
+    const logout = async () => {
         const response = await axios.post(
-            '/user-management/user/refresh',
+            '/user-management/user/logout',
             {},
             {
                 withCredentials: true,
@@ -23,15 +24,14 @@ const useRefreshToken = () => {
             },
         );
 
-        if (response.status === 401) {
-            const isSuccess = await logout();
-            if (isSuccess) return;
-            else return refresh;
+        if (response.status === 200) {
+            setTokenAndUser(null, null);
+            return true;
+        } else if (response.status === 400) {
+            return false;
         }
-
-        return response.data.data.access_token;
     };
-    return refresh;
+    return logout;
 };
 
-export default useRefreshToken;
+export default useLogout;
