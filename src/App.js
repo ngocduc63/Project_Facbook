@@ -35,7 +35,7 @@ function App() {
                     <Navbar isRefecth={isRefecth} setIsRefecth={setIsRefecth} />
                     <div style={{ display: 'flex' }}>
                         <LeftBar />
-                        <div style={{ flex: 7 }}>
+                        <div style={{ flex: 7, maxWidth: '620px' }}>
                             <Outlet />
                         </div>
                         <RightBar />

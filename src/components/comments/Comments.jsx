@@ -6,9 +6,9 @@ import useAxiosPrivate from '../../api/axiosPrivate'
 import { toast } from 'react-toastify';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Comment from "./Comment";
+import InputCustom from '../inputCustom/InputCustom'
 
 const Comments = ({ postId }) => {
-  const [desc, setDesc] = useState("");
   const { currentUser } = useContext(AuthContext);
   const axiosPrivate = useAxiosPrivate();
   const [results, setResults] = useState([]);
@@ -51,12 +51,11 @@ const Comments = ({ postId }) => {
 
   const content = results.map((comment) => <Comment comment={comment} currentUser={currentUser} key={comment.id} />)
 
-  const handleComment = () => {
+  const handleComment = (desc) => {
     if (desc.trim() === '') return;
 
     axiosPrivate.post(('/post-management/post/comment'), { 'id_post': postId, 'content': desc })
       .then((response) => {
-        setDesc('')
         setRefecthComment(!refecthComment)
       })
       .catch((err) => {
@@ -70,13 +69,7 @@ const Comments = ({ postId }) => {
     <div className="comments">
       <div className="write">
         <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
-        <input
-          type="text"
-          placeholder="write a comment"
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-        />
-        <button onClick={handleComment}>Bình luận</button>
+        <InputCustom handelSendMessage={handleComment} />
       </div>
       <div className="list-comment">
         <InfiniteScroll

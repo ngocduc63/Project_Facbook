@@ -115,7 +115,7 @@ function MessagePopup({ isShowPopupMess = false }) {
         showPopupMess && <div className="message-popup">
             <div className='header'>
                 <div className='left-content'>
-                    {sucessData === 0 && <Loading />}
+                    {sucessData === 0 && <Loading size={30} />}
                     <div className='image'>
                         {sucessData === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />}
                     </div>
@@ -131,7 +131,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 inverse={true}
                 next={() => setPageNum(pageNum + 1)}
                 hasMore={hasNextPage}
-                loader={<Loading />}
+                loader={<Loading size={30} />}
                 className="content"
                 height={320}
             >

@@ -99,10 +99,6 @@
                     font-size: 15px;
                     line-height: 20px;
                     border-radius: 16px;
-                    p {
-                        word-wrap: break-word;
-                        white-space: pre-line;
-                    }
                 }
             }
             .content-friend {
@@ -134,41 +130,8 @@
                         font-size: 15px;
                         line-height: 20px;
                         border-radius: 16px;
-                        p {
-                            word-wrap: break-word;
-                            white-space: pre-line;
-                        }
                     }
                 }
-            }
-        }
-
-        .input-mess {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding-top: 10px;
-            textarea {
-                width: 70%;
-                border: none;
-                outline: none;
-                padding: 10px 16px;
-                background-color: themed('border');
-                border-radius: 20px;
-                max-height: 80px;
-                resize: none;
-                font-size: 14px;
-                color: themed('textColor');
-            }
-            .send-icon {
-                text-align: center;
-                padding: 4px 6px;
-                color: themed('primary');
-            }
-            .send-icon:hover {
-                cursor: pointer;
-                background-color: themed('border');
-                border-radius: 50%;
             }
         }
     }

@@ -4,20 +4,22 @@ import useAxiosPrivate from '../../api/axiosPrivate'
 import { useEffect, useRef, useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
 import { toast } from "react-toastify";
+import SpanCustom from '../spanCustom/spanCustom'
+import InputCustom from "../inputCustom/InputCustom";
+import Loading from "../loading/Loading";
 
 function Comment({ comment, currentUser }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const [showUpdateComment, setUpdateComment] = useState(false);
-    const [inputComment, setInputComment] = useState(comment.content);
     const [content, setContent] = useState(comment.content);
     const [isDelete, setIsDelete] = useState(false);
     const inputRef = useRef();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!showUpdateComment) return;
         inputRef.current.focus();
-        if (content) setInputComment(content)
 
     }, [showUpdateComment, content]);
 
@@ -44,25 +46,18 @@ function Comment({ comment, currentUser }) {
 
     };
 
-    const handleSummit = () => {
-        axiosPrivate.put(('/post-management/post/update-comment'), { 'id_comment': comment.id, 'content': inputComment })
+    const handleSummit = (inputValue) => {
+        setIsLoading(true);
+        axiosPrivate.put(('/post-management/post/update-comment'), { 'id_comment': comment.id, 'content': inputValue })
             .then(res => {
-                setContent(res.data.data.content)
-                handelCloseUpdate()
-                toast.success('Chỉnh sửa bình luận thành công', {
-                    position: 'top-right',
-                })
+                setContent(res.data.data.content);
+                handelCloseUpdate();
+                setIsLoading(false);
             })
             .catch(err => {
                 console.log(err);
+                setIsLoading(false);
             })
-    }
-
-    const handelSummitWithKeyDown = (e) => {
-        if (e.keyCode === 13) {
-            e.preventDefault();
-            handleSummit()
-        }
     }
 
     return (!isDelete &&
@@ -72,14 +67,17 @@ function Comment({ comment, currentUser }) {
             </div>
             <div className="info">
                 <span>{comment.user.username}</span>
-                {!showUpdateComment && <p>{content ? content : comment.content}</p>}
+                {!showUpdateComment && <SpanCustom data={content} />}
                 {showUpdateComment &&
                     <>
-                        <div className="form-update">
-                            <input type="text" value={inputComment} ref={inputRef} onChange={(e) => setInputComment(e.target.value)} onKeyDown={handelSummitWithKeyDown} />
-                            <SendIcon className='send-icon' onClick={handleSummit} />
-                        </div>
-                        <span className="btn-cancel" onClick={handelCloseUpdate}>Hủy</span>
+                        {isLoading ? <Loading size={20} /> :
+                            <>
+                                <div className="form-update">
+                                    <InputCustom handelSendMessage={handleSummit} inputRef={inputRef} defaultValue={content} />
+                                </div>
+                                <span className="btn-cancel" onClick={handelCloseUpdate}>Hủy</span>
+                            </>
+                        }
                     </>
                 }
             </div>

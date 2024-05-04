@@ -1,6 +1,5 @@
 import './chatContent.scss'
 import { useContext, useEffect, useState } from 'react';
-import { MessageContext } from '../../context/messageContext'
 import { AuthContext } from '../../context/authContext';
 import useAxiosPrivate from '../../api/axiosPrivate';
 import InfiniteScroll from "react-infinite-scroll-component";

@@ -1,25 +1,13 @@
 import { memo } from 'react';
+import SpanCustom from '../spanCustom/spanCustom';
 
 function CotentMess({ dataMess, friendRoom, currentUser }) {
-    const loadMess = (data) => {
-        if (data.includes('\n')) {
-            const lines = data.split('\n');
-            return (
-                lines.map((line, index) => (
-                    <p key={index}>{line}</p>
-                ))
-            );
-        } else {
-            return <p>{data}</p>
-        }
-    }
-
     const content_user = (data) => {
         return (
             <>
                 {
                     data.map((data, index) => {
-                        return <div key={index}>{loadMess(data.text)}</div>
+                        return <div key={index}><SpanCustom data={data.text} colorCustom={'#fff'} /></div>
                     })
                 }
             </>
@@ -35,7 +23,7 @@ function CotentMess({ dataMess, friendRoom, currentUser }) {
                 <div className='friend-chat'>
                     {
                         data.map((data, index) => {
-                            return <div key={index}>{loadMess(data.text)}</div>
+                            return <div key={index}><SpanCustom data={data.text} /></div>
                         })
                     }
                 </div>

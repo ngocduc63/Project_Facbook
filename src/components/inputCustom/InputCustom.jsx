@@ -1,10 +1,15 @@
+import './inputCustom.scss';
 import SendIcon from '@mui/icons-material/Send';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function InputCustom({ handelSendMessage, maxRow = 5 }) {
+function InputCustom({ handelSendMessage, maxRow = 5, inputRef = null, defaultValue = '' }) {
     const maxRows = maxRow;
     const [inputValue, setInputValue] = useState('');
     const [textareaHeight, setTextareaHeight] = useState(22);
+
+    useEffect(() => {
+        if (defaultValue) setInputValue(defaultValue);
+    }, [defaultValue]);
 
     const handleKeyDown = (event) => {
         if (event.keyCode === 13 && event.shiftKey) {
@@ -40,6 +45,7 @@ function InputCustom({ handelSendMessage, maxRow = 5 }) {
     return (
         <div className='input-mess'>
             <textarea
+                ref={inputRef}
                 value={inputValue}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}

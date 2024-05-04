@@ -24,6 +24,10 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     }, [isLoading, isChatPage])
 
     useEffect(() => {
+        return () => setListRoom([]);
+    }, [setListRoom]);
+
+    useEffect(() => {
         const controller = new AbortController()
         const { signal } = controller
 
@@ -94,7 +98,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
 
     return (
         <>
-            {!isLoading && <Loading />}
+            {!isLoading && <Loading size={35} />}
             <InfiniteScroll
                 dataLength={listRoom.length}
                 next={() => setPageNum(pageNum + 1)}
