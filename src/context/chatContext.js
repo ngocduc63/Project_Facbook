@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 export const ChatContext = createContext();
 
@@ -6,6 +6,22 @@ export const ChatContextProvider = ({ children }) => {
     const [roomCurrent, setRoomCurrent] = useState('');
     const [dataHiden, setDataHidden] = useState([]);
     const [listRoom, setListRoom] = useState([]);
+    const [isFirstLogin, setIsFirstLogin] = useState(false);
+
+    useEffect(() => {
+        if (dataHiden && dataHiden.length > 0) {
+            sessionStorage.setItem('listRoomMini', JSON.stringify(dataHiden));
+        } else {
+            if (isFirstLogin) return;
+            try {
+                const dataHiden = sessionStorage.getItem('listRoomMini');
+                if (dataHiden) setDataHidden(JSON.parse(dataHiden));
+                setIsFirstLogin(true);
+            } catch (e) {
+                return;
+            }
+        }
+    }, [dataHiden]);
 
     const setRoomNoti = (data, friend = {}) => {
         if (roomCurrent) {
