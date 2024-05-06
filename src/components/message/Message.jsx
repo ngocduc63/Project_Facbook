@@ -1,17 +1,19 @@
 import '../message/message.scss'
 import { useEffect, useState, useContext } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import useAxiosPrivate from '../../api/axiosPrivate';
 import { AuthContext } from '../../context/authContext';
 import { ChatContext } from '../../context/chatContext';
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from '../loading/Loading';
 import RemoveIcon from '@mui/icons-material/Remove';
-import socket from '../../helps/socket';
 import ContentMess from './ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
+import { SocketContext } from '../../context/socketContext';
 
 function MessagePopup({ isShowPopupMess = false }) {
+    const { socketio } = useContext(SocketContext)
     const axiosPrivate = useAxiosPrivate();
     const { currentUser } = useContext(AuthContext);
     const { roomCurrent, setRoomCurrent, setDataHidden } = useContext(ChatContext);
@@ -65,7 +67,7 @@ function MessagePopup({ isShowPopupMess = false }) {
 
         const joinRoomNotifi = (room) => {
             if (room !== "") {
-                socket.emit("join_room", room);
+                socketio.emit("join_room", room);
             }
         };
 
@@ -74,16 +76,16 @@ function MessagePopup({ isShowPopupMess = false }) {
         const handleNotification = (data) => {
             setDataMess(prevData => [data, ...prevData]);
         };
-        socket.on("receive_message", handleNotification);
+        socketio.on("receive_message", handleNotification);
 
         return () => {
-            socket.off("receive_message", handleNotification);
+            socketio.off("receive_message", handleNotification);
         };
     }, [sucessData, roomCurrent])
 
     const handelSendMessage = (inputValue) => {
         if (inputValue.trim() === '') return;
-        socket.emit("send_message", {
+        socketio.emit("send_message", {
             "sender": `${currentUser.id}`,
             "room_id": `${roomCurrent}`,
             "text": inputValue.trim()
@@ -111,6 +113,10 @@ function MessagePopup({ isShowPopupMess = false }) {
         setShowPopupMess(false)
     }
 
+    const handelCall = () => {
+        window.open(`call/${roomCurrent}`, '_blank');
+    }
+
     return (
         showPopupMess && <div className="message-popup">
             <div className='header'>
@@ -122,6 +128,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
                 </div>
                 <div className='right-content'>
+                    <VideocamIcon className='icon' onClick={handelCall} />
                     <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
                     <CloseIcon onClick={handelClosePopupuMess} className='icon' />
                 </div>

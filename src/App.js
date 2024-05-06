@@ -18,6 +18,7 @@ import MessagePopup from './components/message/Message';
 import React, { memo } from 'react';
 import Chat from './pages/chat/Chat';
 import Search from './components/search/Search';
+import Call from './pages/call/Call';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -35,7 +36,7 @@ function App() {
                     <Navbar isRefecth={isRefecth} setIsRefecth={setIsRefecth} />
                     <div style={{ display: 'flex' }}>
                         <LeftBar />
-                        <div style={{ flex: 7, maxWidth: '620px' }}>
+                        <div style={{ display: 'flex', flex: 7, backgroundColor: '#f6f3f3', justifyContent: 'center' }}>
                             <Outlet />
                         </div>
                         <RightBar />
@@ -107,6 +108,14 @@ function App() {
             element: (
                 <ProtectedRoute>
                     <Chat />
+                </ProtectedRoute>
+            ),
+        },
+        {
+            path: '/call/:roomId',
+            element: (
+                <ProtectedRoute>
+                    <Call />
                 </ProtectedRoute>
             ),
         },

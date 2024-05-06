@@ -3,8 +3,8 @@
 .home {
     @include themify($themes) {
         padding: 20px 40px;
-        background-color: themed('bgSoft');
         min-height: 100vh;
+        max-width: 650px;
 
         @include mobile {
             padding: 10px;

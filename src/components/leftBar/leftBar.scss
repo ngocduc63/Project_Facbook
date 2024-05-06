@@ -9,6 +9,7 @@
         overflow: scroll;
         background-color: themed('bg');
         color: themed('textColor');
+        max-width: 300px;
 
         @include mobile {
             display: none;

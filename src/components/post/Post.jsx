@@ -12,12 +12,13 @@ import { AuthContext } from "../../context/authContext";
 import { NotifiPostContext } from "../../context/notifiPostContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { timeAgo } from "../../helps/timer";
-import socket from "../../helps/socket"
 import UpdatePost from "../update/UpdatePost";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { SocketContext } from "../../context/socketContext";
 
 const Post = React.forwardRef(({ post }, ref) => {
+  const { socketio } = useContext(SocketContext)
   const [commentOpen, setCommentOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate()
@@ -39,7 +40,7 @@ const Post = React.forwardRef(({ post }, ref) => {
 
     const joinRoomNotifi = (room) => {
       if (room !== "") {
-        socket.emit("join_notification_post", room);
+        socketio.emit("join_notification_post", room);
       }
     };
 
@@ -57,11 +58,11 @@ const Post = React.forwardRef(({ post }, ref) => {
         setNumComment(data.num_comment)
       }
     };
-    socket.on("notification_post", handleNotification);
+    socketio.on("notification_post", handleNotification);
 
     return () => {
-      socket.emit("leave_notification_post", { post_id: post.id });
-      socket.off("notification_post", handleNotification);
+      socketio.emit("leave_notification_post", { post_id: post.id });
+      socketio.off("notification_post", handleNotification);
     };
 
   }, [currentUser, post.id, setData, postId]);

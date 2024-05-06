@@ -1,19 +1,27 @@
+import './notification.scss'
 import { useEffect, useState, useContext, memo } from "react";
 import { AuthContext } from "../../context/authContext";
 import { ChatContext } from "../../context/chatContext";
-import socket from "../../helps/socket";
 import { toast } from "react-toastify"
 import { RefecthInviteContext } from '../../context/refecthInvite';
+import { SocketContext } from "../../context/socketContext";
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import VideocamIcon from '@mui/icons-material/Videocam';
 
 function Notification() {
+    const { socketio } = useContext(SocketContext);
     const { currentUser } = useContext(AuthContext);
     const { setRoomNoti, updateListRoom } = useContext(ChatContext);
     const { toggle } = useContext(RefecthInviteContext);
+    const [isShowPopupCall, setIsShowPopupCall] = useState(false);
+    const [userCall, setUserCall] = useState(null);
 
     useEffect(() => {
+        if (!socketio) return;
+
         const joinRoomNotifi = (room) => {
             if (room !== "") {
-                socket.emit("join_notification", room);
+                socketio.emit("join_notification", room);
             }
         };
 
@@ -35,6 +43,11 @@ function Notification() {
                 return;
             }
 
+            if (data.hasOwnProperty('type') && data?.type === 'call') {
+                setUserCall(data)
+                setIsShowPopupCall(true)
+            }
+
             if (data?.created_by?.id === currentUser?.id) return;
             toast.info(data?.description, {
                 position: "top-right",
@@ -47,16 +60,48 @@ function Notification() {
         const handleNotification = (data) => {
             showNotifications(data, toggle)
         };
-        socket.on("join_notification", handleNotification);
+        socketio.on("join_notification", handleNotification);
 
         return () => {
-            socket.off("join_notification", handleNotification);
+            socketio.off("join_notification", handleNotification);
         };
 
-    }, [currentUser, toggle, setRoomNoti]);
+    }, [currentUser, toggle, setRoomNoti, socketio]);
+
+    const handelCancelCall = () => {
+        socketio.emit("leave_room_call", userCall?.room);
+        setIsShowPopupCall(false);
+    }
+
+    const handelAcpectCall = () => {
+        setIsShowPopupCall(false);
+        sessionStorage.setItem('userCall', JSON.stringify(userCall))
+        window.open(`call/${userCall?.room}_true`, '_blank');
+    }
 
     return (
         <>
+            {isShowPopupCall &&
+                <div className="popup-call-noti">
+                    <div className="container">
+                        <header>Cuộc gọi</header>
+                        <div className="content">
+                            <div className="avatar">
+                                <img src={"http://localhost:5000/user-management/user/avatar/" + userCall?.avatar} alt="" />
+                            </div>
+                            <span>{userCall?.username}</span>
+                        </div>
+                        <div className="buttons">
+                            <div className='cancel-btn' onClick={handelCancelCall}>
+                                <LocalPhoneIcon />
+                            </div>
+                            <div className='accept-btn' onClick={handelAcpectCall}>
+                                <VideocamIcon />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </>
     );
 }

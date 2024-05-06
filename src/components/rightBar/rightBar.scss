@@ -9,6 +9,7 @@
         overflow: scroll;
         background-color: themed('bgSoft');
         right: 0;
+        max-width: 350px;
 
         @include mobile {
             display: none;
