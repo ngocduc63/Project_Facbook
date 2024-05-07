@@ -13,17 +13,16 @@ function Call() {
     const { currentUser } = useContext(AuthContext)
     const [stream, setStream] = useState()
     const [callAccepted, setCallAccepted] = useState(false)
-    const [userCall, setUserCall] = useState("")
+    const [userCall, setUserCall] = useState(null)
     const [callEnded, setCallEnded] = useState(false)
+    const [cancelCall, setCancelCall] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const myVideo = useRef()
     const userVideo = useRef()
-    const connectionRef = useRef()
     const roomId = useLocation().pathname.split("/")[2];
 
     useEffect(() => {
         document.title = 'Video call'
-
     }, []);
 
     useEffect(() => {
@@ -56,9 +55,6 @@ function Call() {
                 console.log(err);
             }
         } else {
-            socketio.on('leave_room_call', (data) => {
-                console.log(data)
-            })
             callUser()
         }
     }, [stream, roomId, socketio]);
@@ -79,17 +75,25 @@ function Call() {
 
         })
         peer.on("stream", (stream) => {
+            if (callEnded && !cancelCall) return;
             userVideo.current.srcObject = stream
 
         })
         socketio.on("room_call_notification", (data) => {
-            setUserCall(data.user)
+            if (data?.type === 'end_call') {
+                setCallEnded(true)
+                setIsLoading(false)
+                if (!userCall) {
+                    setUserCall(data?.user)
+                    setCancelCall(true)
+                }
+                return;
+            }
+            setUserCall(data?.user)
             setCallAccepted(true)
             peer.signal(data?.signal)
             setIsLoading(false)
         })
-
-        connectionRef.current = peer
     }
 
     const answerCall = (room, callerSignal) => {
@@ -109,24 +113,30 @@ function Call() {
                 })
         })
         peer.on("stream", (stream) => {
+            if (callEnded) return;
             userVideo.current.srcObject = stream
         })
 
+        socketio.on("room_call_notification", (data) => {
+            if (data?.type === 'end_call') setCallEnded(true)
+        })
+
         peer.signal(callerSignal)
-        connectionRef.current = peer
         setIsLoading(false)
     }
 
-    const leaveCall = () => {
+    const handelEndCall = () => {
+        let room = roomId
+        if (roomId.includes('_')) room = roomId.split('_')[0]
+        socketio.emit('leave_room_call', { room })
         setCallEnded(true)
-        connectionRef.current.destroy()
-    }
-
-    const handelCancelCall = () => {
-
     }
 
     const handelRecall = () => {
+        setCallEnded(false)
+        setUserCall(null)
+        setIsLoading(true)
+        callUser()
     }
     return (
         <>
@@ -138,24 +148,25 @@ function Call() {
                             <div className="buttons">
                                 {callAccepted && !callEnded ?
                                     (
-                                        <div className='cancel-btn' onClick={handelCancelCall}>
+                                        <div className='cancel-btn' onClick={handelEndCall}>
                                             <LocalPhoneIcon />
                                             <span>Kết thúc</span>
                                         </div>
                                     ) :
-                                    (
+                                    cancelCall ? (
                                         <div className='accept-btn' onClick={handelRecall}>
                                             <VideocamIcon />
                                             <span>Gọi lại</span>
                                         </div>
-                                    )
+                                    ) :
+                                        null
                                 }
                             </div>
                         </div>
                     </div>
                     <div className="user-video">
                         {isLoading && <Loading />}
-                        {callAccepted && !callEnded ?
+                        {userCall &&
                             (
                                 <>
                                     <div className='user-info'>
@@ -164,37 +175,12 @@ function Call() {
                                         </div>
                                         <span>{userCall?.username}</span>
                                     </div>
-                                    <video playsInline ref={userVideo} autoPlay />
+                                    {callAccepted && !callEnded && <video playsInline ref={userVideo} autoPlay />}
+                                    {callEnded && <span>{cancelCall ? 'Đã từ chối cuộc gọi' : 'Cuộc gọi đã kết thúc'}</span>}
                                 </>
-                            ) :
-                            null}
+                            )}
                     </div>
                 </div>
-                {/* <div className="myId">
-                    <div className="call-button">
-                        {callAccepted && !callEnded ? (
-                            <button onClick={leaveCall}>
-                                End Call
-                            </button>
-                        ) : (
-                            null
-                            // <IconButton color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
-                            //     <PhoneIcon fontSize="large" />
-                            // </IconButton>
-                        )}
-                        {idToCall}
-                    </div>
-                </div>
-                <div>
-                    {receivingCall && !callAccepted ? (
-                        <div className="caller">
-                            <h1 >{name} is calling...</h1>
-                            <button onClick={answerCall}>
-                                Answer
-                            </button>
-                        </div>
-                    ) : null}
-                </div> */}
             </div>
         </>
     );

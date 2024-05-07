@@ -69,7 +69,7 @@ function Notification() {
     }, [currentUser, toggle, setRoomNoti, socketio]);
 
     const handelCancelCall = () => {
-        socketio.emit("leave_room_call", userCall?.room);
+        socketio.emit("leave_room_call", { room: userCall?.room, user: currentUser });
         setIsShowPopupCall(false);
     }
 
