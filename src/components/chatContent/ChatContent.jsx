@@ -1,15 +1,17 @@
 import './chatContent.scss'
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
+import { SocketContext } from '../../context/socketContext';
 import useAxiosPrivate from '../../api/axiosPrivate';
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from '../loading/Loading';
 import ContentMess from '../message/ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
-import socket from '../../helps/socket';
+import VideocamIcon from '@mui/icons-material/Videocam';
 
 function ChatContent({ currentRoom }) {
     const { currentUser } = useContext(AuthContext);
+    const { socketio } = useContext(SocketContext);
     const axiosPrivate = useAxiosPrivate();
     const [pageNum, setPageNum] = useState(1)
     const [dataMess, setDataMess] = useState([])
@@ -63,7 +65,7 @@ function ChatContent({ currentRoom }) {
 
         const joinRoomNotifi = (room) => {
             if (room !== "") {
-                socket.emit("join_room", room);
+                socketio.emit("join_room", room);
             }
         };
 
@@ -72,20 +74,24 @@ function ChatContent({ currentRoom }) {
         const handleNotification = (data) => {
             setDataMess(prevData => [data, ...prevData]);
         };
-        socket.on("receive_message", handleNotification);
+        socketio.on("receive_message", handleNotification);
 
         return () => {
-            socket.off("receive_message", handleNotification);
+            socketio.off("receive_message", handleNotification);
         };
     }, [currentRoom])
 
     const handelSendMessage = (inputValue) => {
         if (inputValue.trim() === '') return;
-        socket.emit("send_message", {
+        socketio.emit("send_message", {
             "sender": `${currentUser.id}`,
             "room_id": `${currentRoom}`,
             "text": inputValue.trim()
         })
+    }
+
+    const handelCall = () => {
+        window.open(`call/${currentRoom}`, '_blank');
     }
 
     return (
@@ -101,6 +107,8 @@ function ChatContent({ currentRoom }) {
                 <div className='right-content'>
                     {/* <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
                     <CloseIcon onClick={handelClosePopupuMess} className='icon' /> */}
+                    <VideocamIcon className='icon' onClick={handelCall} />
+
                 </div>
             </div>
 
