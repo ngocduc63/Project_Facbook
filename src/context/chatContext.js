@@ -6,22 +6,37 @@ export const ChatContextProvider = ({ children }) => {
     const [roomCurrent, setRoomCurrent] = useState('');
     const [dataHiden, setDataHidden] = useState([]);
     const [listRoom, setListRoom] = useState([]);
-    const [isFirstLogin, setIsFirstLogin] = useState(false);
+    const [isFirstLogin, setIsFirstLogin] = useState(0);
 
     useEffect(() => {
         if (dataHiden && dataHiden.length > 0) {
             sessionStorage.setItem('listRoomMini', JSON.stringify(dataHiden));
         } else {
-            if (isFirstLogin) return;
+            if (isFirstLogin > 0) return;
             try {
                 const dataHiden = sessionStorage.getItem('listRoomMini');
                 if (dataHiden) setDataHidden(JSON.parse(dataHiden));
-                setIsFirstLogin(true);
+                setIsFirstLogin(1);
             } catch (e) {
                 return;
             }
         }
     }, [dataHiden]);
+
+    useEffect(() => {
+        if (roomCurrent && roomCurrent.length > 0) {
+            sessionStorage.setItem('roomCurrent', JSON.stringify(roomCurrent));
+        } else {
+            if (isFirstLogin > 1) return;
+            try {
+                const roomCurrent = sessionStorage.getItem('roomCurrent');
+                if (roomCurrent) setRoomCurrent(JSON.parse(roomCurrent));
+                setIsFirstLogin(2);
+            } catch (e) {
+                return;
+            }
+        }
+    }, [roomCurrent]);
 
     const setRoomNoti = (data, friend = {}) => {
         if (roomCurrent) {
