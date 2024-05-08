@@ -16,7 +16,6 @@ const useRefreshToken = () => {
             '/user-management/user/refresh',
             {},
             {
-                withCredentials: true,
                 headers: {
                     Authorization: `Bearer ${refreshToken}`,
                 },
