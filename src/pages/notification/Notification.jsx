@@ -7,6 +7,7 @@ import { RefecthInviteContext } from '../../context/refecthInvite';
 import { SocketContext } from "../../context/socketContext";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function Notification() {
     const { socketio } = useContext(SocketContext);
@@ -33,6 +34,7 @@ function Notification() {
             }
             catch (err) {
             }
+            console.log(data)
 
             if (data.hasOwnProperty('_id')) {
                 if (+data?.last_mess?.sender !== currentUser?.id) {
@@ -87,7 +89,7 @@ function Notification() {
                         <header>Cuộc gọi</header>
                         <div className="content">
                             <div className="avatar">
-                                <img src={"http://localhost:5000/user-management/user/avatar/" + userCall?.avatar} alt="" />
+                                <img src={LINK_API_AVATAR + userCall?.avatar} alt="" />
                             </div>
                             <span>{userCall?.username}</span>
                         </div>

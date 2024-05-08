@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import SpanCustom from '../spanCustom/spanCustom';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function CotentMess({ dataMess, friendRoom, currentUser }) {
     const content_user = (data) => {
@@ -18,7 +19,7 @@ function CotentMess({ dataMess, friendRoom, currentUser }) {
         return (
             <>
                 <div className='image'>
-                    <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />
+                    <img src={LINK_API_AVATAR + friendRoom.avatar} alt="" />
                 </div>
                 <div className='friend-chat'>
                     {

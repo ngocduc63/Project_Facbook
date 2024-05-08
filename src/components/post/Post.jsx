@@ -16,6 +16,7 @@ import UpdatePost from "../update/UpdatePost";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SocketContext } from "../../context/socketContext";
+import { LINK_API_AVATAR, LINK_API_COVER, LINK_API_POST } from "../../api/const";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const { socketio } = useContext(SocketContext)
@@ -142,7 +143,7 @@ const Post = React.forwardRef(({ post }, ref) => {
     const content = dataLikes.map((like) => {
       return (
         <Link className="item-like" key={like.id} to={`/profile/${like.user.id}`}>
-          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + like.user.avatar} alt="" />
+          <img src={LINK_API_AVATAR + like.user.avatar} alt="" />
           <div className="details">
             <span className="name">{like.user.username}</span>
           </div>
@@ -174,7 +175,7 @@ const Post = React.forwardRef(({ post }, ref) => {
         <div className="container">
           <div className="user">
             <div className="userInfo">
-              <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.user.avatar} alt="" />
+              <img src={LINK_API_AVATAR + post.user.avatar} alt="" />
               <div className="details">
                 <Link
                   to={`/profile/${post.user.id}`}
@@ -203,17 +204,17 @@ const Post = React.forwardRef(({ post }, ref) => {
             <p>{dataPost.title ? dataPost.title : post.title}</p>
             {
               (
-                post.category === 0 && <img src={"http://127.0.0.1:5000/post-management/post/image/" + (dataPost.image ?? post.image)} alt="" />
+                post.category === 0 && <img src={LINK_API_POST + (dataPost.image ?? post.image)} alt="" />
               )
             }
             {
               (
-                post.category === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + (dataPost.image ?? post.image)} alt="" />
+                post.category === 1 && <img src={LINK_API_AVATAR + (dataPost.image ?? post.image)} alt="" />
               )
             }
             {
               (
-                post.category === 2 && <img src={"http://127.0.0.1:5000/user-management/user/cover/" + (dataPost.image ?? post.image)} alt="" />
+                post.category === 2 && <img src={LINK_API_COVER + (dataPost.image ?? post.image)} alt="" />
               )
             }
           </div>

@@ -7,6 +7,7 @@ import { SocketContext } from '../../context/socketContext';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import Loading from "../../components/loading/Loading";
+import { LINK_API_AVATAR } from '../../api/const';
 
 function Call() {
     const { socketio } = useContext(SocketContext)
@@ -86,7 +87,9 @@ function Call() {
                 if (!userCall) {
                     setUserCall(data?.user)
                     setCancelCall(true)
+                    return;
                 }
+                setCancelCall(false)
                 return;
             }
             setUserCall(data?.user)
@@ -133,8 +136,9 @@ function Call() {
     }
 
     const handelRecall = () => {
-        setCallEnded(false)
+        setCancelCall(false)
         setUserCall(null)
+        setCallEnded(false)
         setIsLoading(true)
         callUser()
     }
@@ -171,7 +175,7 @@ function Call() {
                                 <>
                                     <div className='user-info'>
                                         <div className="avatar">
-                                            <img src={"http://localhost:5000/user-management/user/avatar/" + userCall?.avatar} alt="" />
+                                            <img src={LINK_API_AVATAR + userCall?.avatar} alt="" />
                                         </div>
                                         <span>{userCall?.username}</span>
                                     </div>

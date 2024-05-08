@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Loading from '../loading/Loading';
 import useAxiosPrivate from '../../api/axiosPrivate';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function Search() {
     const location = useLocation();
@@ -47,7 +48,7 @@ function Search() {
         return (
             <div className="item" key={user.id} onClick={() => handelRedirectToProfile(user)}>
                 <div className="avatar">
-                    <img src={"http://localhost:5000/user-management/user/avatar/" + user.avatar} alt="" />
+                    <img src={LINK_API_AVATAR + user.avatar} alt="" />
                 </div>
                 <div className="right-item-search">
                     <span>{user.username}<span>{user.nickname && ` (${user.nickname})`}</span></span>

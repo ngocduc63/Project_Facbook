@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosPrivate from "../../api/axiosPrivate";
+import { LINK_API_AVATAR } from "../../api/const";
 const Share = () => {
   const axiosPrivate = useAxiosPrivate()
   const [file, setFile] = useState(null);
@@ -19,13 +20,13 @@ const Share = () => {
     ({ title, status, file }) => {
       const formData = new FormData();
       formData.append("data", JSON.stringify({ title, status }));
-      
+
       console.log('file:', file);
       if (file) {
         formData.append("image", file);
         console.log("File appended to FormData:", file)
       }
-      
+
       return axiosPrivate.post("/post-management/post/create", formData);
     },
     {
@@ -48,7 +49,7 @@ const Share = () => {
       <div className="container">
         <div className="top">
           <div className="left">
-            <img src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
+            <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
             <input
               type="text"
               placeholder={`What's on your mind ${currentUser.username}?`}

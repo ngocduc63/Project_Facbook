@@ -16,6 +16,7 @@ import { AuthContext } from "../../context/authContext";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import PopupFriend from "../popupFriend/PopupFriend";
+import { LINK_API_AVATAR } from "../../api/const";
 
 const LeftBar = () => {
   const { currentUser } = useContext(AuthContext);
@@ -29,7 +30,7 @@ const LeftBar = () => {
           <div className="menu">
             <Link to={`/profile/${currentUser.id}`} className="user">
               <img
-                src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar}
+                src={LINK_API_AVATAR + currentUser.avatar}
                 alt=""
               />
               <span>{currentUser.username}</span>

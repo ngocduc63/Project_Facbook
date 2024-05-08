@@ -6,6 +6,7 @@ import useAxiosPrivate from '../../api/axiosPrivate';
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify"
 import { debounce } from 'lodash';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
     const axiosPrivate = useAxiosPrivate();
@@ -120,7 +121,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                 <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id} onClick={handelClosePopup}>
                     <div className="userInfo">
                         <img
-                            src={"http://localhost:5000/user-management/user/avatar/" + user.avatar}
+                            src={LINK_API_AVATAR + user.avatar}
                             alt=""
                         />
                     </div>

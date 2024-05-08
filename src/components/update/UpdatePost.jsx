@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useAxiosPrivate from '../../api/axiosPrivate';
 import { toast } from 'react-toastify';
+import { LINK_API_AVATAR, LINK_API_COVER, LINK_API_POST } from '../../api/const';
 
 const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
     const [image, setImage] = useState(null);
@@ -42,7 +43,7 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                 <div className='content-post'>
                     <div className='header'>
                         <div className='avatar'>
-                            <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + post.user.avatar} alt="" />
+                            <img src={LINK_API_AVATAR + post.user.avatar} alt="" />
                         </div>
                         <div className='detail'>
                             <span>{post.user.username}</span>
@@ -58,9 +59,9 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                                         src={
                                             image
                                                 ? URL.createObjectURL(image)
-                                                : post.category === 0 ? "http://127.0.0.1:5000/post-management/post/image/" + (dataPost.image ?? post.image)
-                                                    : post.category === 1 ? "http://127.0.0.1:5000/user-management/user/avatar/" + (dataPost.image ?? post.image)
-                                                        : "http://127.0.0.1:5000/user-management/user/cover/" + (dataPost.image ?? post.image)
+                                                : post.category === 0 ? LINK_API_POST + (dataPost.image ?? post.image)
+                                                    : post.category === 1 ? LINK_API_AVATAR + (dataPost.image ?? post.image)
+                                                        : LINK_API_COVER + (dataPost.image ?? post.image)
                                         }
                                         alt="ảnh"
                                     />

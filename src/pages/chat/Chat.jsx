@@ -6,6 +6,7 @@ import { MessageContext } from '../../context/messageContext';
 import ChatContent from '../../components/chatContent/ChatContent';
 import Notification from '../notification/Notification';
 import ChatList from '../../components/chatList/chatList';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function Chat() {
   const { currentUser } = useContext(AuthContext);
@@ -26,7 +27,7 @@ function Chat() {
           <div className="chatList">
             <header>
               <div className='image'>
-                <img src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
+                <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
               </div>
               <span>{currentUser.username}</span>
             </header>

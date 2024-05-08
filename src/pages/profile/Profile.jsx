@@ -17,6 +17,7 @@ import { convertToDate } from "../../helps/timer";
 import { toast } from 'react-toastify';
 import { ChatContext } from "../../context/chatContext";
 import useLogout from '../../api/logout'
+import { LINK_API_AVATAR, LINK_API_COVER } from "../../api/const";
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -140,7 +141,7 @@ const Profile = () => {
         <>
           <div className="images">
             <div className="body-cover">
-              <img src={"http://127.0.0.1:5000/user-management/user/cover/" + data.cover_photo} alt="" className="cover" onClick={handelOpenPopupCover} />
+              <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handelOpenPopupCover} />
               {openPopup === 2 && (
                 <div className="body-edit body-edit-cover">
                   <div onClick={handleClosePopups}>Xem ảnh bìa</div>
@@ -150,7 +151,7 @@ const Profile = () => {
             </div>
 
             <div className="body-avatar">
-              <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + data.avatar} alt="" className="profilePic" onClick={handelOpenPopupAvatar} />
+              <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handelOpenPopupAvatar} />
               {openPopup === 1 && (
                 <div className="body-edit">
                   <div onClick={handleClosePopups} >Xem ảnh đại diện</div>

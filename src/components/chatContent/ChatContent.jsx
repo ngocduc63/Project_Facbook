@@ -8,6 +8,7 @@ import Loading from '../loading/Loading';
 import ContentMess from '../message/ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function ChatContent({ currentRoom }) {
     const { currentUser } = useContext(AuthContext);
@@ -100,7 +101,7 @@ function ChatContent({ currentRoom }) {
                 <div className='left-content'>
                     {sucessData === 0 && <Loading />}
                     <div className='image'>
-                        {sucessData === 1 && <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + friendRoom.avatar} alt="" />}
+                        {sucessData === 1 && <img src={LINK_API_AVATAR + friendRoom.avatar} alt="" />}
                     </div>
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
                 </div>

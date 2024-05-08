@@ -5,6 +5,7 @@ import useAxiosPrivate from '../../api/axiosPrivate'
 import { toast } from 'react-toastify'
 import { AuthContext } from "../../context/authContext";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { LINK_API_AVATAR, LINK_API_COVER } from "../../api/const";
 
 const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
     const { setCurrentUser } = useContext(AuthContext);
@@ -25,20 +26,20 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
         isUpdateAvartar ? formData.append('file', profile) : formData.append('file', cover);
 
         axiosPrivate.post((isUpdateAvartar ? '/user-management/user/update-avatar' : '/user-management/user/update-cover'), formData)
-            .then((res) =>{
+            .then((res) => {
                 setCurrentUser(res.data.data.user)
                 toast.success("Thay đổi ảnh đại diện thành công", {
-                position: "top-right"
+                    position: "top-right"
                 })
-            setOpenUpdateImage(0);
+                setOpenUpdateImage(0);
 
             })
             .catch((err) => {
                 const errCode = err.response.data.errorCode
 
                 if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
-                else if(errCode === 10) toastEr("Không gửi được file ảnh")
-                else if(errCode === 11) toastEr("Không thể kết nối tới mát chủ")
+                else if (errCode === 10) toastEr("Không gửi được file ảnh")
+                else if (errCode === 11) toastEr("Không thể kết nối tới mát chủ")
             })
     }
 
@@ -58,7 +59,7 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
                                             src={
                                                 cover
                                                     ? URL.createObjectURL(cover)
-                                                    : "http://127.0.0.1:5000/user-management/user/cover/" + user.cover_photo
+                                                    : LINK_API_COVER + user.cover_photo
                                             }
                                             alt="cover"
                                         />
@@ -82,7 +83,7 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
                                             src={
                                                 profile
                                                     ? URL.createObjectURL(profile)
-                                                    : "http://127.0.0.1:5000/user-management/user/avatar/" + user.avatar
+                                                    : LINK_API_AVATAR + user.avatar
                                             }
                                             alt="avartar"
                                         />
@@ -97,8 +98,8 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
                                 />
                             </>
                         }
-                        </div>
-                        <button onClick={handleSubmit}>Xác nhận</button>
+                    </div>
+                    <button onClick={handleSubmit}>Xác nhận</button>
                 </form>
                 <button className="close" onClick={() => setOpenUpdateImage(0)}>
                     Đóng

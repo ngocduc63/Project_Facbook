@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Comment from "./Comment";
 import InputCustom from '../inputCustom/InputCustom'
+import { LINK_API_AVATAR } from "../../api/const";
 
 const Comments = ({ postId }) => {
   const { currentUser } = useContext(AuthContext);
@@ -68,7 +69,7 @@ const Comments = ({ postId }) => {
   return (
     <div className="comments">
       <div className="write">
-        <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
+        <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
         <InputCustom handelSendMessage={handleComment} />
       </div>
       <div className="list-comment">

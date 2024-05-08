@@ -20,6 +20,7 @@ import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import useLogout from '../../api/logout'
+import { LINK_API_AVATAR } from "../../api/const";
 
 const Navbar = (props) => {
   const logout = useLogout();
@@ -124,7 +125,7 @@ const Navbar = (props) => {
                 resultSearch.map(user =>
                   <Link to={`profile/${user.id}`} className="item" key={user.id}>
                     <div className="avatar">
-                      <img src={"http://localhost:5000/user-management/user/avatar/" + user.avatar} alt="" />
+                      <img src={LINK_API_AVATAR + user.avatar} alt="" />
                     </div>
                     <div className="right-item-search">
                       <span>{user.username}<span>{user.nickname && ` (${user.nickname})`}</span></span>
@@ -153,7 +154,7 @@ const Navbar = (props) => {
         <NotificationsOutlinedIcon />
         <Link to={`/profile/${currentUser.id}`} className="user">
           <img
-            src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar}
+            src={LINK_API_AVATAR + currentUser.avatar}
             alt=""
           />
           <span>{currentUser.username}</span>

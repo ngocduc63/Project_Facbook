@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { LINK_API } from '../api/const';
 
 export const SocketContext = createContext();
 
@@ -8,7 +9,7 @@ export const SocketContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (socketio) return;
-        const socket = io.connect('http://localhost:5000', {
+        const socket = io.connect(LINK_API, {
             // query: { refresh_token },
         });
         setSocket(socket);

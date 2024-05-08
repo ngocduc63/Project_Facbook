@@ -6,6 +6,7 @@ import Loading from '../../components/loading/Loading';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { MessageContext } from '../../context/messageContext';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { LINK_API_AVATAR } from '../../api/const';
 
 function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     const { currentUser } = useContext(AuthContext);
@@ -72,7 +73,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
             >
                 {currentRoom === data?._id?.room_id?.$oid && <div className='bg-focus'></div>}
                 <div className='image'>
-                    <img src={"http://localhost:5000/user-management/user/avatar/" + friend.avatar} alt="" />
+                    <img src={LINK_API_AVATAR + friend.avatar} alt="" />
                 </div>
                 <div className="texts">
                     <span style={{ fontWeight: watched && 700 }}>

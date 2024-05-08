@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 import Loading from '../../components/loading/Loading'
+import { LINK_API } from "../../api/const";
 
 const Register = () => {
   const [inputs, setInputs] = useState({
@@ -19,13 +20,13 @@ const Register = () => {
   const handleChange = (e) => {
     let value = e.target.value;
     if (e.target.type === 'date') {
-      const parts = value.split('-'); 
+      const parts = value.split('-');
       value = `${parts[1]}/${parts[2]}/${parts[0]}`;
     }
     setInputs((prev) => ({ ...prev, [e.target.name]: value }));
   };
 
-  const toastEr = (mess) =>{
+  const toastEr = (mess) => {
     toast.error(mess, {
       position: "top-right"
     })
@@ -34,22 +35,22 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post("http://127.0.0.1:5000/user-management/user/register", inputs);
+      await axios.post(`${LINK_API}user-management/user/register`, inputs);
       toast.success("Đăng kí thành công", {
         position: "top-right"
       })
 
-    setIsLoading(false);
-    navigate("/login")
+      setIsLoading(false);
+      navigate("/login")
     } catch (err) {
       const errCode = err.response.data.errorCode
 
       if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
-      else if(errCode === 3) toastEr("Email chưa đúng định dạng")
-      else if(errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
-      else if(errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
-      else if(errCode === 9) toastEr("Tài khoản đã tồn tại")
-      else if(errCode === 13) toastEr("Không thể kết nối tới mát chủ")
+      else if (errCode === 3) toastEr("Email chưa đúng định dạng")
+      else if (errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
+      else if (errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
+      else if (errCode === 9) toastEr("Tài khoản đã tồn tại")
+      else if (errCode === 13) toastEr("Không thể kết nối tới mát chủ")
 
       setIsLoading(false);
     }
@@ -98,24 +99,24 @@ const Register = () => {
               onChange={handleChange}
             />
             <div className="column">
-              <input 
-                type="radio" 
-                id="male" 
-                name="gender" 
-                value="1" 
-                onChange={handleChange} 
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+                value="1"
+                onChange={handleChange}
               />
               <label htmlFor="male">Nam</label>
-              <input 
-                type="radio" 
-                id="female" 
-                name="gender" 
-                value="2" 
-                onChange={handleChange} 
+              <input
+                type="radio"
+                id="female"
+                name="gender"
+                value="2"
+                onChange={handleChange}
               />
               <label htmlFor="female">Nữ</label>
             </div>
-            {isLoading ? <Loading/> : <button onClick={handleClick}>Register</button>}
+            {isLoading ? <Loading /> : <button onClick={handleClick}>Register</button>}
           </form>
         </div>
       </div>

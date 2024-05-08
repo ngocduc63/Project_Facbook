@@ -3,16 +3,19 @@ import axios from '../axios';
 import { AuthContext } from '../context/authContext';
 
 const useLogout = () => {
-    const { setTokenAndUser } = useContext(AuthContext);
+    const { token, setTokenAndUser } = useContext(AuthContext);
     const storedToken = localStorage.getItem('token') || null;
     let refreshToken = '';
     if (storedToken && storedToken !== 'undefined' && storedToken !== 'null' && storedToken.length > 0) {
-        const token = JSON.parse(storedToken);
+        const token_data = JSON.parse(storedToken);
 
-        refreshToken = token.refresh_token;
+        refreshToken = token_data.refresh_token;
     }
 
     const logout = async () => {
+        if (!refreshToken) {
+            refreshToken = token.refresh_token;
+        }
         const response = await axios.post(
             '/user-management/user/logout',
             {},

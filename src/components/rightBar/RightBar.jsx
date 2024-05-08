@@ -7,6 +7,7 @@ import { RefecthInviteContext } from "../../context/refecthInvite"
 import { ChatContext } from '../../context/chatContext'
 import CloseIcon from '@mui/icons-material/Close';
 import PopupFriend from "../popupFriend/PopupFriend";
+import { LINK_API_AVATAR } from "../../api/const";
 
 const RightBar = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -88,7 +89,7 @@ const RightBar = () => {
       <div className="main">
         <div className="icon-close" onClick={handelCloseDataPopupMess}><CloseIcon className="icon-close" /></div>
         <div className="image" onClick={handelShowPopupMess}>
-          <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + data.friend.avatar} alt="" />
+          <img src={LINK_API_AVATAR + data.friend.avatar} alt="" />
         </div>
       </div>
     )
@@ -110,7 +111,7 @@ const RightBar = () => {
               <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id}>
                 <div className="userInfo">
                   <img
-                    src={"http://localhost:5000/user-management/user/avatar/" + user.avatar}
+                    src={LINK_API_AVATAR + user.avatar}
                     alt=""
                   />
                 </div>

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import "./login.scss";
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -17,7 +17,7 @@ const Login = () => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
   const { login } = useContext(AuthContext);
-  const toastEr = (mess) =>{
+  const toastEr = (mess) => {
     toast.error(mess, {
       position: "top-right"
     })
@@ -32,13 +32,14 @@ const Login = () => {
       })
       navigate("/")
     } catch (err) {
+      console.log(err)
       const errCode = err.response.data.errorCode
 
       if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
-      else if(errCode === 3) toastEr("Email chưa đúng định dạng")
-      else if(errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
-      else if(errCode === 6) toastEr("Tài khoản không tồn tại")
-      else if(errCode === 7) toastEr("Mật khẩu không chính xác")
+      else if (errCode === 3) toastEr("Email chưa đúng định dạng")
+      else if (errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
+      else if (errCode === 6) toastEr("Tài khoản không tồn tại")
+      else if (errCode === 7) toastEr("Mật khẩu không chính xác")
     }
   };
 

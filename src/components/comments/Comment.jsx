@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import SpanCustom from '../spanCustom/spanCustom'
 import InputCustom from "../inputCustom/InputCustom";
 import Loading from "../loading/Loading";
+import { LINK_API_AVATAR } from "../../api/const";
 
 function Comment({ comment, currentUser }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -63,7 +64,7 @@ function Comment({ comment, currentUser }) {
     return (!isDelete &&
         <div className="comment">
             <div className="image">
-                <img src={"http://127.0.0.1:5000/user-management/user/avatar/" + comment.user.avatar} alt="" />
+                <img src={LINK_API_AVATAR + comment.user.avatar} alt="" />
             </div>
             <div className="info">
                 <span>{comment.user.username}</span>
