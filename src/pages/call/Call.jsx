@@ -1,33 +1,47 @@
 import './call.scss';
 import React, { useContext, useEffect, useRef, useState } from "react"
 import Peer from "simple-peer"
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from '../../context/authContext';
 import { SocketContext } from '../../context/socketContext';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import Loading from "../../components/loading/Loading";
 import { LINK_API_AVATAR } from '../../api/const';
+import { HomeContext } from '../../context/homeContext';
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
 function Call() {
-    const { socketio } = useContext(SocketContext)
-    const { currentUser } = useContext(AuthContext)
-    const [stream, setStream] = useState()
-    const [callAccepted, setCallAccepted] = useState(false)
-    const [userCall, setUserCall] = useState(null)
-    const [callEnded, setCallEnded] = useState(false)
-    const [cancelCall, setCancelCall] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
-    const myVideo = useRef()
-    const userVideo = useRef()
+    const { socketio } = useContext(SocketContext);
+    const { currentUser } = useContext(AuthContext);
+    const { userCallData } = useContext(HomeContext);
+    const [stream, setStream] = useState();
+    const [callAccepted, setCallAccepted] = useState(false);
+    const [userCall, setUserCall] = useState(null);
+    const [callEnded, setCallEnded] = useState(false);
+    const [cancelCall, setCancelCall] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const myVideo = useRef();
+    const userVideo = useRef();
     const roomId = useLocation().pathname.split("/")[2];
+    const [isFrist, setIsFrist] = useState(true)
+    const nagivate = useNavigate();
 
     useEffect(() => {
         document.title = 'Video call'
-    }, []);
+        console.log(stream)
+        return () => {
+            // Cleanup function to stop using camera and microphone
+            if (stream) {
+                stream.getTracks().forEach(track => {
+                    track.stop();
+                });
+            }
+        };
+    }, [stream]);
 
     useEffect(() => {
-        if (!socketio) return;
+        if (!socketio || !isFrist) return;
 
         const getUserMedia = async () => {
             try {
@@ -38,27 +52,26 @@ function Call() {
                 console.log(err);
             }
         };
-        getUserMedia();
-
-    }, [socketio, roomId, currentUser])
+        if (isFrist) {
+            getUserMedia();
+            setIsFrist(false)
+        }
+    }, [socketio, roomId, currentUser, isFrist])
 
     useEffect(() => {
         if (!stream) return;
 
         if (roomId.includes('_')) {
-            try {
-                const data = sessionStorage.getItem('userCall')
-                const userCall = JSON.parse(data)
-                setUserCall(userCall)
-                const room = roomId.split('_')[0]
-                answerCall(room, userCall.signalData)
-            } catch (err) {
-                console.log(err);
-            }
+            if (!userCallData) return;
+            setUserCall(userCallData)
+            const room = roomId.split('_')[0]
+            answerCall(room, userCallData.signalData)
+
         } else {
             callUser()
         }
-    }, [stream, roomId, socketio]);
+
+    }, [stream, roomId, userCallData]);
 
     const callUser = () => {
         const peer = new Peer({
@@ -95,6 +108,7 @@ function Call() {
             setUserCall(data?.user)
             setCallAccepted(true)
             peer.signal(data?.signal)
+            console.log(peer)
             setIsLoading(false)
         })
     }
@@ -125,6 +139,7 @@ function Call() {
         })
 
         peer.signal(callerSignal)
+        console.log(peer)
         setIsLoading(false)
     }
 
@@ -142,6 +157,11 @@ function Call() {
         setIsLoading(true)
         callUser()
     }
+
+    const handelBackToHome = () => {
+        nagivate(-1)
+    }
+
     return (
         <>
             <div className="container-video-call">
@@ -150,20 +170,27 @@ function Call() {
                         <video playsInline muted ref={myVideo} autoPlay style={{ width: "300px" }} />
                         <div className='popup-call'>
                             <div className="buttons">
-                                {callAccepted && !callEnded ?
-                                    (
+                                {
+                                    callAccepted && !callEnded && (
                                         <div className='cancel-btn' onClick={handelEndCall}>
                                             <LocalPhoneIcon />
                                             <span>Kết thúc</span>
                                         </div>
-                                    ) :
-                                    cancelCall ? (
+                                    )
+                                }
+                                {
+                                    !callAccepted && cancelCall && (
                                         <div className='accept-btn' onClick={handelRecall}>
                                             <VideocamIcon />
                                             <span>Gọi lại</span>
                                         </div>
-                                    ) :
-                                        null
+                                    )
+                                }
+                                {callAccepted && callEnded &&
+                                    <div className='home-btn' onClick={handelBackToHome}>
+                                        <HomeOutlinedIcon />
+                                        <span>Trang chủ</span>
+                                    </div>
                                 }
                             </div>
                         </div>

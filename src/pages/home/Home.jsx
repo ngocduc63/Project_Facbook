@@ -1,7 +1,7 @@
 import Stories from "../../components/stories/Stories"
 import Posts from "../../components/posts/Posts"
 import Share from "../../components/share/Share"
-import { memo, useContext, useEffect } from 'react'
+import { memo, useContext } from 'react'
 import "./home.scss"
 import { HomeContext } from "../../context/homeContext"
 

@@ -12,6 +12,7 @@ import ContentMess from './ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
 import { SocketContext } from '../../context/socketContext';
 import { LINK_API_AVATAR } from '../../api/const';
+import { Link } from 'react-router-dom';
 
 function MessagePopup({ isShowPopupMess = false }) {
     const { socketio } = useContext(SocketContext)
@@ -95,6 +96,7 @@ function MessagePopup({ isShowPopupMess = false }) {
 
 
     const handelClosePopupuMess = () => {
+        sessionStorage.setItem('roomCurrent', '')
         setRoomCurrent('')
         setShowPopupMess(false)
     }
@@ -110,12 +112,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 return [...prev, { 'room': roomCurrent, 'friend': friendRoom }];
             }
         });
-        setRoomCurrent('')
-        setShowPopupMess(false)
-    }
-
-    const handelCall = () => {
-        window.open(`call/${roomCurrent}`, '_blank');
+        handelClosePopupuMess()
     }
 
     return (
@@ -129,7 +126,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
                 </div>
                 <div className='right-content'>
-                    <VideocamIcon className='icon' onClick={handelCall} />
+                    <Link to={`call/${roomCurrent}`} className='icon' style={{ display: 'flex', alignItems: 'center' }}><VideocamIcon /></Link>
                     <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
                     <CloseIcon onClick={handelClosePopupuMess} className='icon' />
                 </div>

@@ -8,14 +8,18 @@ import { SocketContext } from "../../context/socketContext";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { LINK_API_AVATAR } from '../../api/const';
+import { HomeContext } from '../../context/homeContext';
+import { useNavigate } from 'react-router-dom';
 
 function Notification() {
     const { socketio } = useContext(SocketContext);
     const { currentUser } = useContext(AuthContext);
+    const { setUserCallData } = useContext(HomeContext);
     const { setRoomNoti, updateListRoom } = useContext(ChatContext);
     const { toggle } = useContext(RefecthInviteContext);
     const [isShowPopupCall, setIsShowPopupCall] = useState(false);
     const [userCall, setUserCall] = useState(null);
+    const nagivate = useNavigate()
 
     useEffect(() => {
         if (!socketio) return;
@@ -76,8 +80,8 @@ function Notification() {
 
     const handelAcpectCall = () => {
         setIsShowPopupCall(false);
-        sessionStorage.setItem('userCall', JSON.stringify(userCall))
-        window.open(`call/${userCall?.room}_true`, '_blank');
+        setUserCallData(userCall)
+        nagivate(`call/${userCall?.room}_true`);
     }
 
     return (

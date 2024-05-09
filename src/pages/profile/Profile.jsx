@@ -19,7 +19,7 @@ import { ChatContext } from "../../context/chatContext";
 import useLogout from '../../api/logout'
 import { LINK_API_AVATAR, LINK_API_COVER } from "../../api/const";
 
-const Profile = () => {
+const Profile = ({ id }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openUpdateImage, setOpenUpdateImage] = useState(0);
   const [openPopup, setOpenPopup] = useState(0);
@@ -29,9 +29,9 @@ const Profile = () => {
   const axiosPrivate = useAxiosPrivate();
   const { setRoomCurrent } = useContext(ChatContext);
   const logout = useLogout();
+  const location = useLocation();
 
-
-  const userId = parseInt(useLocation().pathname.split("/")[2]);
+  const userId = +location.pathname.split("/")[2] ? +location.pathname.split("/")[2] : id;
 
   const { isLoading, error, data, refetch } = useQuery(["user", userId], () =>
     axiosPrivate.get("/user-management/user/" + userId).then((res) => {

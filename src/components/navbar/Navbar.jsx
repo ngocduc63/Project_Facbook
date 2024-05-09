@@ -23,7 +23,7 @@ import useLogout from '../../api/logout'
 import { LINK_API_AVATAR } from "../../api/const";
 import { HomeContext } from "../../context/homeContext";
 
-const Navbar = (props) => {
+const Navbar = () => {
   const logout = useLogout();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
@@ -32,7 +32,7 @@ const Navbar = (props) => {
   const [inputSearch, setInputSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resultSearch, setResultSearch] = useState([]);
-  const { currentUser, setTokenAndUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const [showPopupChatList, setShowPopupChatList] = useState(false);
   const { setRoomCurrent } = useContext(ChatContext);
 
@@ -96,10 +96,6 @@ const Navbar = (props) => {
     setRoomCurrent(data?._id?.room_id?.$oid)
   }
 
-  const handelOpenChatPage = (e) => {
-    window.open('/chat', '_blank');
-  }
-
   return (
     <div className="navbar">
       <div className="left">
@@ -146,7 +142,7 @@ const Navbar = (props) => {
             <div className="content-chat-list">
               <header>
                 <span>Đoạn chat</span>
-                <ZoomOutMapIcon style={{ cursor: 'pointer' }} onClick={handelOpenChatPage} />
+                <Link to={'/chat'} style={{ display: 'flex', alignItems: 'center' }}><ZoomOutMapIcon style={{ cursor: 'pointer' }} /></Link>
               </header>
               <ChatList handleSelectRoomChat={handelSelectRoomChat} />
             </div>
