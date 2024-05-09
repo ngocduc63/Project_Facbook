@@ -59,7 +59,7 @@ function Search() {
     })
 
     return (
-        <>
+        <div style={{ maxWidth: '650px', minWidth: '600px' }}>
             {isLoading && <Loading />}
             <InfiniteScroll
                 dataLength={dataUser.length}
@@ -70,7 +70,7 @@ function Search() {
             >
                 {content}
             </InfiniteScroll>
-        </>
+        </div>
     );
 }
 

@@ -248,7 +248,7 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <Posts userId={userId} />
+            <div style={{ width: '100%' }}><Posts userId={userId} /></div>
           </div>
         </>
       )}
