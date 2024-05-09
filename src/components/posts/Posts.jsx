@@ -1,6 +1,6 @@
 import Post from "../post/Post";
 import "./posts.scss";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useContext } from "react";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useAxiosPrivate from '../../api/axiosPrivate';
@@ -12,11 +12,14 @@ const Posts = ({ userId, isRefecth }) => {
   const [error, setError] = useState({});
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageNum, setPageNum] = useState(1)
+  const [isReload, setIsReload] = useState(false);
 
   useEffect(() => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
-    setResults([])
+    setPageNum(1);
+    setResults([]);
+    setIsReload(true)
   }, [isRefecth, userId])
 
   useEffect(() => {
@@ -61,8 +64,10 @@ const Posts = ({ userId, isRefecth }) => {
         });
     }
 
+    if (isReload) setIsReload(false);
+
     return () => controller.abort();
-  }, [axiosPrivate, pageNum, userId]);
+  }, [axiosPrivate, pageNum, userId, isReload]);
 
   const content = results.map((post, i) => {
     if (results.length === i + 1) {

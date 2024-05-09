@@ -7,7 +7,10 @@ import { AuthContext } from "../../context/authContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { LINK_API_AVATAR } from "../../api/const";
+import { HomeContext } from "../../context/homeContext";
+
 const Share = () => {
+  const { refetchHome } = useContext(HomeContext)
   const axiosPrivate = useAxiosPrivate()
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
@@ -21,7 +24,6 @@ const Share = () => {
       const formData = new FormData();
       formData.append("data", JSON.stringify({ title, status }));
 
-      console.log('file:', file);
       if (file) {
         formData.append("image", file);
         console.log("File appended to FormData:", file)
@@ -32,6 +34,7 @@ const Share = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["posts"]);
+        refetchHome();
       },
     }
   );

@@ -34,7 +34,6 @@ function Notification() {
             }
             catch (err) {
             }
-            console.log(data)
 
             if (data.hasOwnProperty('_id')) {
                 if (+data?.last_mess?.sender !== currentUser?.id) {

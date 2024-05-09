@@ -25,15 +25,13 @@ function App() {
 
     const { darkMode } = useContext(DarkModeContext);
 
-    const [isRefecth, setIsRefecth] = useState(false);
-
     const queryClient = new QueryClient();
 
     const Layout = memo(() => {
         return (
             <QueryClientProvider client={queryClient}>
                 <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
-                    <Navbar isRefecth={isRefecth} setIsRefecth={setIsRefecth} />
+                    <Navbar />
                     <div style={{ display: 'flex' }}>
                         <LeftBar />
                         <div style={{ display: 'flex', flex: 7, backgroundColor: '#f6f3f3', justifyContent: 'center' }}>
@@ -75,7 +73,7 @@ function App() {
             children: [
                 {
                     path: '/',
-                    element: <Home isRefecth={isRefecth} />,
+                    element: <Home />,
                 },
                 {
                     path: '/profile/:id',

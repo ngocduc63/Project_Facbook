@@ -21,22 +21,23 @@ import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import useLogout from '../../api/logout'
 import { LINK_API_AVATAR } from "../../api/const";
+import { HomeContext } from "../../context/homeContext";
 
 const Navbar = (props) => {
   const logout = useLogout();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { toggle, darkMode } = useContext(DarkModeContext);
+  const { refetchHome } = useContext(HomeContext);
   const [inputSearch, setInputSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resultSearch, setResultSearch] = useState([]);
   const { currentUser, setTokenAndUser } = useContext(AuthContext);
-  const { isRefecth, setIsRefecth } = props;
   const [showPopupChatList, setShowPopupChatList] = useState(false);
   const { setRoomCurrent } = useContext(ChatContext);
 
   const handleRefecth = () => {
-    setIsRefecth(!isRefecth);
+    refetchHome();
   }
 
   const handelInput = (e) => {
