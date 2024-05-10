@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import axios from '../axios';
 import { AuthContext } from '../context/authContext';
-
+import { LINK_API } from './const';
 const useLogout = () => {
     const { token, setTokenAndUser } = useContext(AuthContext);
     const storedToken = localStorage.getItem('token') || null;
@@ -16,12 +16,14 @@ const useLogout = () => {
         if (!refreshToken) {
             refreshToken = token.refresh_token;
         }
-        const response = await axios.post('/user-management/user/logout', {
+        const response = await fetch(`${LINK_API}user-management/user/logout`, {
+            method: 'POST',
+
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${refreshToken}`,
             },
         });
-
         if (response.status === 200) {
             setTokenAndUser(null, null);
             return true;
