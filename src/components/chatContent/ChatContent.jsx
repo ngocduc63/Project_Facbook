@@ -9,6 +9,7 @@ import ContentMess from '../message/ContentMess';
 import InputCustom from '../inputCustom/InputCustom';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { LINK_API_AVATAR } from '../../api/const';
+import { Link } from 'react-router-dom';
 
 function ChatContent({ currentRoom }) {
     const { currentUser } = useContext(AuthContext);
@@ -91,10 +92,6 @@ function ChatContent({ currentRoom }) {
         })
     }
 
-    const handelCall = () => {
-        window.open(`call/${currentRoom}`, '_blank');
-    }
-
     return (
         <div className="chat-content">
             <div className='header'>
@@ -106,9 +103,8 @@ function ChatContent({ currentRoom }) {
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
                 </div>
                 <div className='right-content'>
-                    {/* <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
-                    <CloseIcon onClick={handelClosePopupuMess} className='icon' /> */}
-                    <VideocamIcon className='icon' onClick={handelCall} />
+
+                    <Link to={`call/${currentRoom}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} className='icon'><VideocamIcon /></Link>
 
                 </div>
             </div>

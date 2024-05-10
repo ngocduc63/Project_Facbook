@@ -118,13 +118,13 @@ function MessagePopup({ isShowPopupMess = false }) {
     return (
         showPopupMess && <div className="message-popup">
             <div className='header'>
-                <div className='left-content'>
+                <Link to={`profile/${friendRoom.id}`} className='left-content' >
                     {sucessData === 0 && <Loading size={30} />}
                     <div className='image'>
                         {sucessData === 1 && <img src={LINK_API_AVATAR + friendRoom.avatar} alt="" />}
                     </div>
                     {sucessData === 1 && <span className='name-room'>{friendRoom.username}</span>}
-                </div>
+                </Link>
                 <div className='right-content'>
                     <Link to={`call/${roomCurrent}`} className='icon' style={{ display: 'flex', alignItems: 'center' }}><VideocamIcon /></Link>
                     <RemoveIcon className='icon' onClick={handelHidenPopupMess} />

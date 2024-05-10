@@ -7,9 +7,12 @@ import ChatContent from '../../components/chatContent/ChatContent';
 import Notification from '../notification/Notification';
 import ChatList from '../../components/chatList/chatList';
 import { LINK_API_AVATAR } from '../../api/const';
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import { HomeContext } from '../../context/homeContext';
 
 function Chat() {
   const { currentUser } = useContext(AuthContext);
+  const { setIsShowChatPage } = useContext(HomeContext);
   const { currentRoom, setCurrentRoom } = useContext(MessageContext);
 
   useEffect(() => {
@@ -20,16 +23,25 @@ function Chat() {
     setCurrentRoom(data?._id?.room_id?.$oid);
   }
 
+  const hadelHidenChatPage = () => {
+    setIsShowChatPage(false)
+  }
+
   return (
     <>
       <div className='body-chat'>
         <div className='chat-container'>
           <div className="chatList">
             <header>
-              <div className='image'>
-                <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
+              <div className='left-content'>
+                <div className='image'>
+                  <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
+                </div>
+                <span>{currentUser.username}</span>
               </div>
-              <span>{currentUser.username}</span>
+              <div className='right-content' onClick={hadelHidenChatPage}>
+                <HomeOutlinedIcon />
+              </div>
             </header>
             <div className="search">
               <div className="searchBar">

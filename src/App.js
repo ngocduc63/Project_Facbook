@@ -5,6 +5,7 @@ import Navbar from './components/navbar/Navbar';
 import LeftBar from './components/leftBar/LeftBar';
 import RightBar from './components/rightBar/RightBar';
 import Home from './pages/home/Home';
+import Chat from './pages/chat/Chat';
 import Profile from './pages/profile/Profile';
 import './style.scss';
 import { useContext, useState } from 'react';
@@ -16,14 +17,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import Notification from './pages/notification/Notification';
 import MessagePopup from './components/message/Message';
 import React, { memo } from 'react';
-import Chat from './pages/chat/Chat';
 import Search from './components/search/Search';
 import Call from './pages/call/Call';
+import { HomeContext } from './context/homeContext';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
 
     const { darkMode } = useContext(DarkModeContext);
+
+    const { isShowChatPage } = useContext(HomeContext);
 
     const queryClient = new QueryClient();
 
@@ -41,6 +44,7 @@ function App() {
                         <MessagePopup />
                     </div>
                     {currentUser && <Notification />}
+                    {isShowChatPage && <Chat />}
                 </div>
             </QueryClientProvider>
         );
@@ -99,14 +103,6 @@ function App() {
                 <RedirectRoute>
                     <Register />
                 </RedirectRoute>
-            ),
-        },
-        {
-            path: '/chat',
-            element: (
-                <ProtectedRoute>
-                    <Chat />
-                </ProtectedRoute>
             ),
         },
         {

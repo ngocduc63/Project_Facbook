@@ -28,7 +28,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { toggle, darkMode } = useContext(DarkModeContext);
-  const { refetchHome } = useContext(HomeContext);
+  const { refetchHome, setIsShowChatPage } = useContext(HomeContext);
   const [inputSearch, setInputSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resultSearch, setResultSearch] = useState([]);
@@ -96,6 +96,11 @@ const Navbar = () => {
     setRoomCurrent(data?._id?.room_id?.$oid)
   }
 
+  const handelShowChatPage = () => {
+    setIsShowChatPage(true)
+  }
+
+
   return (
     <div className="navbar">
       <div className="left">
@@ -142,7 +147,7 @@ const Navbar = () => {
             <div className="content-chat-list">
               <header>
                 <span>Đoạn chat</span>
-                <Link to={'/chat'} style={{ display: 'flex', alignItems: 'center' }}><ZoomOutMapIcon style={{ cursor: 'pointer' }} /></Link>
+                <ZoomOutMapIcon style={{ cursor: 'pointer' }} onClick={handelShowChatPage} />
               </header>
               <ChatList handleSelectRoomChat={handelSelectRoomChat} />
             </div>
