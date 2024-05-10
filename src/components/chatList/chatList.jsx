@@ -63,7 +63,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     }
 
     const content = listRoom.map((data, index) => {
-        const friend = data._id.username_friend.user_id === currentUser.id ? data._id.username_key : data._id.username_friend;
+        const friend = data.users.username_friend.user_id === currentUser.id ? data.users.username_key : data.users.username_friend;
         const watched = +data?.last_mess?.sender !== currentUser.id && data?.last_mess?.watched === 0;
         return (
             <div

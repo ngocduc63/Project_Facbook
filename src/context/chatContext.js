@@ -9,7 +9,7 @@ export const ChatContextProvider = ({ children }) => {
     const [isFirstLogin, setIsFirstLogin] = useState(0);
 
     useEffect(() => {
-        if (dataHiden && dataHiden.length > 0) {
+        if (dataHiden && isFirstLogin !== 0) {
             sessionStorage.setItem('listRoomMini', JSON.stringify(dataHiden));
         } else {
             if (isFirstLogin > 0) return;
@@ -24,7 +24,7 @@ export const ChatContextProvider = ({ children }) => {
     }, [dataHiden]);
 
     useEffect(() => {
-        if (roomCurrent && roomCurrent.length > 0) {
+        if (roomCurrent && isFirstLogin !== 0) {
             sessionStorage.setItem('roomCurrent', JSON.stringify(roomCurrent));
         } else {
             if (isFirstLogin > 1) return;

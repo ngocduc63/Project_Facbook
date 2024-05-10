@@ -41,7 +41,7 @@ function Notification() {
 
             if (data.hasOwnProperty('_id')) {
                 if (+data?.last_mess?.sender !== currentUser?.id) {
-                    const friend = data?._id?.username_key?.user_id === currentUser.id ? data._id.username_friend : data._id.username_key;
+                    const friend = data?.users?.username_key?.user_id === currentUser.id ? data.users.username_friend : data.users.username_key;
                     setRoomNoti(data, friend);
                 }
                 updateListRoom(data)

@@ -16,16 +16,11 @@ const useLogout = () => {
         if (!refreshToken) {
             refreshToken = token.refresh_token;
         }
-        const response = await axios.post(
-            '/user-management/user/logout',
-            {},
-            {
-                withCredentials: true,
-                headers: {
-                    Authorization: `Bearer ${refreshToken}`,
-                },
+        const response = await axios.post('/user-management/user/logout', {
+            headers: {
+                Authorization: `Bearer ${refreshToken}`,
             },
-        );
+        });
 
         if (response.status === 200) {
             setTokenAndUser(null, null);
