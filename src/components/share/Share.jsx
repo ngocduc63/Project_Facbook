@@ -4,10 +4,10 @@ import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { LINK_API_AVATAR } from "../../api/const";
 import { HomeContext } from "../../context/homeContext";
+import { toast } from "react-toastify";
 
 const Share = () => {
   const { refetchHome } = useContext(HomeContext)
@@ -16,33 +16,26 @@ const Share = () => {
   const [desc, setDesc] = useState("");
 
   const { currentUser } = useContext(AuthContext);
-  const { token } = useContext(AuthContext);
-
-  const queryClient = useQueryClient();
-  const mutation = useMutation(
-    ({ title, status, file }) => {
-      const formData = new FormData();
-      formData.append("data", JSON.stringify({ title, status }));
-
-      if (file) {
-        formData.append("image", file);
-        console.log("File appended to FormData:", file)
-      }
-
-      return axiosPrivate.post("/post-management/post/create", formData);
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["posts"]);
-        refetchHome();
-      },
-    }
-  );
 
   const handleClick = async (e) => {
     e.preventDefault();
-    console.log("Before mutation: file =", file);
-    mutation.mutate({ title: desc, status: 1, file: file });
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ title: desc, status: 1 }));
+    if (file) {
+      formData.append("image", file);
+    }
+    axiosPrivate.post("/post-management/post/create", formData)
+      .then((response) => {
+        toast.success('Đăng bài thành công', {
+          position: 'top-right'
+        })
+        refetchHome();
+      })
+      .catch((error) => {
+
+      })
+
     setDesc("");
     setFile(null);
   };

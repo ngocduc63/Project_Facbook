@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import Loading from '../../components/loading/Loading'
 import "./login.scss";
 import { toast } from 'react-toastify'
 
@@ -9,6 +10,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState(null);
 
   const navigate = useNavigate()
@@ -53,11 +55,11 @@ const Login = () => {
           </p>
           <span>Don't you have an account?</span>
           <Link to="/register">
-            <button>Register</button>
+            <button>Đăng kí</button>
           </Link>
         </div>
         <div className="right">
-          <h1>Login</h1>
+          <h1>Đăng nhập</h1>
           <form>
             <input
               type="text"
@@ -72,7 +74,8 @@ const Login = () => {
               onChange={handleChange}
             />
             {err && err}
-            <button onClick={handleLogin}>Login</button>
+            {!isLoading && <button onClick={handleLogin}>Đăng nhập</button>}
+            {isLoading && <button ><Loading size={20} /></button>}
           </form>
         </div>
       </div>

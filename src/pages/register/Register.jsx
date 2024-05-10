@@ -8,9 +8,11 @@ import { LINK_API } from "../../api/const";
 
 const Register = () => {
   const [inputs, setInputs] = useState({
-    username: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
+    cfpassword: "",
     birth_date: "",
     gender: ""
   });
@@ -34,8 +36,23 @@ const Register = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    if (inputs.password !== inputs.cfpassword) {
+      toastEr("Mật khẩu không giống nhau")
+      setIsLoading(false);
+      return;
+    }
+
+    const request = {
+      'username': inputs.firstname + ' ' + inputs.lastname,
+      'email': inputs.email,
+      'password': inputs.password,
+      'birth_date': inputs.birth_date,
+      'gender': inputs.gender,
+    }
+
     try {
-      await axios.post(`${LINK_API}user-management/user/register`, inputs);
+      await axios.post(`${LINK_API}user-management/user/register`, request);
       toast.success("Đăng kí thành công", {
         position: "top-right"
       })
@@ -67,16 +84,22 @@ const Register = () => {
           </p>
           <span>Do you have an account?</span>
           <Link to="/login">
-            <button>Login</button>
+            <button>Đăng nhập</button>
           </Link>
         </div>
         <div className="right">
-          <h1>Register</h1>
+          <h1>Đăng kí</h1>
           <form>
             <input
               type="text"
-              placeholder="Username"
-              name="username"
+              placeholder="Frist name"
+              name="firstname"
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              placeholder="Last name"
+              name="lastname"
               onChange={handleChange}
             />
             <input
@@ -89,6 +112,12 @@ const Register = () => {
               type="password"
               placeholder="Password"
               name="password"
+              onChange={handleChange}
+            />
+            <input
+              type="password"
+              placeholder="Comfirm password"
+              name="cfpassword"
               onChange={handleChange}
             />
             <input
@@ -116,7 +145,7 @@ const Register = () => {
               />
               <label htmlFor="female">Nữ</label>
             </div>
-            {isLoading ? <Loading /> : <button onClick={handleClick}>Register</button>}
+            {isLoading ? <Loading size={20} /> : <button onClick={handleClick}>Đăng kí</button>}
           </form>
         </div>
       </div>

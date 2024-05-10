@@ -54,10 +54,14 @@ const Navbar = () => {
     setIsLoading(false)
   }
 
-  const handelSearch = (e) => {
+  const handelSearch = () => {
+    navigate(`search/${inputSearch}`)
+    handelResetSearch();
+  }
+
+  const handeKeyDown = (e) => {
     if (e.keyCode === 13) {
-      navigate(`search/${inputSearch}`)
-      handelResetSearch();
+      handelSearch()
     }
   }
 
@@ -110,15 +114,15 @@ const Navbar = () => {
         <Link to="/" onClick={handleRefecth} className="icon-home">
           <HomeOutlinedIcon />
         </Link>
-        {darkMode ? (
+        {/* {darkMode ? (
           <WbSunnyOutlinedIcon onClick={toggle} />
         ) : (
           <DarkModeOutlinedIcon onClick={toggle} />
-        )}
+        )} */}
         <div className="search">
           {resultSearch.length > 0 && <ArrowBackIcon className="cur-point" onClick={handelResetSearch} />}
-          <SearchOutlinedIcon />
-          <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handelInput} onKeyDown={handelSearch} />
+          <SearchOutlinedIcon onClick={handelSearch} />
+          <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handelInput} onKeyDown={handeKeyDown} />
 
           {(resultSearch.length > 0 || isLoading) && (
             <div className="list-user" onClick={handelResetSearch}>
