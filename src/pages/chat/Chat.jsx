@@ -57,7 +57,6 @@ function Chat() {
           <div className='mess-container' style={{ flex: 3 }}>
             <ChatContent currentRoom={currentRoom} />
           </div>
-          <Notification />
         </div>
       </div>
     </>
