@@ -25,10 +25,6 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     }, [isLoading, isChatPage])
 
     useEffect(() => {
-        return () => setListRoom([]);
-    }, [setListRoom]);
-
-    useEffect(() => {
         const controller = new AbortController()
         const { signal } = controller
 

@@ -17,7 +17,7 @@ export function timeAgo(timestamp) {
     } else if (days > 0) {
         return `${days} ngày trước`;
     } else if (hours > 0) {
-        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        return `${hours} giờ trước`;
     } else if (minutes > 0) {
         return `${minutes} phút trước`;
     } else {

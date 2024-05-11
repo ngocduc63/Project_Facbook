@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '../../api/logout'
 import { LINK_API_AVATAR } from "../../api/const";
 import { HomeContext } from "../../context/homeContext";
+import NotificationList from "../notificationList/NotificationList";
 
 const Navbar = () => {
   const logout = useLogout();
@@ -34,6 +35,7 @@ const Navbar = () => {
   const [resultSearch, setResultSearch] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const [showPopupChatList, setShowPopupChatList] = useState(false);
+  const [showPopupNotification, setShowPopupNotification] = useState(false);
   const { setRoomCurrent } = useContext(ChatContext);
 
   const handleRefecth = () => {
@@ -93,6 +95,7 @@ const Navbar = () => {
 
   const handelShowPopupChatList = () => {
     setShowPopupChatList(!showPopupChatList)
+    setShowPopupNotification(false)
   }
 
   const handelSelectRoomChat = (data) => {
@@ -104,6 +107,14 @@ const Navbar = () => {
     setIsShowChatPage(true)
   }
 
+  const handelShowNotificationList = () => {
+    setShowPopupChatList(false)
+    setShowPopupNotification(!showPopupNotification)
+  }
+
+  const handelSelectNotificationItem = () => {
+    setShowPopupNotification(false)
+  }
 
   return (
     <div className="navbar">
@@ -146,18 +157,21 @@ const Navbar = () => {
       </div>
       <div className="right">
         <div className="icon-chat">
-          <ChatBubbleOutlineIcon style={{ cursor: 'pointer' }} onClick={handelShowPopupChatList} />
+          <ChatBubbleOutlineIcon className="cur-point" onClick={handelShowPopupChatList} />
           {showPopupChatList && (
             <div className="content-chat-list">
               <header>
                 <span>Đoạn chat</span>
-                <ZoomOutMapIcon style={{ cursor: 'pointer' }} onClick={handelShowChatPage} />
+                <ZoomOutMapIcon className="cur-point" onClick={handelShowChatPage} />
               </header>
               <ChatList handleSelectRoomChat={handelSelectRoomChat} />
             </div>
           )}
         </div>
-        <NotificationsOutlinedIcon />
+        <NotificationsOutlinedIcon className="cur-point" onClick={handelShowNotificationList} />
+        {
+          showPopupNotification && <NotificationList handelSelectNotificationItem={handelSelectNotificationItem} />
+        }
         <Link to={`/profile/${currentUser.id}`} className="user">
           <img
             src={LINK_API_AVATAR + currentUser.avatar}

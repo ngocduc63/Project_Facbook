@@ -66,7 +66,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       socketio.off("notification_post", handleNotification);
     };
 
-  }, [currentUser, post.id, setData, postId]);
+  }, [currentUser, post.id, setData, postId, socketio]);
 
   const handleLike = () => {
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
