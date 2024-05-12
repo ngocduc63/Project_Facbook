@@ -40,6 +40,10 @@ const Profile = ({ id }) => {
   );
 
   useEffect(() => {
+    document.title = data?.username ?? 'Facebook';
+  }, [data]);
+
+  useEffect(() => {
     refetch();
   }, [userId, isRefetch, refetch]);
 

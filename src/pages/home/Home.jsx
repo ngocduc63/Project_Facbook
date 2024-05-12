@@ -13,6 +13,10 @@ const Home = () => {
   const [dataPost, setDataPost] = useState();
 
   useEffect(() => {
+    document.title = 'Facebook';
+  }, []);
+
+  useEffect(() => {
     if (!isShowPopupPost) return;
 
     const controller = new AbortController()
