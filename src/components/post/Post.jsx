@@ -70,22 +70,13 @@ const Post = React.forwardRef(({ post }, ref) => {
 
   const handleLike = () => {
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
-      .then(res => {
-        // const data = res.data;
-        // console.log('like succcess');
-      })
       .catch(err => {
         console.log(err);
       })
-
   }
 
   const handleUnLike = () => {
     axiosPrivate.delete((`/post-management/post/unlike/${post.id}`))
-      .then(res => {
-        // const data = res.data;
-        // console.log('unlike success');
-      })
       .catch(err => {
         console.log(err);
       })
@@ -93,7 +84,7 @@ const Post = React.forwardRef(({ post }, ref) => {
 
   const handleDelete = () => {
     axiosPrivate.delete((`/post-management/post/delete/${post.id}`))
-      .then(res => {
+      .then(() => {
         setMenuOpen(false);
         setIsDelete(true)
       })

@@ -6,9 +6,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LINK_API_AVATAR } from '../../api/const';
 import { timeAgo } from '../../helps/timer'
 import { Link, useNavigate } from 'react-router-dom';
+import { HomeContext } from '../../context/homeContext';
 
 function NotificationList({ handelSelectNotificationItem }) {
     const navigate = useNavigate();
+    const { setCurrentPost, setIsShowPopupPost } = useContext(HomeContext)
     const [pageNum, setPageNum] = useState(1);
     const [dataNotifications, setDataNotifications] = useState([])
     const [hasNextPage, setHasNextPage] = useState(false);
@@ -27,7 +29,6 @@ function NotificationList({ handelSelectNotificationItem }) {
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.log(error)
                 setIsLoading(false);
                 if (signal.aborted) return
             })
@@ -36,7 +37,12 @@ function NotificationList({ handelSelectNotificationItem }) {
     }, [axiosPrivate, setDataNotifications, pageNum]);
 
 
-    const handelSelect = () => {
+    const handelSelect = (e, type, post_id) => {
+        if (type === 3 || type === 4) {
+            setCurrentPost(post_id);
+            setIsShowPopupPost(true);
+        }
+
         handelSelectNotificationItem()
     }
 
@@ -49,7 +55,7 @@ function NotificationList({ handelSelectNotificationItem }) {
         const link = data.type === 1 || data.type === 2 ? `profile/${data.user.id}` : ``
 
         return (
-            <Link to={link} className='noti-item' key={index} onClick={handelSelect}>
+            <Link to={link} className='noti-item' key={index} onClick={(e) => handelSelect(e, data.type, data.data.post_id)}>
                 <div className='image'>
                     <img src={LINK_API_AVATAR + data.user.avatar} alt="" />
                 </div>
