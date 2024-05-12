@@ -23,6 +23,7 @@ import useLogout from '../../api/logout'
 import { LINK_API_AVATAR } from "../../api/const";
 import { HomeContext } from "../../context/homeContext";
 import NotificationList from "../notificationList/NotificationList";
+import { NotificationContext } from "../../context/notificationContext";
 
 const Navbar = () => {
   const logout = useLogout();
@@ -30,6 +31,7 @@ const Navbar = () => {
   const axiosPrivate = useAxiosPrivate();
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { refetchHome, setIsShowChatPage } = useContext(HomeContext);
+  const { countNotification } = useContext(NotificationContext);
   const [inputSearch, setInputSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resultSearch, setResultSearch] = useState([]);
@@ -168,7 +170,10 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <NotificationsOutlinedIcon className="cur-point" onClick={handelShowNotificationList} />
+        <div className="icon-noti">
+          <NotificationsOutlinedIcon className="cur-point" onClick={handelShowNotificationList} />
+          {countNotification > 0 && <div className="number-notification"><span>{countNotification > 99 ? '99+' : countNotification}</span></div>}
+        </div>
         {
           showPopupNotification && <NotificationList handelSelectNotificationItem={handelSelectNotificationItem} />
         }

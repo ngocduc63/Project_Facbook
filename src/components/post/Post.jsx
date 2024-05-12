@@ -26,7 +26,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [dataPost, setDataPost] = useState(post);
   const [like, setLike] = useState(0);
   const { currentUser } = useContext(AuthContext);
-  const { setData, postId } = useContext(NotifiPostContext);
+  const { postId } = useContext(NotifiPostContext);
   const [numComment, setNumComment] = useState(post.num_comment);
   const [isDelete, setIsDelete] = useState(false);
   const [showPopupUpdate, setShowPopupUpdate] = useState(false);
@@ -48,8 +48,6 @@ const Post = React.forwardRef(({ post }, ref) => {
     joinRoomNotifi({ post_id: post.id })
 
     const handleNotification = (data) => {
-      setData(data)
-
       if (data.post_id === post.id && data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
         setDataPost(data)
 
@@ -66,7 +64,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       socketio.off("notification_post", handleNotification);
     };
 
-  }, [currentUser, post.id, setData, postId, socketio]);
+  }, [currentUser, post.id, postId, socketio]);
 
   const handleLike = () => {
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)

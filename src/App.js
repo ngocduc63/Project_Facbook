@@ -8,7 +8,7 @@ import Home from './pages/home/Home';
 import Chat from './pages/chat/Chat';
 import Profile from './pages/profile/Profile';
 import './style.scss';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { DarkModeContext } from './context/darkModeContext';
 import { AuthContext } from './context/authContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -16,7 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Notification from './pages/notification/Notification';
 import MessagePopup from './components/message/Message';
-import React, { memo } from 'react';
+import React from 'react';
 import Search from './components/search/Search';
 import Call from './pages/call/Call';
 import { HomeContext } from './context/homeContext';
@@ -30,7 +30,7 @@ function App() {
 
     const queryClient = new QueryClient();
 
-    const Layout = memo(() => {
+    const Layout = () => {
         return (
             <QueryClientProvider client={queryClient}>
                 <div className={`theme-${darkMode ? 'dark' : 'light'}`}>
@@ -48,7 +48,7 @@ function App() {
                 </div>
             </QueryClientProvider>
         );
-    });
+    };
 
     const ProtectedRoute = ({ children }) => {
         if (!currentUser) {

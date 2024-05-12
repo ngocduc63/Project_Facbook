@@ -7,10 +7,12 @@ import { LINK_API_AVATAR } from '../../api/const';
 import { timeAgo } from '../../helps/timer'
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeContext } from '../../context/homeContext';
+import { NotificationContext } from '../../context/notificationContext';
 
 function NotificationList({ handelSelectNotificationItem }) {
     const navigate = useNavigate();
     const { setCurrentPost, setIsShowPopupPost } = useContext(HomeContext)
+    const { setCountNotification } = useContext(NotificationContext)
     const [pageNum, setPageNum] = useState(1);
     const [dataNotifications, setDataNotifications] = useState([])
     const [hasNextPage, setHasNextPage] = useState(false);
@@ -26,6 +28,7 @@ function NotificationList({ handelSelectNotificationItem }) {
                 const data = response.data?.data?.datas
                 setDataNotifications(prev => [...prev, ...data]);
                 setHasNextPage(pageNum <= response.data.data.maxPage - 1);
+                setCountNotification(0)
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -33,10 +36,9 @@ function NotificationList({ handelSelectNotificationItem }) {
             })
 
         return () => controller.abort()
-    }, [axiosPrivate, setDataNotifications, pageNum]);
+    }, [axiosPrivate, setDataNotifications, pageNum, setCountNotification]);
 
-
-    const handelSelect = (e, type, post_id) => {
+    const handelSelect = (type, post_id) => {
         if (type === 3 || type === 4) {
             setCurrentPost(post_id);
             setIsShowPopupPost(true);
@@ -54,7 +56,7 @@ function NotificationList({ handelSelectNotificationItem }) {
         const link = data.type === 1 || data.type === 2 ? `profile/${data.user.id}` : ``
 
         return (
-            <Link to={link} className='noti-item' key={index} onClick={(e) => handelSelect(e, data.type, data.data.post_id)}>
+            <Link to={link} className='noti-item' key={index} onClick={(e) => handelSelect(data.type, data.data.post_id)}>
                 <div className='image'>
                     <img src={LINK_API_AVATAR + data.user.avatar} alt="" />
                 </div>

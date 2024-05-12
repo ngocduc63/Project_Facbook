@@ -9,6 +9,7 @@ import { ChatContextProvider } from './context/chatContext';
 import { MessageContextProvider } from './context/messageContext';
 import { SocketContextProvider } from './context/socketContext';
 import { HomeContextProvider } from './context/homeContext';
+import { NotificationContextProvider } from './context/notificationContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,13 +19,15 @@ root.render(
                 <HomeContextProvider>
                     <AuthContextProvider>
                         <RefecthInviteContextProvider>
-                            <NotifiPostContextProvider>
-                                <ChatContextProvider>
+                            <ChatContextProvider>
+                                <NotifiPostContextProvider>
                                     <MessageContextProvider>
-                                        <App />
+                                        <NotificationContextProvider>
+                                            <App />
+                                        </NotificationContextProvider>
                                     </MessageContextProvider>
-                                </ChatContextProvider>
-                            </NotifiPostContextProvider>
+                                </NotifiPostContextProvider>
+                            </ChatContextProvider>
                         </RefecthInviteContextProvider>
                     </AuthContextProvider>
                 </HomeContextProvider>

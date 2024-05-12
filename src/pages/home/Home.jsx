@@ -6,15 +6,39 @@ import "./home.scss"
 import { HomeContext } from "../../context/homeContext"
 import Post from "../../components/post/Post"
 import useAxiosPrivate from "../../api/axiosPrivate"
+import { AuthContext } from "../../context/authContext"
+import { NotificationContext } from "../../context/notificationContext"
 
 const Home = () => {
   const axiosPrivate = useAxiosPrivate();
   const { isRefetch, isShowPopupPost, currentPost } = useContext(HomeContext)
+  const { setCountNotification } = useContext(NotificationContext)
+  const { currentUser } = useContext(AuthContext)
   const [dataPost, setDataPost] = useState();
 
   useEffect(() => {
     document.title = 'Facebook';
   }, []);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const controller = new AbortController()
+    const { signal } = controller
+
+    axiosPrivate.get((`/user-management/user/${currentUser.id}`), { signal })
+      .then((response) => {
+        const data = response.data?.data;
+        setCountNotification(data.count_notification)
+      })
+      .catch((error) => {
+        console.log(error)
+        if (signal.aborted) return
+      })
+
+    return () => controller.abort()
+
+  }, [currentUser, axiosPrivate, setCountNotification]);
 
   useEffect(() => {
     if (!isShowPopupPost) return;
@@ -41,7 +65,7 @@ const Home = () => {
 
     return () => controller.abort()
 
-  }, [isShowPopupPost, axiosPrivate, currentPost]);
+  }, [axiosPrivate, currentPost, isShowPopupPost]);
 
   return (
     <div className="home">

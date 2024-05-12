@@ -10,12 +10,16 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import { LINK_API_AVATAR } from '../../api/const';
 import { HomeContext } from '../../context/homeContext';
 import { useNavigate } from 'react-router-dom';
+import { NotifiPostContext } from '../../context/notifiPostContext';
+import { NotificationContext } from '../../context/notificationContext';
 
 function Notification() {
     const { socketio } = useContext(SocketContext);
     const { currentUser } = useContext(AuthContext);
     const { setUserCallData } = useContext(HomeContext);
+    const { setCountNotification } = useContext(NotificationContext);
     const { setRoomNoti, updateListRoom } = useContext(ChatContext);
+    const { setData } = useContext(NotifiPostContext);
     const { toggle } = useContext(RefecthInviteContext);
     const [isShowPopupCall, setIsShowPopupCall] = useState(false);
     const [userCall, setUserCall] = useState(null);
@@ -39,6 +43,7 @@ function Notification() {
             catch (err) {
             }
 
+            // notifi popup mess
             if (data.hasOwnProperty('_id')) {
                 if (+data?.last_mess?.sender !== currentUser?.id) {
                     const friend = data?.users?.username_key?.user_id === currentUser.id ? data.users.username_friend : data.users.username_key;
@@ -48,18 +53,28 @@ function Notification() {
                 return;
             }
 
+            // notifi popup call
             if (data.hasOwnProperty('type') && data?.type === 'call') {
                 setUserCall(data)
                 setIsShowPopupCall(true)
             }
 
+            // notifi add, acp friend
             if (data?.created_by?.id === currentUser?.id) return;
             toast.info(data?.description, {
                 position: "top-right",
                 onOpen: () => {
+                    setCountNotification(data?.total_notification)
                     toggle()
                 }
             })
+
+            console.log('data', data)
+            // notifi post
+            if (data.hasOwnProperty('num_like') || data.hasOwnProperty('num_comment') || data.hasOwnProperty('mess')) {
+                setData(data)
+                setCountNotification(data?.total_notification)
+            }
         }
 
         const handleNotification = (data) => {
@@ -72,7 +87,7 @@ function Notification() {
             socketio.off("join_notification", handleNotification);
         };
 
-    }, [currentUser, toggle, setRoomNoti, socketio, updateListRoom]);
+    }, [currentUser, toggle, setRoomNoti, socketio, updateListRoom, setData, setCountNotification]);
 
     const handelCancelCall = () => {
         socketio.emit("leave_room_call", { room: userCall?.room, user: currentUser });
