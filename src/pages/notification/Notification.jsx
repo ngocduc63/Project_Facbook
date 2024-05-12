@@ -68,10 +68,11 @@ function Notification() {
         socketio.on("join_notification", handleNotification);
 
         return () => {
+            socketio.emit("leave_notification", { user_id: currentUser.id });
             socketio.off("join_notification", handleNotification);
         };
 
-    }, [currentUser, toggle, setRoomNoti, socketio]);
+    }, [currentUser, toggle, setRoomNoti, socketio, updateListRoom]);
 
     const handelCancelCall = () => {
         socketio.emit("leave_room_call", { room: userCall?.room, user: currentUser });
