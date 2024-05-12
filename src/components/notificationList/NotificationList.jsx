@@ -24,12 +24,11 @@ function NotificationList({ handelSelectNotificationItem }) {
         axiosPrivate.get((`/notification-management/notifications/${pageNum}`), { signal })
             .then((response) => {
                 const data = response.data?.data?.datas
-                setDataNotifications(data);
+                setDataNotifications(prev => [...prev, ...data]);
                 setHasNextPage(pageNum <= response.data.data.maxPage - 1);
                 setIsLoading(false);
             })
             .catch((error) => {
-                setIsLoading(false);
                 if (signal.aborted) return
             })
 
@@ -86,7 +85,7 @@ function NotificationList({ handelSelectNotificationItem }) {
                 dataLength={dataNotifications.length}
                 next={() => setPageNum(pageNum + 1)}
                 hasMore={hasNextPage}
-                loader={<Loading />}
+                loader={<Loading size={25} />}
                 height={350}
                 className='list-noti'
             >

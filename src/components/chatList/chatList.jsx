@@ -25,13 +25,17 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     }, [isLoading, isChatPage])
 
     useEffect(() => {
+        return () => setListRoom([]);
+    }, [setListRoom]);
+
+    useEffect(() => {
         const controller = new AbortController()
         const { signal } = controller
 
         axiosPrivate.get((`/chat-management/chat-list/${pageNum}`), { signal })
             .then((response) => {
                 const data = JSON.parse(response.data?.data?.datas)
-                setListRoom(data);
+                setListRoom(prev => [...prev, ...data]);
                 setHasNextPage(pageNum <= response.data.data.maxPage - 1);
                 setIsLoading(true);
             })
@@ -95,12 +99,12 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
 
     return (
         <>
-            {!isLoading && <Loading size={35} />}
+            {!isLoading && <Loading size={25} />}
             <InfiniteScroll
                 dataLength={listRoom.length}
                 next={() => setPageNum(pageNum + 1)}
                 hasMore={hasNextPage}
-                loader={<Loading />}
+                loader={<Loading size={25} />}
                 height={(window.innerHeight * 2 / 3)}
                 className='list-room'
             >
