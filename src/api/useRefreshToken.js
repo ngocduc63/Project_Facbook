@@ -1,4 +1,5 @@
-import axios from '../axios';
+import axiosRefresh from './axiosRefresh';
+import { LINK_API } from './const';
 import useLogout from './logout';
 
 const useRefreshToken = () => {
@@ -12,8 +13,8 @@ const useRefreshToken = () => {
     }
 
     const refresh = async () => {
-        const response = await axios.post(
-            '/user-management/user/refresh',
+        const response = await axiosRefresh.post(
+            `${LINK_API}/user-management/user/refresh`,
             {},
             {
                 headers: {
@@ -23,9 +24,7 @@ const useRefreshToken = () => {
         );
 
         if (response.status === 401) {
-            const isSuccess = await logout();
-            if (isSuccess) return;
-            else return refresh;
+            await logout();
         }
 
         return response.data.data.access_token;

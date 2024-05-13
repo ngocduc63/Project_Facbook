@@ -19,11 +19,15 @@ const RightBar = () => {
   useEffect(() => {
     if (isShowPopupFriend) return;
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchInviteList = async () => {
       try {
-        const response = await axiosPrivate.get(`/friend-management/invite-friend/1`);
+        const response = await axiosPrivate.get(`/friend-management/invite-friend/1`, { signal });
         setListInvite(response.data.data.datas);
       } catch (error) {
+        if (signal.aborted) return;
         if (error.response.status === 402) return;
         toast.error("Lỗi không tải được danh sách bạn bè", {
           position: "top-right"
@@ -32,6 +36,8 @@ const RightBar = () => {
     };
 
     fetchInviteList();
+
+    return () => controller.abort();
   }, [axiosPrivate, isRefecthInvite, isShowPopupFriend]);
 
   const deleteListInvite = (friend_id) => {

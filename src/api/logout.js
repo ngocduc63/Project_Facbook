@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import axios from '../axios';
 import { AuthContext } from '../context/authContext';
 import { LINK_API } from './const';
+
 const useLogout = () => {
     const { token, setTokenAndUser } = useContext(AuthContext);
     const storedToken = localStorage.getItem('token') || null;
@@ -29,6 +29,8 @@ const useLogout = () => {
             return true;
         } else if (response.status === 400) {
             return false;
+        } else if (response.status === 401) {
+            setTokenAndUser(null, null);
         }
     };
     return logout;

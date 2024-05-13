@@ -69,7 +69,6 @@ function Notification() {
                 }
             })
 
-            console.log('data', data)
             // notifi post
             if (data.hasOwnProperty('num_like') || data.hasOwnProperty('num_comment') || data.hasOwnProperty('mess')) {
                 setData(data)

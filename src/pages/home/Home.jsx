@@ -32,7 +32,6 @@ const Home = () => {
         setCountNotification(data.count_notification)
       })
       .catch((error) => {
-        console.log(error)
         if (signal.aborted) return
       })
 

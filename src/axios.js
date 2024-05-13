@@ -4,10 +4,18 @@ const BASE_URL = LINK_API;
 
 export default axios.create({
     baseURL: BASE_URL,
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+    },
 });
 
 export const makeRequest = axios.create({
     baseURL: BASE_URL,
-    headers: { 'Content-Type': 'application/json' },
-    withCredentials: true,
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+    },
 });
