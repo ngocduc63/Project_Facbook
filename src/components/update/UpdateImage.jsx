@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import "./update.scss";
-import { convertToTime } from "../../helps/timer";
 import useAxiosPrivate from '../../api/axiosPrivate'
 import { toast } from 'react-toastify'
 import { AuthContext } from "../../context/authContext";
