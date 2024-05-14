@@ -17,6 +17,7 @@ import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SocketContext } from "../../context/socketContext";
 import { LINK_API_AVATAR, LINK_API_COVER, LINK_API_POST } from "../../api/const";
+import { toast } from "react-toastify";
 
 const Post = React.forwardRef(({ post }, ref) => {
   const { socketio } = useContext(SocketContext)
@@ -31,6 +32,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [isDelete, setIsDelete] = useState(false);
   const [showPopupUpdate, setShowPopupUpdate] = useState(false);
   const [showPopupLikes, setShowPopupLikes] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dataRequestLike = {
     'id_post': post.id,
@@ -49,7 +51,10 @@ const Post = React.forwardRef(({ post }, ref) => {
 
     const handleNotification = (data) => {
       if (data.post_id === post.id && data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
-        setDataPost(data)
+        const data_rs = dataPost
+        console.log(data_rs)
+        dataPost.num_like = data.num_like
+        setDataPost(data_rs)
 
         if (currentUser.id === data.user_id) setLike(prve => prve + 1)
       }
@@ -64,19 +69,33 @@ const Post = React.forwardRef(({ post }, ref) => {
       socketio.off("notification_post", handleNotification);
     };
 
-  }, [currentUser, post.id, postId, socketio]);
+  }, [currentUser, post.id, postId, socketio, dataPost]);
 
   const handleLike = () => {
+    setIsLoading(true);
     axiosPrivate.post(('/post-management/post/like'), dataRequestLike)
-      .catch(err => {
-        console.log(err);
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        toast.error('Lỗi không thể like bài viết', {
+          position: 'top-right'
+        })
       })
   }
 
   const handleUnLike = () => {
+    setIsLoading(true);
     axiosPrivate.delete((`/post-management/post/unlike/${post.id}`))
-      .catch(err => {
-        console.log(err);
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        toast.error('Lỗi không thể unlike bài viết', {
+          position: 'top-right'
+        })
       })
   }
 
@@ -84,10 +103,15 @@ const Post = React.forwardRef(({ post }, ref) => {
     axiosPrivate.delete((`/post-management/post/delete/${post.id}`))
       .then(() => {
         setMenuOpen(false);
-        setIsDelete(true)
+        setIsDelete(true);
+        toast.success('Xóa bài viết thành công', {
+          position: 'top-right'
+        })
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
+        toast.error('Lỗi không thể xóa bài viết', {
+          position: 'top-right'
+        })
       })
   };
 
@@ -96,7 +120,7 @@ const Post = React.forwardRef(({ post }, ref) => {
     setMenuOpen(false);
   };
 
-  const handelShowPopupLikes = () => {
+  const handleShowPopupLikes = () => {
     setShowPopupLikes(!showPopupLikes)
   }
 
@@ -209,16 +233,23 @@ const Post = React.forwardRef(({ post }, ref) => {
           </div>
           <div className="info">
             <div className="item">
-              {(like % 2 === 0 ? post.liked : !post.liked) ?
-                (
-                  <FavoriteOutlinedIcon
-                    style={{ color: "red" }}
-                    onClick={handleUnLike}
-                  />
-                ) : (
-                  <FavoriteBorderOutlinedIcon onClick={handleLike} />
-                )}
-              <span onClick={handelShowPopupLikes}>{dataPost.num_like ? dataPost.num_like : post?.num_like} Likes</span>
+              {isLoading && <Loading size={20} />}
+              {
+                !isLoading && (
+                  <>
+                    {(like % 2 === 0 ? post.liked : !post.liked) ?
+                      (
+                        <FavoriteOutlinedIcon
+                          style={{ color: "red" }}
+                          onClick={handleUnLike}
+                        />
+                      ) : (
+                        <FavoriteBorderOutlinedIcon onClick={handleLike} />
+                      )}
+                  </>
+                )
+              }
+              <span onClick={handleShowPopupLikes}>{dataPost.num_like ? dataPost.num_like : post?.num_like} Likes</span>
               {showPopupLikes && (
                 <ContentListLikes postId={post.id} />
               )}

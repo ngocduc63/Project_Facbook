@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HomeContext } from '../../context/homeContext';
 import { NotificationContext } from '../../context/notificationContext';
 
-function NotificationList({ handelSelectNotificationItem }) {
+function NotificationList({ handleSelectNotificationItem }) {
     const navigate = useNavigate();
     const { setCurrentPost, setIsShowPopupPost } = useContext(HomeContext)
     const { setCountNotification } = useContext(NotificationContext)
@@ -38,16 +38,16 @@ function NotificationList({ handelSelectNotificationItem }) {
         return () => controller.abort()
     }, [axiosPrivate, setDataNotifications, pageNum, setCountNotification]);
 
-    const handelSelect = (type, post_id) => {
+    const handleSelect = (type, post_id) => {
         if (type === 3 || type === 4) {
             setCurrentPost(post_id);
             setIsShowPopupPost(true);
         }
 
-        handelSelectNotificationItem()
+        handleSelectNotificationItem()
     }
 
-    const handelRedirectToProfile = (e, userId) => {
+    const handleRedirectToProfile = (e, userId) => {
         e.preventDefault();
         navigate(`profile/${userId}`)
     }
@@ -56,7 +56,7 @@ function NotificationList({ handelSelectNotificationItem }) {
         const link = data.type === 1 || data.type === 2 ? `profile/${data.user.id}` : ``
 
         return (
-            <Link to={link} className='noti-item' key={index} onClick={(e) => handelSelect(data.type, data.data.post_id)}>
+            <Link to={link} className='noti-item' key={index} onClick={(e) => handleSelect(data.type, data.data.post_id)}>
                 <div className='image'>
                     <img src={LINK_API_AVATAR + data.user.avatar} alt="" />
                 </div>
@@ -68,10 +68,10 @@ function NotificationList({ handelSelectNotificationItem }) {
                         <span><span>{data.user.username}</span> đã chấp nhận kết bạn</span>
                     }
                     {data.type === 3 &&
-                        <span><span onClick={(e) => handelRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã thích bài viết của bạn</span>
+                        <span><span onClick={(e) => handleRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã thích bài viết của bạn</span>
                     }
                     {data.type === 4 &&
-                        <span><span onClick={(e) => handelRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã bình luận bài viết của bạn</span>
+                        <span><span onClick={(e) => handleRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã bình luận bài viết của bạn</span>
                     }
                     <div className='time'>{timeAgo(data.create_at)}</div>
                 </div>

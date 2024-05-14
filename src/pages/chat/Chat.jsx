@@ -1,10 +1,9 @@
 import './chat.scss'
 import SearchIcon from '@mui/icons-material/Search';
 import { AuthContext } from '../../context/authContext';
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { MessageContext } from '../../context/messageContext';
 import ChatContent from '../../components/chatContent/ChatContent';
-import Notification from '../notification/Notification';
 import ChatList from '../../components/chatList/chatList';
 import { LINK_API_AVATAR } from '../../api/const';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -23,7 +22,7 @@ function Chat() {
     setCurrentRoom(data?._id?.room_id?.$oid);
   }
 
-  const hadelHidenChatPage = () => {
+  const hadleHidenChatPage = () => {
     setIsShowChatPage(false)
   }
 
@@ -39,7 +38,7 @@ function Chat() {
                 </div>
                 <span>{currentUser.username}</span>
               </div>
-              <div className='right-content' onClick={hadelHidenChatPage}>
+              <div className='right-content' onClick={hadleHidenChatPage}>
                 <HomeOutlinedIcon />
               </div>
             </header>

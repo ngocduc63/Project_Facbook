@@ -83,9 +83,9 @@ function MessagePopup({ isShowPopupMess = false }) {
         return () => {
             socketio.off("receive_message", handleNotification);
         };
-    }, [sucessData, roomCurrent])
+    }, [sucessData, roomCurrent, socketio])
 
-    const handelSendMessage = (inputValue) => {
+    const handleSendMessage = (inputValue) => {
         if (inputValue.trim() === '') return;
         socketio.emit("send_message", {
             "sender": `${currentUser.id}`,
@@ -95,7 +95,7 @@ function MessagePopup({ isShowPopupMess = false }) {
     }
 
 
-    const handelClosePopupuMess = () => {
+    const handleClosePopupuMess = () => {
         sessionStorage.setItem('roomCurrent', '')
         setRoomCurrent('')
         setShowPopupMess(false)
@@ -112,7 +112,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 return [...prev, { 'room': roomCurrent, 'friend': friendRoom }];
             }
         });
-        handelClosePopupuMess()
+        handleClosePopupuMess()
     }
 
     return (
@@ -128,7 +128,7 @@ function MessagePopup({ isShowPopupMess = false }) {
                 <div className='right-content'>
                     <Link to={`call/${roomCurrent}`} className='icon' style={{ display: 'flex', alignItems: 'center' }}><VideocamIcon /></Link>
                     <RemoveIcon className='icon' onClick={handelHidenPopupMess} />
-                    <CloseIcon onClick={handelClosePopupuMess} className='icon' />
+                    <CloseIcon onClick={handleClosePopupuMess} className='icon' />
                 </div>
             </div>
             <InfiniteScroll
@@ -142,7 +142,7 @@ function MessagePopup({ isShowPopupMess = false }) {
             >
                 <ContentMess dataMess={dataMess} friendRoom={friendRoom} currentUser={currentUser} />
             </InfiniteScroll>
-            <InputCustom handelSendMessage={handelSendMessage} />
+            <InputCustom handelSendMessage={handleSendMessage} />
         </div>
     );
 }

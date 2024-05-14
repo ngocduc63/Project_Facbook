@@ -1,10 +1,11 @@
 import './update.scss';
 import { timeAgo } from '../../helps/timer';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import useAxiosPrivate from '../../api/axiosPrivate';
 import { toast } from 'react-toastify';
 import { LINK_API_AVATAR, LINK_API_COVER, LINK_API_POST } from '../../api/const';
+import Loading from '../loading/Loading';
 
 const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
     const [image, setImage] = useState(null);
@@ -13,25 +14,27 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
     const handelClose = () => {
         setShowPopupUpdate(false);
     }
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (dataPost) setInput(dataPost.title);
     }, [dataPost])
 
-    const handelSummit = () => {
+    const handleSubmit = () => {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append('data', JSON.stringify({ 'id': post.id, 'title': input, 'status': 1 }))
         formData.append('image', image)
         axiosPrivate.put(('/post-management/post/update'), formData)
             .then((response) => {
-                toast.success('Chỉnh sửa bài viết tành công', {
-                    position: 'top-right',
-                })
-                const data = response?.data?.data
-                console.log(data)
+                const data = response?.data?.data;
+                setIsLoading(false);
                 setDataPost(data);
                 setInput(data.title);
                 handelClose();
+                toast.success('Chỉnh sửa bài viết thành công', {
+                    position: 'top-right',
+                })
             })
             .catch((error) => { });
     }
@@ -79,7 +82,8 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                         </div>
 
                     </div>
-                    <button onClick={handelSummit}>Xác nhận</button>
+                    {!isLoading && <button onClick={handleSubmit}>Xác nhận</button>}
+                    {isLoading && <button><Loading size={20} /></button>}
                 </div>
                 <button className="close" onClick={handelClose}>
                     Đóng

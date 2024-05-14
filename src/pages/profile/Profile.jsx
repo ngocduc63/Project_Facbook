@@ -23,7 +23,7 @@ const Profile = ({ id }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openUpdateImage, setOpenUpdateImage] = useState(0);
   const [openPopup, setOpenPopup] = useState(0);
-  const { currentUser, setTokenAndUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const [isRefetch, setIsRefetch] = useState(false);
   const [showPopupUnfriend, setShowPopupUnfriend] = useState(false);
   const axiosPrivate = useAxiosPrivate();
@@ -33,7 +33,7 @@ const Profile = ({ id }) => {
 
   const userId = +location.pathname.split("/")[2] ? +location.pathname.split("/")[2] : id;
 
-  const { isLoading, error, data, refetch } = useQuery(["user", userId], () =>
+  const { isLoading, data, refetch } = useQuery(["user", userId], () =>
     axiosPrivate.get("/user-management/user/" + userId).then((res) => {
       return res.data.data;
     })
@@ -85,13 +85,13 @@ const Profile = ({ id }) => {
 
   const handelAddFriend = () => {
     axiosPrivate.post(('friend-management/add-friend/' + userId))
-      .then((response) => {
+      .then(() => {
         toast.success("Gửi lời mời thành công", {
           position: "top-right"
         })
         setIsRefetch(!isRefetch)
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Gửi lời mời thất bại", {
           position: "top-right"
         })
@@ -100,13 +100,13 @@ const Profile = ({ id }) => {
 
   const handelAcceptFriend = () => {
     axiosPrivate.put(('/friend-management/accept/' + userId))
-      .then((response) => {
+      .then(() => {
         toast.success("Xác nhận lời mời thành công", {
           position: "top-right"
         })
         setIsRefetch(!isRefetch)
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Xác nhận lời mời thất bại", {
           position: "top-right"
         })
@@ -115,13 +115,13 @@ const Profile = ({ id }) => {
 
   const handelCancelFriend = () => {
     axiosPrivate.delete(('/friend-management/unfriend/' + userId))
-      .then((response) => {
+      .then(() => {
         toast.success("Hủy kết bạn thành công", {
           position: "top-right"
         })
         setIsRefetch(!isRefetch)
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Hủy lời mời thất bại", {
           position: "top-right"
         })
@@ -132,8 +132,6 @@ const Profile = ({ id }) => {
     axiosPrivate.get((`/friend-management/get-room/${userId}`))
       .then((response) => {
         setRoomCurrent(response?.data?.data?.room_id)
-      })
-      .catch((error) => {
       })
   }
 

@@ -1,6 +1,6 @@
 import Post from "../post/Post";
 import "./posts.scss";
-import { useState, useEffect, memo, useContext } from "react";
+import { useState, useEffect, memo } from "react";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useAxiosPrivate from '../../api/axiosPrivate';
@@ -8,8 +8,6 @@ import useAxiosPrivate from '../../api/axiosPrivate';
 const Posts = ({ userId, isRefecth }) => {
   const axiosPrivate = useAxiosPrivate();
   const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({});
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageNum, setPageNum] = useState(1)
   const [isReload, setIsReload] = useState(false);
@@ -23,8 +21,6 @@ const Posts = ({ userId, isRefecth }) => {
   }, [isRefecth, userId])
 
   useEffect(() => {
-    setIsLoading(true);
-    setError({});
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -40,12 +36,9 @@ const Posts = ({ userId, isRefecth }) => {
 
           setResults((prev) => [...prev, ...data.data.datas]);
           setHasNextPage(pageNum <= data.data.maxPage - 1);
-          setIsLoading(false);
         })
-        .catch((e) => {
-          setIsLoading(false);
+        .catch(() => {
           if (signal.aborted) return;
-          setError({ message: e.message });
         });
     } else {
       axiosPrivate
@@ -55,12 +48,9 @@ const Posts = ({ userId, isRefecth }) => {
 
           setResults((prev) => [...prev, ...data.data.datas]);
           setHasNextPage(pageNum <= data.data.maxPage - 1);
-          setIsLoading(false);
         })
-        .catch((e) => {
-          setIsLoading(false);
+        .catch(() => {
           if (signal.aborted) return;
-          setError({ message: e.message });
         });
     }
 
@@ -87,7 +77,7 @@ const Posts = ({ userId, isRefecth }) => {
       >
         {content}
       </InfiniteScroll>
-      <p className="center"><a href="#top" className="button-load">Lên đầu trang</a></p>
+      <p className="center" style={{ marginTop: 20 }}><a href="#top" className="button-load">Lên đầu trang</a></p>
     </>
   );
 };

@@ -11,7 +11,6 @@ const Login = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState(null);
 
   const navigate = useNavigate()
 
@@ -26,15 +25,16 @@ const Login = () => {
   }
 
   const handleLogin = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     try {
       await login(inputs);
+      setIsLoading(false)
       toast.success("Đăng nhập thành công", {
         position: "top-right"
       })
       navigate("/")
     } catch (err) {
-      console.log(err)
       const errCode = err.response.data.errorCode
 
       if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
@@ -73,7 +73,6 @@ const Login = () => {
               name="password"
               onChange={handleChange}
             />
-            {err && err}
             {!isLoading && <button onClick={handleLogin}>Đăng nhập</button>}
             {isLoading && <button ><Loading size={20} /></button>}
           </form>

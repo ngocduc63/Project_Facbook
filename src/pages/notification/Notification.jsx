@@ -88,12 +88,12 @@ function Notification() {
 
     }, [currentUser, toggle, setRoomNoti, socketio, updateListRoom, setData, setCountNotification]);
 
-    const handelCancelCall = () => {
+    const handleCancelCall = () => {
         socketio.emit("leave_room_call", { room: userCall?.room, user: currentUser });
         setIsShowPopupCall(false);
     }
 
-    const handelAcpectCall = () => {
+    const handleAcpectCall = () => {
         setIsShowPopupCall(false);
         setUserCallData(userCall)
         nagivate(`call/${userCall?.room}_true`);
@@ -112,10 +112,10 @@ function Notification() {
                             <span>{userCall?.username}</span>
                         </div>
                         <div className="buttons">
-                            <div className='cancel-btn' onClick={handelCancelCall}>
+                            <div className='cancel-btn' onClick={handleCancelCall}>
                                 <LocalPhoneIcon />
                             </div>
-                            <div className='accept-btn' onClick={handelAcpectCall}>
+                            <div className='accept-btn' onClick={handleAcpectCall}>
                                 <VideocamIcon />
                             </div>
                         </div>

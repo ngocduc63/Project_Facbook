@@ -65,7 +65,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
         setDataFriend(newList)
     }
 
-    const handelAcceptFriend = (e, friend_id) => {
+    const handleAcceptFriend = (e, friend_id) => {
         e.preventDefault();
         axiosPrivate.put(('/friend-management/accept/' + friend_id))
             .then((response) => {
@@ -81,7 +81,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
             })
     }
 
-    const handelCancelFriend = (e, friend_id) => {
+    const handleCancelFriend = (e, friend_id) => {
         e.preventDefault();
         axiosPrivate.delete(('/friend-management/unfriend/' + friend_id))
             .then((response) => {
@@ -97,7 +97,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
             })
     }
 
-    const handelClosePopup = () => {
+    const handleClosePopup = () => {
         setIsShowPopupFriend(false)
     }
     const debounceSearch = useCallback(debounce((nextValue) => fetchUser(nextValue), 300), [])// eslint-disable-line react-hooks/exhaustive-deps
@@ -108,7 +108,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
         setPageNum(1);
     }, 10)
 
-    const handelInput = (e) => {
+    const handleInput = (e) => {
         setIsLoading(true);
         const input = e.target.value
         setInputSearch(input);
@@ -118,7 +118,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
     const content = dataFriend.map(user => {
         return (
             <div className='item'>
-                <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id} onClick={handelClosePopup}>
+                <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id} onClick={handleClosePopup}>
                     <div className="userInfo">
                         <img
                             src={LINK_API_AVATAR + user.avatar}
@@ -129,8 +129,8 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                         <span>{user.name}</span>
 
                         <div className="buttons">
-                            {!isPopupFriend && <button onClick={(e) => handelAcceptFriend(e, user.friend_id)}>Xác nhận</button>}
-                            <button onClick={(e) => handelCancelFriend(e, user.friend_id)}>{isPopupFriend ? 'Hủy kết bạn' : 'Hủy'}</button>
+                            {!isPopupFriend && <button onClick={(e) => handleAcceptFriend(e, user.friend_id)}>Xác nhận</button>}
+                            <button onClick={(e) => handleCancelFriend(e, user.friend_id)}>{isPopupFriend ? 'Hủy kết bạn' : 'Hủy'}</button>
                         </div>
                     </div>
                 </Link>
@@ -144,12 +144,12 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                 <div className='content'>
                     <header>
                         <h1>{isPopupFriend ? 'Danh sách bạn bè' : 'Danh sách lời mời'}</h1>
-                        <button className="close" onClick={handelClosePopup}>
+                        <button className="close" onClick={handleClosePopup}>
                             Đóng
                         </button>
                     </header>
                     <div className="search">
-                        <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handelInput} />
+                        <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handleInput} />
                     </div>
                     {isLoading && <Loading />}
                     {!isLoading && dataFriend.length <= 0 && <h3 style={{ textAlign: 'center' }}>{isPopupFriend ? 'Không có bạn bè' : 'Không có lời mời'}</h3>}

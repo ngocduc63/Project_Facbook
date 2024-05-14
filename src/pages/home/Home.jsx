@@ -1,4 +1,4 @@
-import Stories from "../../components/stories/Stories"
+// import Stories from "../../components/stories/Stories"
 import Posts from "../../components/posts/Posts"
 import Share from "../../components/share/Share"
 import { memo, useContext, useState, useEffect } from 'react'
@@ -31,7 +31,7 @@ const Home = () => {
         const data = response.data?.data;
         setCountNotification(data.count_notification)
       })
-      .catch((error) => {
+      .catch(() => {
         if (signal.aborted) return
       })
 

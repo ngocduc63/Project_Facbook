@@ -46,7 +46,7 @@ const RightBar = () => {
     setListInvite(newList)
   }
 
-  const handelAcceptFriend = (e, friend_id) => {
+  const handleAcceptFriend = (e, friend_id) => {
     e.preventDefault();
     axiosPrivate.put(('/friend-management/accept/' + friend_id))
       .then((response) => {
@@ -62,7 +62,7 @@ const RightBar = () => {
       })
   }
 
-  const handelCancelFriend = (e, friend_id) => {
+  const handleCancelFriend = (e, friend_id) => {
     e.preventDefault();
     axiosPrivate.delete(('/friend-management/unfriend/' + friend_id))
       .then((response) => {
@@ -82,26 +82,26 @@ const RightBar = () => {
 
 
   const IconMess = ({ data, index }) => {
-    const handelCloseDataPopupMess = (e) => {
+    const handleCloseDataPopupMess = (e) => {
       e.preventDefault()
       setDataHidden(prev => prev.filter(item => data.room !== item.room))
     }
 
-    const handelShowPopupMess = () => {
+    const handleShowPopupMess = () => {
       setRoomCurrent(data.room)
     }
 
     return (
       <div className="main">
-        <div className="icon-close" onClick={handelCloseDataPopupMess}><CloseIcon className="icon-close" /></div>
-        <div className="image" onClick={handelShowPopupMess}>
+        <div className="icon-close" onClick={handleCloseDataPopupMess}><CloseIcon className="icon-close" /></div>
+        <div className="image" onClick={handleShowPopupMess}>
           <img src={LINK_API_AVATAR + data.friend.avatar} alt="" />
         </div>
       </div>
     )
   }
 
-  const handelOpenPopupAddFriend = () => {
+  const handleOpenPopupAddFriend = () => {
     setIsShowPopupFriend(true)
   }
 
@@ -111,7 +111,7 @@ const RightBar = () => {
       <div className="rightBar">
         <div className="container">
           <div className="item">
-            <span onClick={handelOpenPopupAddFriend} style={{ cursor: 'pointer' }}>Danh sách lời mời</span>
+            <span onClick={handleOpenPopupAddFriend} style={{ cursor: 'pointer' }}>Danh sách lời mời</span>
             {listInvite.map(user =>
             (
               <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id}>
@@ -125,8 +125,8 @@ const RightBar = () => {
                   <span>{user.name}</span>
 
                   <div className="buttons">
-                    <button onClick={(e) => handelAcceptFriend(e, user.friend_id)}>Xác nhận</button>
-                    <button onClick={(e) => handelCancelFriend(e, user.friend_id)}>Hủy</button>
+                    <button onClick={(e) => handleAcceptFriend(e, user.friend_id)}>Xác nhận</button>
+                    <button onClick={(e) => handleCancelFriend(e, user.friend_id)}>Hủy</button>
                   </div>
                 </div>
               </Link>

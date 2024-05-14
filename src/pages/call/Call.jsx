@@ -1,5 +1,5 @@
 import './call.scss';
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react"
 import Peer from "simple-peer"
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from '../../context/authContext';
@@ -24,12 +24,12 @@ function Call() {
     const myVideo = useRef();
     const userVideo = useRef();
     const roomId = useLocation().pathname.split("/")[2];
-    const [isFrist, setIsFrist] = useState(true)
+    const [isFrist, setIsFrist] = useState(true);
+    const [isFristSetPeer, setIsFristSetPeer] = useState(true);
     const nagivate = useNavigate();
 
     useEffect(() => {
         document.title = 'Video call'
-        console.log(stream)
         return () => {
             // Cleanup function to stop using camera and microphone
             if (stream) {
@@ -39,6 +39,98 @@ function Call() {
             }
         };
     }, [stream]);
+
+    const handleEndCall = () => {
+        let room = roomId
+        if (roomId.includes('_')) room = roomId.split('_')[0]
+        socketio.emit('leave_room_call', { room })
+        setCallEnded(true)
+    }
+
+    const handleRecall = () => {
+        setCancelCall(false)
+        setUserCall(null)
+        setCallEnded(false)
+        setIsLoading(true)
+        callUser()
+    }
+
+    const callUser = useCallback(() => {
+        if (!stream) return;
+
+        const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            stream: stream
+        })
+
+        peer.on("signal", (data) => {
+            socketio.emit('create_room_call',
+                {
+                    room: roomId,
+                    user_id: currentUser.id,
+                    signalData: data,
+                })
+
+        })
+
+        peer.on("stream", (stream) => {
+            if (callEnded && !cancelCall) return;
+            userVideo.current.srcObject = stream
+        })
+
+        socketio.on("room_call_notification", (data) => {
+            if (data?.type === 'end_call') {
+                setCallEnded(true)
+                setIsLoading(false)
+                if (!userCall) {
+                    setUserCall(data?.user)
+                    setCancelCall(true)
+                    return;
+                }
+                setCancelCall(false)
+                return;
+            }
+            console.log(data)
+            setUserCall(data?.user)
+            setCallAccepted(true)
+            peer.signal(data?.signal)
+            setIsLoading(false)
+        })
+
+    }, [callEnded, currentUser, cancelCall, socketio, roomId, stream, userCall])
+
+    const answerCall = useCallback((room, callerSignal) => {
+        if (!stream) return;
+        if (!isFristSetPeer) return;
+
+        setCallAccepted(true)
+        const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream: stream
+        })
+        peer.on("signal", (data) => {
+            socketio.emit('join_room_call',
+                {
+                    room: room,
+                    user: currentUser,
+                    signal: data
+                })
+        })
+        peer.on("stream", (stream) => {
+            if (callEnded) return;
+            userVideo.current.srcObject = stream
+        })
+
+        socketio.on("room_call_notification", (data) => {
+            if (data?.type === 'end_call') setCallEnded(true)
+        })
+
+        peer.signal(callerSignal)
+        setIsFristSetPeer(false)
+        setIsLoading(false)
+    }, [callEnded, currentUser, socketio, stream, isFristSetPeer])
 
     useEffect(() => {
         if (!socketio || !isFrist) return;
@@ -71,94 +163,9 @@ function Call() {
             callUser()
         }
 
-    }, [stream, roomId, userCallData]);
+    }, [stream, roomId, userCallData, answerCall, callUser]);
 
-    const callUser = () => {
-        const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            stream: stream
-        })
-        peer.on("signal", (data) => {
-            socketio.emit('create_room_call',
-                {
-                    room: roomId,
-                    user_id: currentUser.id,
-                    signalData: data,
-                })
-
-        })
-        peer.on("stream", (stream) => {
-            if (callEnded && !cancelCall) return;
-            userVideo.current.srcObject = stream
-
-        })
-        socketio.on("room_call_notification", (data) => {
-            if (data?.type === 'end_call') {
-                setCallEnded(true)
-                setIsLoading(false)
-                if (!userCall) {
-                    setUserCall(data?.user)
-                    setCancelCall(true)
-                    return;
-                }
-                setCancelCall(false)
-                return;
-            }
-            setUserCall(data?.user)
-            setCallAccepted(true)
-            peer.signal(data?.signal)
-            console.log(peer)
-            setIsLoading(false)
-        })
-    }
-
-    const answerCall = (room, callerSignal) => {
-
-        setCallAccepted(true)
-        const peer = new Peer({
-            initiator: false,
-            trickle: false,
-            stream: stream
-        })
-        peer.on("signal", (data) => {
-            socketio.emit('join_room_call',
-                {
-                    room: room,
-                    user: currentUser,
-                    signal: data
-                })
-        })
-        peer.on("stream", (stream) => {
-            if (callEnded) return;
-            userVideo.current.srcObject = stream
-        })
-
-        socketio.on("room_call_notification", (data) => {
-            if (data?.type === 'end_call') setCallEnded(true)
-        })
-
-        peer.signal(callerSignal)
-        console.log(peer)
-        setIsLoading(false)
-    }
-
-    const handelEndCall = () => {
-        let room = roomId
-        if (roomId.includes('_')) room = roomId.split('_')[0]
-        socketio.emit('leave_room_call', { room })
-        setCallEnded(true)
-    }
-
-    const handelRecall = () => {
-        setCancelCall(false)
-        setUserCall(null)
-        setCallEnded(false)
-        setIsLoading(true)
-        callUser()
-    }
-
-    const handelBackToHome = () => {
+    const handleBackToHome = () => {
         nagivate(-1)
     }
 
@@ -172,7 +179,7 @@ function Call() {
                             <div className="buttons">
                                 {
                                     callAccepted && !callEnded && (
-                                        <div className='cancel-btn' onClick={handelEndCall}>
+                                        <div className='cancel-btn' onClick={handleEndCall}>
                                             <LocalPhoneIcon />
                                             <span>Kết thúc</span>
                                         </div>
@@ -180,14 +187,14 @@ function Call() {
                                 }
                                 {
                                     !callAccepted && cancelCall && (
-                                        <div className='accept-btn' onClick={handelRecall}>
+                                        <div className='accept-btn' onClick={handleRecall}>
                                             <VideocamIcon />
                                             <span>Gọi lại</span>
                                         </div>
                                     )
                                 }
                                 {callAccepted && callEnded &&
-                                    <div className='home-btn' onClick={handelBackToHome}>
+                                    <div className='home-btn' onClick={handleBackToHome}>
                                         <HomeOutlinedIcon />
                                         <span>Trang chủ</span>
                                     </div>

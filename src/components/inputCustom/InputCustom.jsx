@@ -21,7 +21,7 @@ function InputCustom({ handelSendMessage, maxRow = 5, inputRef = null, defaultVa
             }
         } else if (event.keyCode === 13) {
             event.preventDefault();
-            handelSend()
+            handleSend()
         }
     };
 
@@ -36,7 +36,7 @@ function InputCustom({ handelSendMessage, maxRow = 5, inputRef = null, defaultVa
 
     };
 
-    const handelSend = () => {
+    const handleSend = () => {
         handelSendMessage(inputValue);
         setTextareaHeight(22);
         setInputValue('')
@@ -56,7 +56,7 @@ function InputCustom({ handelSendMessage, maxRow = 5, inputRef = null, defaultVa
                     resize: 'none'
                 }}
             />
-            <SendIcon className='send-icon' onClick={handelSend} />
+            <SendIcon className='send-icon' onClick={handleSend} />
         </div>
     );
 }

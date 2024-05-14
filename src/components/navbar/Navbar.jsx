@@ -3,13 +3,13 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
+// import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+// import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
 import { useContext, useState, useCallback } from "react";
-import { DarkModeContext } from "../../context/darkModeContext";
+// import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { toast } from 'react-toastify';
@@ -29,7 +29,7 @@ const Navbar = () => {
   const logout = useLogout();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const { toggle, darkMode } = useContext(DarkModeContext);
+  // const { toggle, darkMode } = useContext(DarkModeContext);
   const { refetchHome, setIsShowChatPage } = useContext(HomeContext);
   const { countNotification } = useContext(NotificationContext);
   const [inputSearch, setInputSearch] = useState('');
@@ -44,28 +44,28 @@ const Navbar = () => {
     refetchHome();
   }
 
-  const handelInput = (e) => {
+  const handleInput = (e) => {
     setIsLoading(true);
     const input = e.target.value
     setInputSearch(input);
     if (input && input.trim() !== '') debounceSearch(input);
-    else handelResetSearch()
+    else handleResetSearch()
   }
 
-  const handelResetSearch = () => {
+  const handleResetSearch = () => {
     setInputSearch('')
     setResultSearch([])
     setIsLoading(false)
   }
 
-  const handelSearch = () => {
+  const handleSearch = () => {
     navigate(`search/${inputSearch}`)
-    handelResetSearch();
+    handleResetSearch();
   }
 
-  const handeKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
-      handelSearch()
+      handleSearch()
     }
   }
 
@@ -85,7 +85,7 @@ const Navbar = () => {
     setIsLoading(false)
   }, 1000)
 
-  const handelLogout = async () => {
+  const handleLogout = async () => {
     const isSuccess = await logout();
 
     if (isSuccess) {
@@ -95,26 +95,26 @@ const Navbar = () => {
     }
   }
 
-  const handelShowPopupChatList = () => {
+  const handleShowPopupChatList = () => {
     setShowPopupChatList(!showPopupChatList)
     setShowPopupNotification(false)
   }
 
-  const handelSelectRoomChat = (data) => {
+  const handleSelectRoomChat = (data) => {
     setShowPopupChatList(false)
     setRoomCurrent(data?._id?.room_id?.$oid)
   }
 
-  const handelShowChatPage = () => {
+  const handleShowChatPage = () => {
     setIsShowChatPage(true)
   }
 
-  const handelShowNotificationList = () => {
+  const handleShowNotificationList = () => {
     setShowPopupChatList(false)
     setShowPopupNotification(!showPopupNotification)
   }
 
-  const handelSelectNotificationItem = () => {
+  const handleSelectNotificationItem = () => {
     setShowPopupNotification(false)
   }
 
@@ -133,12 +133,12 @@ const Navbar = () => {
           <DarkModeOutlinedIcon onClick={toggle} />
         )} */}
         <div className="search">
-          {resultSearch.length > 0 && <ArrowBackIcon className="cur-point" onClick={handelResetSearch} />}
-          <SearchOutlinedIcon onClick={handelSearch} />
-          <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handelInput} onKeyDown={handeKeyDown} />
+          {resultSearch.length > 0 && <ArrowBackIcon className="cur-point" onClick={handleResetSearch} />}
+          <SearchOutlinedIcon onClick={handleSearch} />
+          <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handleInput} onKeyDown={handleKeyDown} />
 
           {(resultSearch.length > 0 || isLoading) && (
-            <div className="list-user" onClick={handelResetSearch}>
+            <div className="list-user" onClick={handleResetSearch}>
               {isLoading && <Loading />}
               {
                 resultSearch.map(user =>
@@ -159,23 +159,23 @@ const Navbar = () => {
       </div>
       <div className="right">
         <div className="icon-chat">
-          <ChatBubbleOutlineIcon className="cur-point" onClick={handelShowPopupChatList} />
+          <ChatBubbleOutlineIcon className="cur-point" onClick={handleShowPopupChatList} />
           {showPopupChatList && (
             <div className="content-chat-list">
               <header>
                 <span>Đoạn chat</span>
-                <ZoomOutMapIcon className="cur-point" onClick={handelShowChatPage} />
+                <ZoomOutMapIcon className="cur-point" onClick={handleShowChatPage} />
               </header>
-              <ChatList handleSelectRoomChat={handelSelectRoomChat} />
+              <ChatList handleSelectRoomChat={handleSelectRoomChat} />
             </div>
           )}
         </div>
-        <div className="icon-noti">
-          <NotificationsOutlinedIcon className="cur-point" onClick={handelShowNotificationList} />
+        <div className="icon-noti" onClick={handleShowNotificationList}>
+          <NotificationsOutlinedIcon />
           {countNotification > 0 && <div className="number-notification"><span>{countNotification > 99 ? '99+' : countNotification}</span></div>}
         </div>
         {
-          showPopupNotification && <NotificationList handelSelectNotificationItem={handelSelectNotificationItem} />
+          showPopupNotification && <NotificationList handleSelectNotificationItem={handleSelectNotificationItem} />
         }
         <Link to={`/profile/${currentUser.id}`} className="user">
           <img
@@ -184,7 +184,7 @@ const Navbar = () => {
           />
           <span>{currentUser.username}</span>
         </Link>
-        <ExitToAppIcon onClick={handelLogout} className="icon-exit" />
+        <ExitToAppIcon onClick={handleLogout} className="icon-exit" />
       </div>
     </div>
   );

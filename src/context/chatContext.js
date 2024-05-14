@@ -21,7 +21,7 @@ export const ChatContextProvider = ({ children }) => {
                 return;
             }
         }
-    }, [dataHiden]);
+    }, [dataHiden, isFirstLogin]);
 
     useEffect(() => {
         if (roomCurrent && isFirstLogin !== 0) {
@@ -36,7 +36,7 @@ export const ChatContextProvider = ({ children }) => {
                 return;
             }
         }
-    }, [roomCurrent]);
+    }, [roomCurrent, isFirstLogin]);
 
     const setRoomNoti = (data, friend = {}) => {
         if (roomCurrent) {

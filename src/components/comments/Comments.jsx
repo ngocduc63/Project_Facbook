@@ -56,7 +56,7 @@ const Comments = ({ postId }) => {
     if (desc.trim() === '') return;
 
     axiosPrivate.post(('/post-management/post/comment'), { 'id_post': postId, 'content': desc })
-      .then((response) => {
+      .then(() => {
         setRefecthComment(!refecthComment)
       })
       .catch((err) => {

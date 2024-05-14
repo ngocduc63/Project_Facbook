@@ -8,16 +8,19 @@ import useAxiosPrivate from "../../api/axiosPrivate";
 import { LINK_API_AVATAR } from "../../api/const";
 import { HomeContext } from "../../context/homeContext";
 import { toast } from "react-toastify";
+import Loading from "../loading/Loading";
 
 const Share = () => {
   const { refetchHome } = useContext(HomeContext)
   const axiosPrivate = useAxiosPrivate()
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
 
   const handleClick = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
 
     const formData = new FormData();
@@ -26,14 +29,18 @@ const Share = () => {
       formData.append("image", file);
     }
     axiosPrivate.post("/post-management/post/create", formData)
-      .then((response) => {
+      .then(() => {
         toast.success('Đăng bài thành công', {
           position: 'top-right'
         })
+        setIsLoading(false);
         refetchHome();
       })
-      .catch((error) => {
-
+      .catch(() => {
+        toast.success('Lỗi không đăng đươc bài viết', {
+          position: 'top-right'
+        })
+        setIsLoading(false);
       })
 
     setDesc("");
@@ -84,7 +91,8 @@ const Share = () => {
             </div>
           </div>
           <div className="right">
-            <button onClick={handleClick}>Share</button>
+            {!isLoading && <button onClick={handleClick}>Share</button>}
+            {isLoading && <button><Loading size={18} /></button>}
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
         if (!isLoading) return;
 
         setCurrentRoom(listRoom[0]?._id?.room_id?.$oid);
-    }, [isLoading, isChatPage])
+    }, [isLoading, isChatPage, setCurrentRoom, listRoom])
 
     useEffect(() => {
         return () => setListRoom([]);
@@ -46,7 +46,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
         return () => controller.abort()
     }, [axiosPrivate, setListRoom, pageNum]);
 
-    const handelClickRoomChat = (data) => {
+    const handleClickRoomChat = (data) => {
         // set watched chat room
         const roomCurrent = listRoom.find((room) => room._id?.room_id?.$oid === data._id?.room_id?.$oid);
 
@@ -69,7 +69,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
             <div
                 className="item"
                 key={index}
-                onClick={() => handelClickRoomChat(data)}
+                onClick={() => handleClickRoomChat(data)}
             >
                 {currentRoom === data?._id?.room_id?.$oid && <div className='bg-focus'></div>}
                 <div className='image'>

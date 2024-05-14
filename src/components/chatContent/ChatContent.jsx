@@ -60,7 +60,7 @@ function ChatContent({ currentRoom }) {
         return () => {
             abortController.abort();
         };
-    }, [axiosPrivate, pageNum, currentRoom]);
+    }, [axiosPrivate, pageNum, currentRoom, roomChange]);
 
     useEffect(() => {
         if (!currentRoom) return;
@@ -81,9 +81,9 @@ function ChatContent({ currentRoom }) {
         return () => {
             socketio.off("receive_message", handleNotification);
         };
-    }, [currentRoom])
+    }, [currentRoom, socketio])
 
-    const handelSendMessage = (inputValue) => {
+    const handleSendMessage = (inputValue) => {
         if (inputValue.trim() === '') return;
         socketio.emit("send_message", {
             "sender": `${currentUser.id}`,
@@ -120,7 +120,7 @@ function ChatContent({ currentRoom }) {
             >
                 <ContentMess dataMess={dataMess} friendRoom={friendRoom} currentUser={currentUser} />
             </InfiniteScroll>
-            <InputCustom maxRow={3} handelSendMessage={handelSendMessage} />
+            <InputCustom maxRow={3} handelSendMessage={handleSendMessage} />
         </div>
     );
 }

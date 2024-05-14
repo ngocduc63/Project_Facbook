@@ -2,7 +2,6 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { timeAgo } from '../../helps/timer';
 import useAxiosPrivate from '../../api/axiosPrivate'
 import { useEffect, useRef, useState } from "react";
-import SendIcon from '@mui/icons-material/Send';
 import { toast } from "react-toastify";
 import SpanCustom from '../spanCustom/spanCustom'
 import InputCustom from "../inputCustom/InputCustom";
@@ -37,7 +36,7 @@ function Comment({ comment, currentUser }) {
             })
     };
 
-    const handelCloseUpdate = () => {
+    const handleCloseUpdate = () => {
         setUpdateComment(false)
     }
 
@@ -52,7 +51,7 @@ function Comment({ comment, currentUser }) {
         axiosPrivate.put(('/post-management/post/update-comment'), { 'id_comment': comment.id, 'content': inputValue })
             .then(res => {
                 setContent(res.data.data.content);
-                handelCloseUpdate();
+                handleCloseUpdate();
                 setIsLoading(false);
             })
             .catch(err => {
@@ -76,7 +75,7 @@ function Comment({ comment, currentUser }) {
                                 <div className="form-update">
                                     <InputCustom handelSendMessage={handleSummit} inputRef={inputRef} defaultValue={content} />
                                 </div>
-                                <span className="btn-cancel" onClick={handelCloseUpdate}>Hủy</span>
+                                <span className="btn-cancel" onClick={handleCloseUpdate}>Hủy</span>
                             </>
                         }
                     </>

@@ -5,12 +5,14 @@ import { toast } from 'react-toastify'
 import { AuthContext } from "../../context/authContext";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { LINK_API_AVATAR, LINK_API_COVER } from "../../api/const";
+import Loading from '../loading/Loading';
 
 const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
     const { setCurrentUser } = useContext(AuthContext);
     const axiosPrivate = useAxiosPrivate()
     const [cover, setCover] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const toastEr = (mess) => {
         toast.error(mess, {
@@ -18,15 +20,16 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
         })
     }
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const formData = new FormData();
         isUpdateAvartar ? formData.append('file', profile) : formData.append('file', cover);
 
         axiosPrivate.post((isUpdateAvartar ? '/user-management/user/update-avatar' : '/user-management/user/update-cover'), formData)
             .then((res) => {
-                setCurrentUser(res.data.data.user)
+                setCurrentUser(res.data.data.user);
+                setIsLoading(false);
                 toast.success("Thay đổi ảnh đại diện thành công", {
                     position: "top-right"
                 })
@@ -98,7 +101,8 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
                             </>
                         }
                     </div>
-                    <button onClick={handleSubmit}>Xác nhận</button>
+                    {!isLoading && <button onClick={handleSubmit}>Xác nhận</button>}
+                    {isLoading && <button><Loading size={20} /></button>}
                 </form>
                 <button className="close" onClick={() => setOpenUpdateImage(0)}>
                     Đóng
