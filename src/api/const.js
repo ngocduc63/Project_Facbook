@@ -1,4 +1,4 @@
-const api_dev = 'http://localhost:5000/';
+// const api_dev = 'http://localhost:5000/';
 const api_product = 'https://facebook-api-5gjf.onrender.com/';
 const api = api_product;
 
