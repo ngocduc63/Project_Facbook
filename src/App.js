@@ -1,4 +1,8 @@
 import Login from './pages/login/Login';
+import Dashboard from './pages/admin/home/Dashboard';
+import Admin from './pages/admin/Admin';
+import UserDashboard from './pages/admin/user/UserDashboard';
+import PostDashboard from './pages/admin/post/PostDashboard';
 import Register from './pages/register/Register';
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
@@ -20,6 +24,7 @@ import React from 'react';
 import Search from './components/search/Search';
 import Call from './pages/call/Call';
 import { HomeContext } from './context/homeContext';
+import { Suspense } from 'react';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -47,6 +52,16 @@ function App() {
                     {isShowChatPage && <Chat />}
                 </div>
             </QueryClientProvider>
+        );
+    };
+
+    const LayoutDashboard = () => {
+        return (
+            <Admin>
+                <Suspense>
+                    <Outlet />
+                </Suspense>
+            </Admin>
         );
     };
 
@@ -112,6 +127,28 @@ function App() {
                     <Call />
                 </ProtectedRoute>
             ),
+        },
+        {
+            path: '/dashboard',
+            element: (
+                <ProtectedRoute>
+                    <LayoutDashboard />
+                </ProtectedRoute>
+            ),
+            children: [
+                {
+                    path: '',
+                    element: <Dashboard />,
+                },
+                {
+                    path: 'user',
+                    element: <UserDashboard />,
+                },
+                {
+                    path: 'post',
+                    element: <PostDashboard />,
+                },
+            ],
         },
     ]);
 
