@@ -3,6 +3,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 // import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 // import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -158,6 +159,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="right">
+        <Link to={'/dashboard'}><DashboardIcon /></Link>
         <div className="icon-chat">
           <ChatBubbleOutlineIcon className="cur-point" onClick={handleShowPopupChatList} />
           {showPopupChatList && (
