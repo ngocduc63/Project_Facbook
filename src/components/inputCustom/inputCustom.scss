@@ -1,0 +1,33 @@
+@import '../../style.scss';
+
+.input-mess {
+    @include themify($themes) {
+        flex: 5;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding-top: 10px;
+        textarea {
+            width: 70%;
+            border: none;
+            outline: none;
+            padding: 10px 16px;
+            background-color: lightgray;
+            border-radius: 20px;
+            max-height: 80px;
+            resize: none;
+            font-size: 14px;
+            color: #000;
+        }
+        .send-icon {
+            text-align: center;
+            padding: 4px 6px;
+            color: #0084ff;
+        }
+        .send-icon:hover {
+            cursor: pointer;
+            background-color: lightgray;
+            border-radius: 50%;
+        }
+    }
+}

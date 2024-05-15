@@ -1,0 +1,75 @@
+@import '../../style.scss';
+
+.search-page {
+    @include themify($themes) {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 16px;
+        row-gap: 5px;
+
+        .item {
+            padding: 10px 6px;
+            border-bottom: 1px solid themed('border');
+            display: flex;
+            align-items: center;
+            column-gap: 20px;
+            cursor: pointer;
+            text-decoration: none;
+
+            .avatar {
+                width: 50px;
+                height: 50px;
+
+                img {
+                    object-fit: cover;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                }
+            }
+
+            .right-item-search {
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+
+                span {
+                    color: themed('textColor');
+                    font-size: 16px;
+                    font-weight: 500;
+
+                    span {
+                        font-size: 14px;
+                    }
+                }
+                .check-friend {
+                    font-size: 14px;
+                    font-weight: 400;
+                }
+            }
+        }
+
+        .item:hover {
+            background-color: themed('border');
+            border-radius: 10px;
+        }
+    }
+}
+
+.profile-search {
+    position: relative;
+    .btn-back {
+        position: fixed;
+        top: 80px;
+        z-index: 999;
+        left: 18%;
+        width: 150px;
+        text-align: center;
+        color: #000;
+        font-size: 16px;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #ccc;
+        cursor: pointer;
+    }
+}

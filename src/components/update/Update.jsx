@@ -1,152 +1,97 @@
-import { useState } from "react";
-import { makeRequest } from "../../axios";
+import { useState, useContext } from "react";
 import "./update.scss";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { convertToTime } from "../../helps/timer";
+import useAxiosPrivate from '../../api/axiosPrivate'
+import { toast } from 'react-toastify'
+import { AuthContext } from "../../context/authContext";
+import Loading from '../loading/Loading';
 
 const Update = ({ setOpenUpdate, user }) => {
-  const [cover, setCover] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [texts, setTexts] = useState({
-    email: user.email,
-    password: user.password,
-    name: user.name,
-    city: user.city,
-    website: user.website,
+  const { setCurrentUser } = useContext(AuthContext);
+  const axiosPrivate = useAxiosPrivate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState({
+    username: user.username,
+    nickname: user.nickname,
+    description: user.description,
+    birth_date: convertToTime(user.birth_date),
+    gender: user.gender,
   });
 
-  const upload = async (file) => {
-    console.log(file)
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await makeRequest.post("/upload", formData);
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const toastEr = (mess) => {
+    toast.error(mess, {
+      position: "top-right"
+    })
+  }
 
   const handleChange = (e) => {
-    setTexts((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(
-    (user) => {
-      return makeRequest.put("/users", user);
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["user"]);
-      },
-    }
-  );
-
-  const handleClick = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    const valueDate = input.birth_date.toString().split('-')
+    const newData = input;
+    newData.birth_date = `${valueDate[1]}/${valueDate[2]}/${valueDate[0]}`;
 
-    //TODO: find a better way to get image URL
-    
-    let coverUrl;
-    let profileUrl;
-    coverUrl = cover ? await upload(cover) : user.coverPic;
-    profileUrl = profile ? await upload(profile) : user.profilePic;
-    
-    mutation.mutate({ ...texts, coverPic: coverUrl, profilePic: profileUrl });
-    setOpenUpdate(false);
-    setCover(null);
-    setProfile(null);
+    axiosPrivate.put(('/user-management/user/update'), newData)
+      .then((res) => {
+        setCurrentUser(res.data.data)
+        setIsLoading(false);
+        toast.success("Thay đổi thông tin thành công", {
+          position: "top-right"
+        })
+        setOpenUpdate(false);
+      })
+      .catch((err) => {
+        const errCode = err.response.data.errorCode
+
+        if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
+        else if (errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
+        else if (errCode === 8) toastEr("Tài khoản không tồn tại")
+        else if (errCode === 13) toastEr("Không thể kết nối tới mát chủ")
+      })
   }
-  
+
   return (
     <div className="update">
       <div className="wrapper">
-        <h1>Update Your Profile</h1>
+        <h1>Chỉnh sửa thông tin</h1>
         <form>
-          <div className="files">
-            <label htmlFor="cover">
-              <span>Cover Picture</span>
-              <div className="imgContainer">
-                <img
-                  src={
-                    cover
-                      ? URL.createObjectURL(cover)
-                      : "/upload/" + user.coverPic
-                  }
-                  alt=""
-                />
-                <CloudUploadIcon className="icon" />
-              </div>
-            </label>
-            <input
-              type="file"
-              id="cover"
-              style={{ display: "none" }}
-              onChange={(e) => setCover(e.target.files[0])}
-            />
-            <label htmlFor="profile">
-              <span>Profile Picture</span>
-              <div className="imgContainer">
-                <img
-                  src={
-                    profile
-                      ? URL.createObjectURL(profile)
-                      : "/upload/" + user.profilePic
-                  }
-                  alt=""
-                />
-                <CloudUploadIcon className="icon" />
-              </div>
-            </label>
-            <input
-              type="file"
-              id="profile"
-              style={{ display: "none" }}
-              onChange={(e) => setProfile(e.target.files[0])}
-            />
-          </div>
-          <label>Email</label>
+          <label>Họ tên</label>
           <input
             type="text"
-            value={texts.email}
-            name="email"
+            name="username"
+            placeholder={user.username}
             onChange={handleChange}
           />
-          <label>Password</label>
+          <label>Nick name</label>
           <input
             type="text"
-            value={texts.password}
-            name="password"
+            placeholder={user.nickname}
+            name="nickname"
             onChange={handleChange}
           />
-          <label>Name</label>
+          <label>Mô tả</label>
           <input
             type="text"
-            value={texts.name}
-            name="name"
+            placeholder={user.description}
+            name="description"
             onChange={handleChange}
           />
-          <label>Country / City</label>
+          <label>Ngày sinh</label>
           <input
-            type="text"
-            name="city"
-            value={texts.city}
+            type="date"
+            value={input.birth_date}
+            name="birth_date"
             onChange={handleChange}
           />
-          <label>Website</label>
-          <input
-            type="text"
-            name="website"
-            value={texts.website}
-            onChange={handleChange}
-          />
-          <button onClick={handleClick}>Update</button>
+          {!isLoading && <button onClick={handleSubmit}>Xác nhận</button>}
+          {isLoading && <button><Loading size={20} /></button>}
         </form>
         <button className="close" onClick={() => setOpenUpdate(false)}>
-          close
+          Đóng
         </button>
       </div>
     </div>

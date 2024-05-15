@@ -4,40 +4,45 @@ import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+import useAxiosPrivate from "../../api/axiosPrivate";
+import { LINK_API_AVATAR } from "../../api/const";
+import { HomeContext } from "../../context/homeContext";
+import { toast } from "react-toastify";
+import Loading from "../loading/Loading";
+
 const Share = () => {
+  const { refetchHome } = useContext(HomeContext)
+  const axiosPrivate = useAxiosPrivate()
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
-  const { token } = useContext(AuthContext);
-
-  const queryClient = useQueryClient();
-  const mutation = useMutation(
-    ({ title, status, file }) => {
-      const formData = new FormData();
-      formData.append("data", JSON.stringify({ title, status }));
-      
-      console.log('file:', file);
-      if (file) {
-        formData.append("image", file);
-        console.log("File appended to FormData:", file)
-      }
-      
-      return makeRequest.post("/post-management/post/create", formData);
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["posts"]);
-      },
-    }
-  );
 
   const handleClick = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
-    console.log("Before mutation: file =", file);
-    mutation.mutate({ title: desc, status: 1, file: file });
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ title: desc, status: 1 }));
+    if (file) {
+      formData.append("image", file);
+    }
+    axiosPrivate.post("/post-management/post/create", formData)
+      .then(() => {
+        toast.success('Đăng bài thành công', {
+          position: 'top-right'
+        })
+        setIsLoading(false);
+        refetchHome();
+      })
+      .catch(() => {
+        toast.success('Lỗi không đăng đươc bài viết', {
+          position: 'top-right'
+        })
+        setIsLoading(false);
+      })
+
     setDesc("");
     setFile(null);
   };
@@ -47,7 +52,7 @@ const Share = () => {
       <div className="container">
         <div className="top">
           <div className="left">
-            <img src={"http://localhost:5000/user-management/user/avatar/" + currentUser.avatar} alt="" />
+            <img src={LINK_API_AVATAR + currentUser.avatar} alt="" />
             <input
               type="text"
               placeholder={`What's on your mind ${currentUser.username}?`}
@@ -86,7 +91,8 @@ const Share = () => {
             </div>
           </div>
           <div className="right">
-            <button onClick={handleClick}>Share</button>
+            {!isLoading && <button onClick={handleClick}>Share</button>}
+            {isLoading && <button><Loading size={18} /></button>}
           </div>
         </div>
       </div>

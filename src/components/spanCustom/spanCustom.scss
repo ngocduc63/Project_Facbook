@@ -1,0 +1,10 @@
+@import '../../style.scss';
+
+.span-custom {
+    @include themify($themes) {
+        width: 100%;
+        word-wrap: break-word;
+        white-space: pre-line;
+        color: themed('textColor');
+    }
+}
