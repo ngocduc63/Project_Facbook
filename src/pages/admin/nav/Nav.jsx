@@ -152,9 +152,9 @@ Nav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item }) {
-    const pathname = useLocation();
+    // const pathname = useLocation();
 
-    const active = item.path === pathname;
+    // const active = item.path === pathname;
     const RouterLink = forwardRef(({ href, ...other }, ref) => <Link ref={ref} to={href} {...other} />);
 
     return (

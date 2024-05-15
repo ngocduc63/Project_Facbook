@@ -100,6 +100,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
     return (
         <>
             {!isLoading && <Loading size={25} />}
+            {isLoading && listRoom.length <= 0 && <div className='none'><span>Không có tin nhắn</span></div>}
             <InfiniteScroll
                 dataLength={listRoom.length}
                 next={() => setPageNum(pageNum + 1)}

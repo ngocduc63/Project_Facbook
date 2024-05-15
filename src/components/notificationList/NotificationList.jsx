@@ -83,6 +83,7 @@ function NotificationList({ handleSelectNotificationItem }) {
         <div className="notification-popup-container">
             <header><span>Thông báo</span></header>
             {isLoading && <Loading size={30} />}
+            {!isLoading && dataNotifications.length <= 0 && <div className='none'><span>Không có thông báo</span></div>}
             <InfiniteScroll
                 dataLength={dataNotifications.length}
                 next={() => setPageNum(pageNum + 1)}
