@@ -159,7 +159,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="right">
-        <Link to={'/dashboard'}><DashboardIcon /></Link>
+        {currentUser.role === 1 && <Link to={'/dashboard'}><DashboardIcon /></Link>}
         <div className="icon-chat">
           <ChatBubbleOutlineIcon className="cur-point" onClick={handleShowPopupChatList} />
           {showPopupChatList && (
