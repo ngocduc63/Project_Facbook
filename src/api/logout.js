@@ -29,7 +29,7 @@ const useLogout = () => {
             return true;
         } else if (response.status === 400) {
             return false;
-        } else if (response.status === 401) {
+        } else if (response.status === 401 || response.status === 405) {
             setTokenAndUser(null, null);
         }
     };

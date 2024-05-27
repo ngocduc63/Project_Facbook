@@ -84,7 +84,7 @@ const Navbar = () => {
       });
 
     setIsLoading(false)
-  }, 1000)
+  }, 300)
 
   const handleLogout = async () => {
     const isSuccess = await logout();

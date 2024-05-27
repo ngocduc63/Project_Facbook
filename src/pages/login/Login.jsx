@@ -29,7 +29,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(inputs);
-      setIsLoading(false)
+      setIsLoading(false);
       toast.success("Đăng nhập thành công", {
         position: "top-right"
       })
@@ -42,6 +42,9 @@ const Login = () => {
       else if (errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
       else if (errCode === 6) toastEr("Tài khoản không tồn tại")
       else if (errCode === 7) toastEr("Mật khẩu không chính xác")
+      else if (errCode === 25) toastEr("Tài khoản của bạn đã bị khóa")
+
+      setIsLoading(false);
     }
   };
 
