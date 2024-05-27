@@ -146,7 +146,7 @@ const Profile = ({ id }) => {
               <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handelOpenPopupCover} />
               {openPopup === 2 && (
                 <div className="body-edit body-edit-cover">
-                  <div onClick={handleClosePopups}>Xem ảnh bìa</div>
+                  {/* <div onClick={handleClosePopups}>Xem ảnh bìa</div> */}
                   {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(2)}>Chỉnh sửa ảnh bìa</div>}
                 </div>
               )}
@@ -156,7 +156,7 @@ const Profile = ({ id }) => {
               <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handelOpenPopupAvatar} />
               {openPopup === 1 && (
                 <div className="body-edit">
-                  <div onClick={handleClosePopups} >Xem ảnh đại diện</div>
+                  {/* <div onClick={handleClosePopups} >Xem ảnh đại diện</div> */}
                   {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(1)}>Chỉnh sửa ảnh đại điện</div>}
                 </div>
               )}
@@ -183,7 +183,7 @@ const Profile = ({ id }) => {
                         <button className="item" onClick={handelUpdateProfile}>
                           Chỉnh sửa thông tin
                         </button>
-                        <button className="item button-exit" onClick={handelLogout}>
+                        <button className="item button-exit" onClick={handelLogout} title="Đăng xuất">
                           <ExitToAppIcon />
                         </button>
                       </>

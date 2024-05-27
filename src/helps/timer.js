@@ -25,6 +25,23 @@ export function timeAgo(timestamp) {
     }
 }
 
+export function convertTimespanToDay(time) {
+    const epochStart = new Date(0);
+
+    const newTime = new Date(epochStart.getTime() + time * 1000);
+
+    const year = newTime.getFullYear();
+    const month = newTime.getMonth() + 1;
+    const date = newTime.getDate();
+    const day = newTime.getDay();
+    const hours = newTime.getHours();
+    const minutes = newTime.getMinutes();
+
+    const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+    return `${daysOfWeek[day]}, ${date}/${month}/${year} ${hours}:${minutes}`;
+}
+
 export function convertToDate(timestamp) {
     const dateOfBirth = new Date(timestamp * 1000);
 

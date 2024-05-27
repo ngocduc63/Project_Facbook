@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import { NotifiPostContext } from "../../context/notifiPostContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
-import { timeAgo } from "../../helps/timer";
+import { convertTimespanToDay, timeAgo } from "../../helps/timer";
 import UpdatePost from "../update/UpdatePost";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -52,7 +52,6 @@ const Post = React.forwardRef(({ post }, ref) => {
     const handleNotification = (data) => {
       if (data.post_id === post.id && data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
         const data_rs = dataPost
-        console.log(data_rs)
         dataPost.num_like = data.num_like
         setDataPost(data_rs)
 
@@ -196,7 +195,7 @@ const Post = React.forwardRef(({ post }, ref) => {
                 >
                   <span className="name">{post.user.username}</span>
                 </Link>
-                <span className="date">{timeAgo(post.create_at)}</span>
+                <span className="date" title={convertTimespanToDay(post.create_at)}>{timeAgo(post.create_at)}</span>
               </div>
             </div>
             {(post.user.id === currentUser.id || currentUser.role === 1) && (

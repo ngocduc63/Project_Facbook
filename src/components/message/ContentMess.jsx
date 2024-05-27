@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import SpanCustom from '../spanCustom/spanCustom';
 import { LINK_API_AVATAR } from '../../api/const';
+import { convertTimespanToDay } from '../../helps/timer';
 
 function CotentMess({ dataMess, friendRoom, currentUser }) {
     const content_user = (data) => {
@@ -24,7 +25,7 @@ function CotentMess({ dataMess, friendRoom, currentUser }) {
                 <div className='friend-chat'>
                     {
                         data.map((data, index) => {
-                            return <div key={index}><SpanCustom data={data.text} /></div>
+                            return <div key={index} title={convertTimespanToDay(data.created_at)}><SpanCustom data={data.text} /></div>
                         })
                     }
                 </div>

@@ -59,8 +59,8 @@ const Comments = ({ postId, isAdmin = false }) => {
       .then(() => {
         setRefecthComment(!refecthComment)
       })
-      .catch((err) => {
-        toast.error("comment posted error", {
+      .catch(() => {
+        toast.error("comment post error", {
           position: 'top-right'
         });
       });

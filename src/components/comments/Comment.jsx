@@ -1,5 +1,5 @@
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { timeAgo } from '../../helps/timer';
+import { convertTimespanToDay, timeAgo } from '../../helps/timer';
 import useAxiosPrivate from '../../api/axiosPrivate'
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -82,7 +82,7 @@ function Comment({ comment, currentUser, isAdmin = false }) {
                 }
             </div>
             <div className="date">
-                <span>
+                <span title={convertTimespanToDay(comment.create_at)}>
                     {timeAgo(comment.create_at)}
                 </span>
                 {(comment.user.id === currentUser.id || isAdmin) && (

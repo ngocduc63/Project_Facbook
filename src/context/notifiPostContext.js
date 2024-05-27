@@ -15,7 +15,7 @@ export const NotifiPostContextProvider = ({ children }) => {
         if (data.create_post !== currentUser.id || data.user_id === currentUser.id) return;
 
         toast.info(`${data.user_name} ${data.mess}`, {
-            position: 'top-right',
+            position: 'bottom-left',
             onOpen: () => {
                 setPostId(data.post_id);
             },
