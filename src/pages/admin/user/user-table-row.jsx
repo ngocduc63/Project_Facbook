@@ -13,11 +13,13 @@ import IconButton from '@mui/material/IconButton';
 import Label from '../../../components/label';
 import Iconify from '../../../components/iconify';
 import { LINK_API_AVATAR } from '../../../api/const';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
+  userId,
   avatarUrl,
   username,
   email,
@@ -29,7 +31,7 @@ export default function UserTableRow({
   handleUnblockUser,
 }) {
   const [open, setOpen] = useState(null);
-
+  const navigate = useNavigate()
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -38,20 +40,25 @@ export default function UserTableRow({
     setOpen(null);
   };
 
+  const handleRedirect = (e) => {
+    e.preventDefault();
+    navigate(`/profile/${userId}`)
+  }
+
   return (
     <>
-      <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
+      <TableRow hover tabIndex={-1} role="checkbox" selected={selected} onClick={handleClick}>
         <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={handleClick} />
+          <Checkbox disableRipple checked={selected} />
         </TableCell>
 
-        <TableCell component="th" scope="row" padding="none">
+        <TableCell component="th" scope="row" padding="none" className='cur-point' onClick={(e) => handleRedirect(e)}>
           <Stack direction="row" alignItems="center" spacing={2} style={{ marginLeft: 20 }}>
             <Avatar alt={username} src={`${LINK_API_AVATAR}${avatarUrl}`} />
           </Stack>
         </TableCell>
 
-        <TableCell>{username}</TableCell>
+        <TableCell className='cur-point' onClick={(e) => handleRedirect(e)}>{username}</TableCell>
 
         <TableCell>{email}</TableCell>
 
@@ -101,6 +108,7 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
+  userId: PropTypes.any,
   avatarUrl: PropTypes.string,
   username: PropTypes.string,
   email: PropTypes.string,

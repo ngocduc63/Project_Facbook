@@ -8,7 +8,7 @@ import InputCustom from "../inputCustom/InputCustom";
 import Loading from "../loading/Loading";
 import { LINK_API_AVATAR } from "../../api/const";
 
-function Comment({ comment, currentUser }) {
+function Comment({ comment, currentUser, isAdmin = false }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const [showUpdateComment, setUpdateComment] = useState(false);
@@ -85,7 +85,7 @@ function Comment({ comment, currentUser }) {
                 <span>
                     {timeAgo(comment.create_at)}
                 </span>
-                {comment.user.id === currentUser.id && (
+                {(comment.user.id === currentUser.id || isAdmin) && (
                     <>
                         <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" style={{ cursor: 'pointer' }} />
                         {menuOpen && (

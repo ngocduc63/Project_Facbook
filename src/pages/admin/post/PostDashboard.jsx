@@ -1,6 +1,11 @@
+import './postDashboard.scss'
+import Posts from "../../../components/posts/Posts";
+
 function PostDashboard() {
     return (
-        <h1>Posts</h1>
+        <div>
+            <Posts isAdmin />
+        </div>
     );
 }
 

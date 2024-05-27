@@ -199,7 +199,7 @@ const Post = React.forwardRef(({ post }, ref) => {
                 <span className="date">{timeAgo(post.create_at)}</span>
               </div>
             </div>
-            {post.user.id === currentUser.id && (
+            {(post.user.id === currentUser.id || currentUser.role === 1) && (
               <>
                 <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" />
                 {menuOpen && (
@@ -263,7 +263,7 @@ const Post = React.forwardRef(({ post }, ref) => {
               Share
             </div>
           </div>
-          {commentOpen && <Comments postId={post.id} />}
+          {commentOpen && <Comments postId={post.id} isAdmin={currentUser.role === 1 || post.user.id === currentUser.id} />}
         </div>
       </div>
     </>

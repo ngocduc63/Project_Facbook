@@ -1,5 +1,5 @@
 import './search.scss';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import Loading from '../loading/Loading';
 import useAxiosPrivate from '../../api/axiosPrivate';
@@ -15,37 +15,10 @@ function Search() {
     const [hasNextPage, setHasNextPage] = useState(false);
     const [pageNum, setPageNum] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const [showProfile, setShowProfile] = useState(false);
-    const [idProfile, setIdProfile] = useState('');
-    const [isVisible, setIsVisible] = useState(true);
 
-    useEffect(() => {
-        let lastScrollTop = 0;
-
-        const handleScroll = () => {
-            const currentScroll = window.scrollY || document.documentElement.scrollTop;
-
-            if (currentScroll > lastScrollTop) {
-                // Scroll down
-                setIsVisible(false);
-            } else {
-                // Scroll up
-                setIsVisible(true);
-            }
-
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
     useEffect(() => {
         setDataUser([]);
         setIsLoading(true);
-        setShowProfile(false);
     }, [username]);
 
     useEffect(() => {
@@ -68,14 +41,9 @@ function Search() {
 
     }, [username, pageNum, axiosPrivate]);
 
-    const handelRedirectToProfile = (user) => {
-        setIdProfile(user.id)
-        setShowProfile(true)
-    }
-
     const content = dataUser.map(user => {
         return (
-            <div className="item" key={user.id} onClick={() => handelRedirectToProfile(user)}>
+            <Link to={`/profile/${user.id}`} className="item" key={user.id}>
                 <div className="avatar">
                     <img src={LINK_API_AVATAR + user.avatar} alt="" />
                 </div>
@@ -83,36 +51,22 @@ function Search() {
                     <span>{user.username}<span>{user.nickname && ` (${user.nickname})`}</span></span>
                     {user.isFriend === 1 && (<span className="check-friend">Bạn bè</span>)}
                 </div>
-            </div>
+            </Link>
         )
     })
 
-    const handelBackSearch = () => {
-        setShowProfile(false);
-    }
-
     return (
         <div style={{ maxWidth: '650px', minWidth: '600px' }}>
-            {!showProfile &&
-                <>
-                    {isLoading && <Loading />}
-                    <InfiniteScroll
-                        dataLength={dataUser.length}
-                        next={() => setPageNum(pageNum + 1)}
-                        hasMore={hasNextPage}
-                        loader={<Loading />}
-                        className="search-page"
-                    >
-                        {content}
-                    </InfiniteScroll>
-                </>
-            }
-            {showProfile &&
-                <div className='profile-search'>
-                    {isVisible && <div className='btn-back' onClick={handelBackSearch}>Quay lại tìm kiếm</div>}
-                    <Profile id={idProfile} />
-                </div>
-            }
+            {isLoading && <Loading />}
+            <InfiniteScroll
+                dataLength={dataUser.length}
+                next={() => setPageNum(pageNum + 1)}
+                hasMore={hasNextPage}
+                loader={<Loading />}
+                className="search-page"
+            >
+                {content}
+            </InfiniteScroll>
         </div>
     );
 }

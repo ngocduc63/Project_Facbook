@@ -5,7 +5,7 @@ import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useAxiosPrivate from '../../api/axiosPrivate';
 
-const Posts = ({ userId, isRefecth }) => {
+const Posts = ({ userId, isRefecth, isAdmin = false }) => {
   const axiosPrivate = useAxiosPrivate();
   const [results, setResults] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -40,7 +40,20 @@ const Posts = ({ userId, isRefecth }) => {
         .catch(() => {
           if (signal.aborted) return;
         });
-    } else {
+    }
+    else if (isAdmin) {
+      axiosPrivate.get(`/admin/get-all-post/${pageNum}`, { signal })
+        .then((response) => {
+          const data = response.data;
+
+          setResults((prev) => [...prev, ...data.data.datas]);
+          setHasNextPage(pageNum <= data.data.maxPage - 1);
+        })
+        .catch(() => {
+          if (signal.aborted) return;
+        });
+    }
+    else {
       axiosPrivate
         .get(`/post-management/post/get-new-feed/${pageNum}`, { signal })
         .then((response) => {
@@ -57,7 +70,7 @@ const Posts = ({ userId, isRefecth }) => {
     if (isReload) setIsReload(false);
 
     return () => controller.abort();
-  }, [axiosPrivate, pageNum, userId, isReload]);
+  }, [axiosPrivate, pageNum, userId, isReload, isAdmin]);
 
   const content = results.map((post, i) => {
     if (results.length === i + 1) {
@@ -77,7 +90,8 @@ const Posts = ({ userId, isRefecth }) => {
       >
         {content}
       </InfiniteScroll>
-      <p className="center" style={{ marginTop: 20 }}><a href="#top" className="button-load">Lên đầu trang</a></p>
+      {results.length > 3 && <p className="center" style={{ marginTop: 20 }}><a href="#top" className="button-load">Lên đầu trang</a></p>}
+      {results.length === 0 && <p style={{ fontWeight: 700, fontSize: 20, textAlign: 'center' }}>Không có bài viết</p>}
     </>
   );
 };

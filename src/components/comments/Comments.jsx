@@ -9,7 +9,7 @@ import Comment from "./Comment";
 import InputCustom from '../inputCustom/InputCustom'
 import { LINK_API_AVATAR } from "../../api/const";
 
-const Comments = ({ postId }) => {
+const Comments = ({ postId, isAdmin = false }) => {
   const { currentUser } = useContext(AuthContext);
   const axiosPrivate = useAxiosPrivate();
   const [results, setResults] = useState([]);
@@ -50,7 +50,7 @@ const Comments = ({ postId }) => {
 
 
 
-  const content = results.map((comment) => <Comment comment={comment} currentUser={currentUser} key={comment.id} />)
+  const content = results.map((comment) => <Comment comment={comment} currentUser={currentUser} key={comment.id} isAdmin={isAdmin} />)
 
   const handleComment = (desc) => {
     if (desc.trim() === '') return;

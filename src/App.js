@@ -144,10 +144,10 @@ function App() {
                     path: 'user',
                     element: <UserDashboard />,
                 },
-                {
-                    path: 'post',
-                    element: <PostDashboard />,
-                },
+                // {
+                //     path: 'post',
+                //     element: <PostDashboard />,
+                // },
             ],
         },
     ]);

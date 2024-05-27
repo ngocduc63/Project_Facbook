@@ -39,11 +39,11 @@ export default function Nav({ openNav, onCloseNav }) {
             path: '/dashboard/user',
             icon: '',
         },
-        {
-            title: 'Bài viết',
-            path: '/dashboard/post',
-            icon: '',
-        },
+        // {
+        //     title: 'Bài viết',
+        //     path: '/dashboard/post',
+        //     icon: '',
+        // },
     ]
     const upLg = useResponsive('up', 'lg');
 

@@ -254,6 +254,7 @@ function UserDashboard() {
                                 {!isLoading && dataFiltered.map((row) => (
                                     <UserTableRow
                                         key={row.id}
+                                        userId={row.id}
                                         avatarUrl={row.avatar}
                                         username={row.username}
                                         email={row.email}

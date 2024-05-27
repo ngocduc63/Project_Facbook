@@ -69,7 +69,7 @@ const Home = () => {
   return (
     <div className="home">
       <Share />
-      {!isShowPopupPost && <Posts isRefecth={isRefetch} />}
+      {!isShowPopupPost && <Posts isRefecth={isRefetch} isAdmin={currentUser.role === 1} />}
       {isShowPopupPost && dataPost && <Post post={dataPost} />}
     </div>
   )
