@@ -84,7 +84,7 @@ const Navbar = () => {
       });
 
     setIsLoading(false)
-  }, 1000)
+  }, 300)
 
   const handleLogout = async () => {
     const isSuccess = await logout();
@@ -125,7 +125,7 @@ const Navbar = () => {
         <Link to="/" style={{ textDecoration: "none" }} onClick={handleRefecth}>
           <span>FACEBOOK</span>
         </Link>
-        <Link to="/" onClick={handleRefecth} className="icon-home">
+        <Link to="/" onClick={handleRefecth} className="icon-home" title="Trang chủ">
           <HomeOutlinedIcon />
         </Link>
         {/* {darkMode ? (
@@ -159,8 +159,8 @@ const Navbar = () => {
         </div>
       </div>
       <div className="right">
-        {currentUser.role === 1 && <Link to={'/dashboard'}><DashboardIcon /></Link>}
-        <div className="icon-chat">
+        {currentUser.role === 1 && <Link to={'/dashboard'} title="Dashboard"><DashboardIcon /></Link>}
+        <div className="icon-chat" title="Đoạn chat">
           <ChatBubbleOutlineIcon className="cur-point" onClick={handleShowPopupChatList} />
           {showPopupChatList && (
             <div className="content-chat-list">
@@ -172,7 +172,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <div className="icon-noti" onClick={handleShowNotificationList}>
+        <div className="icon-noti" onClick={handleShowNotificationList} title="Thông báo">
           <NotificationsOutlinedIcon />
           {countNotification > 0 && <div className="number-notification"><span>{countNotification > 99 ? '99+' : countNotification}</span></div>}
         </div>
@@ -186,7 +186,7 @@ const Navbar = () => {
           />
           <span>{currentUser.username}</span>
         </Link>
-        <ExitToAppIcon onClick={handleLogout} className="icon-exit" />
+        <div style={{ display: 'flex', alignItems: 'center' }} title="Đăng xuất"><ExitToAppIcon onClick={handleLogout} className="icon-exit" /></div>
       </div>
     </div>
   );

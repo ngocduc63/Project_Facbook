@@ -1,6 +1,7 @@
 import makeRequest from '../axios';
 import { useEffect } from 'react';
 import useRefreshToken from './useRefreshToken';
+import useLogout from './logout';
 
 const updateAccessToken = async (newAccessToken) => {
     const storedToken = localStorage.getItem('token') || null;
@@ -13,6 +14,7 @@ const updateAccessToken = async (newAccessToken) => {
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
+    const logout = useLogout();
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token') || null;
@@ -41,6 +43,8 @@ const useAxiosPrivate = () => {
                     await updateAccessToken(newAccessToken);
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return makeRequest(prevRequest);
+                } else if (error?.response?.status === 405) {
+                    await logout();
                 }
                 return Promise.reject(error);
             },
@@ -50,7 +54,7 @@ const useAxiosPrivate = () => {
             makeRequest.interceptors.request.eject(requestIntercept);
             makeRequest.interceptors.response.eject(responseIntercept);
         };
-    }, [refresh]);
+    }, [refresh, logout]);
 
     return makeRequest;
 };

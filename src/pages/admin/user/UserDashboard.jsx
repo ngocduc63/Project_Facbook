@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -13,13 +13,13 @@ import Scrollbar from '../../../components/scrollbar/scrollbar';
 // import TableNoData from './table-no-data';
 import UserTableRow from './user-table-row';
 import UserTableHead from './user-table-head';
-// import TableEmptyRows from './table-empty-rows';
 import UserTableToolbar from './user-table-toolbar';
-// import { emptyRows, applyFilter, getComparator } from './utils';
 
 import Loading from '../../../components/loading/Loading';
 import useAxiosPrivate from "../../../api/axiosPrivate"
 import { toast } from 'react-toastify';
+import { applyFilter, getComparator } from './utils';
+import { debounce } from 'lodash';
 
 function UserDashboard() {
     const [users, setUsers] = useState([])
@@ -28,7 +28,10 @@ function UserDashboard() {
 
     const [page, setPage] = useState(1);
 
+    const [hasNextPage, setHasNextPage] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
+
 
     const [refesh, setRefresh] = useState(false);
 
@@ -36,26 +39,44 @@ function UserDashboard() {
 
     const [selected, setSelected] = useState([]);
 
-    const [orderBy, setOrderBy] = useState('name');
+    const [orderBy, setOrderBy] = useState('id');
 
-    const [filterName, setFilterName] = useState('');
+    const filterName = '';
 
-    useEffect(() => {
-        setIsLoading(true)
-        const controller = new AbortController()
-        const { signal } = controller
+    const [inputSearch, setInputSearch] = useState('');
 
-        axiosPrivate.get(`/admin/get-all-user/${page}`, { signal })
+    const fetchSearchUser = debounce((input) => {
+        setPage(1);
+        fetchUsers(input, 1);
+    }, 300);
+
+    const debounceSearch = useCallback(debounce((nextValue) => fetchSearchUser(nextValue), 300), [])// eslint-disable-line react-hooks/exhaustive-deps
+
+    const fetchUsers = useCallback((searchValue, pageNumber = 1) => {
+        setIsLoading(true);
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        axiosPrivate.post(`/admin/get-all-user`, { 'page': pageNumber, 'username': searchValue }, { signal })
             .then((response) => {
-                setUsers(response.data.data.datas)
+                const data = response.data;
+                setUsers(data.data.datas);
+                setHasNextPage(pageNumber <= data.data.maxPage - 1);
                 setIsLoading(false);
             })
             .catch(() => {
-                if (signal.aborted) return
-            })
+                setIsLoading(false);
+                if (signal.aborted) return;
+            });
 
-        return () => controller.abort()
-    }, [axiosPrivate, page, refesh]);
+        return () => controller.abort();
+    }, [axiosPrivate]);
+
+
+    useEffect(() => {
+        fetchUsers(inputSearch, page);
+    }, [page, inputSearch, fetchUsers, refesh]);
+
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -92,15 +113,6 @@ function UserDashboard() {
         setSelected(newSelected);
     };
 
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
-
-    const handleFilterByName = (event) => {
-        setPage(0);
-        setFilterName(event.target.value);
-    };
-
     const handleBlockUser = (event, user_id) => {
         axiosPrivate.put(`/admin/block-user/${user_id}`)
             .then(() => {
@@ -133,6 +145,49 @@ function UserDashboard() {
                 setRefresh(!refesh);
             })
             .catch(() => {
+                toast.error('Error unblock',
+                    {
+                        position: 'top-right'
+                    }
+                )
+            })
+    }
+
+    const dataFiltered = applyFilter({
+        inputData: users,
+        comparator: getComparator(order, orderBy),
+        filterName,
+    });
+
+    const handleBackPage = () => {
+        setPage(page - 1)
+    }
+
+    const handleNextPage = () => {
+        setPage(page + 1)
+    }
+
+    const onFilterName = (e) => {
+        setIsLoading(true)
+
+        const input = e.target.value.trim();
+
+        setInputSearch(input);
+        debounceSearch(input);
+    }
+
+    const handleBlockUsers = () => {
+        axiosPrivate.put(`/admin/block-users`, { 'list_id': selected })
+            .then(() => {
+                toast.success('Block success',
+                    {
+                        position: 'top-right'
+                    }
+                )
+
+                setRefresh(!refesh);
+            })
+            .catch(() => {
                 toast.error('Error block',
                     {
                         position: 'top-right'
@@ -141,13 +196,25 @@ function UserDashboard() {
             })
     }
 
-    // const dataFiltered = applyFilter({
-    //     inputData: users,
-    //     comparator: getComparator(order, orderBy),
-    //     filterName,
-    // });
+    const handleUnblockUsers = () => {
+        axiosPrivate.put(`/admin/unblock-users`, { 'list_id': selected })
+            .then(() => {
+                toast.success('Unblock success',
+                    {
+                        position: 'top-right'
+                    }
+                )
 
-    // const notFound = !dataFiltered.length && !!filterName;
+                setRefresh(!refesh);
+            })
+            .catch(() => {
+                toast.error('Error unblock',
+                    {
+                        position: 'top-right'
+                    }
+                )
+            })
+    }
 
     return (
         <Container >
@@ -158,10 +225,11 @@ function UserDashboard() {
             <Card>
                 <UserTableToolbar
                     numSelected={selected.length}
-                    filterName={filterName}
-                    onFilterName={handleFilterByName}
+                    onFilterName={onFilterName}
+                    onCLickBlock={handleBlockUsers}
+                    onCLickUnblock={handleUnblockUsers}
                 />
-
+                {isLoading && <Loading size={30} />}
                 <Scrollbar>
                     <TableContainer sx={{ overflow: 'unset' }}>
                         <Table sx={{ minWidth: 800 }}>
@@ -183,9 +251,10 @@ function UserDashboard() {
                                 ]}
                             />
                             <TableBody>
-                                {!isLoading && users.map((row) => (
+                                {!isLoading && dataFiltered.map((row) => (
                                     <UserTableRow
                                         key={row.id}
+                                        userId={row.id}
                                         avatarUrl={row.avatar}
                                         username={row.username}
                                         email={row.email}
@@ -199,26 +268,19 @@ function UserDashboard() {
                                     />
                                 ))}
 
-                                {/* <TableEmptyRows
-                                    height={77}
-                                    emptyRows={emptyRows(page, 10, users.length)}
-                                /> */}
-
-                                {/* {notFound && <TableNoData query={filterName} />} */}
+                                {/* {users.length <= 0 && <TableNoData query={filterName} />} */}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 </Scrollbar>
 
-                {/* <TablePagination
-                    page={page}
-                    component="div"
-                    count={users.length}
-                    rowsPerPage={10}
-                    onPageChange={handleChangePage}
-                    labelRowsPerPage={false}
-                    rowsPerPageOptions={[]}
-                /> */}
+                <div style={{ padding: 8, display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style={{ display: 'flex', width: 100, justifyContent: 'space-around' }}>
+                        {page > 1 && <span className='cur-point' onClick={handleBackPage}>{'<<'}</span>}
+                        <span style={{ fontSize: 16, fontWeight: 600 }}>{`Trang: ${page}`}</span>
+                        {hasNextPage && <span className='cur-point' onClick={handleNextPage}>{'>>'}</span>}
+                    </div>
+                </div>
             </Card>
         </Container>
     );

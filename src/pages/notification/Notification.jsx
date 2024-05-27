@@ -62,7 +62,7 @@ function Notification() {
             // notifi add, acp friend
             if (data?.created_by?.id === currentUser?.id) return;
             toast.info(data?.description, {
-                position: "top-right",
+                position: "bottom-left",
                 onOpen: () => {
                     setCountNotification(data?.total_notification)
                     toggle()

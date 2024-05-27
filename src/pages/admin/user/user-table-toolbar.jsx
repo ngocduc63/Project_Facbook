@@ -11,7 +11,7 @@ import Iconify from '../../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserTableToolbar({ numSelected, filterName, onFilterName, onCLickBlock, onCLickUnblock }) {
   return (
     <Toolbar
       sx={{
@@ -33,7 +33,7 @@ export default function UserTableToolbar({ numSelected, filterName, onFilterName
         <OutlinedInput
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Nhập tên người dùng..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify
@@ -46,11 +46,18 @@ export default function UserTableToolbar({ numSelected, filterName, onFilterName
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Block">
-          <IconButton>
-            <Iconify icon="cil:ban" />
-          </IconButton>
-        </Tooltip>
+        <div>
+          <Tooltip title="Unblock" onClick={onCLickUnblock}>
+            <IconButton>
+              <Iconify icon="mdi:plus" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Block" onClick={onCLickBlock}>
+            <IconButton>
+              <Iconify icon="cil:ban" />
+            </IconButton>
+          </Tooltip>
+        </div>
       ) :
         null
         // (
@@ -69,4 +76,6 @@ UserTableToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
+  onCLickBlock: PropTypes.func,
+  onCLickUnblock: PropTypes.func,
 };
