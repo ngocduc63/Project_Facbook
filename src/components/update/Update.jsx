@@ -50,8 +50,11 @@ const Update = ({ setOpenUpdate, user }) => {
         if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
         else if (errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
         else if (errCode === 8) toastEr("Tài khoản không tồn tại")
-        else if (errCode === 13) toastEr("Không thể kết nối tới mát chủ")
+        else if (errCode === 13) toastEr("Không thể kết nối tới máy chủ")
+
+        setIsLoading(false);
       })
+
   }
 
   return (

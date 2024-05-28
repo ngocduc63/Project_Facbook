@@ -11,8 +11,11 @@ export const NotifiPostContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (!currentUser) return;
-        if (!data || data === null || data.mess === 'un_like') return;
-        if (data.create_post !== currentUser.id || data.user_id === currentUser.id) return;
+        if (!data.hasOwnProperty('mess')) return;
+        if (!data.hasOwnProperty('num_share')) {
+            if (!data || data === null || data.mess === 'un_like') return;
+            if (data.create_post !== currentUser.id || data.user_id === currentUser.id) return;
+        }
 
         toast.info(`${data.user_name} ${data.mess}`, {
             position: 'bottom-left',

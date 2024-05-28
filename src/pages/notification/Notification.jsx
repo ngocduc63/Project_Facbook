@@ -70,7 +70,7 @@ function Notification() {
             })
 
             // notifi post
-            if (data.hasOwnProperty('num_like') || data.hasOwnProperty('num_comment') || data.hasOwnProperty('mess')) {
+            if (data.hasOwnProperty('num_like') || data.hasOwnProperty('num_comment') || data.hasOwnProperty('num_share') || data.hasOwnProperty('mess')) {
                 setData(data)
                 setCountNotification(data?.total_notification)
             }

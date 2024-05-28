@@ -41,7 +41,9 @@ const UpdateImage = ({ setOpenUpdateImage, user, isUpdateAvartar = false }) => {
 
                 if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
                 else if (errCode === 10) toastEr("Không gửi được file ảnh")
-                else if (errCode === 11) toastEr("Không thể kết nối tới mát chủ")
+                else if (errCode === 11) toastEr("Không thể kết nối tới máy chủ")
+
+                setIsLoading(false);
             })
     }
 
