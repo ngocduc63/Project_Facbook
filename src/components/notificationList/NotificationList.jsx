@@ -73,6 +73,9 @@ function NotificationList({ handleSelectNotificationItem }) {
                     {data.type === 4 &&
                         <span><span onClick={(e) => handleRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã bình luận bài viết của bạn</span>
                     }
+                    {data.type === 5 &&
+                        <span><span onClick={(e) => handleRedirectToProfile(e, data.user.id)}>{data.user.username}</span> đã chia sẻ bài viết của bạn</span>
+                    }
                     <div className='time'>{timeAgo(data.create_at)}</div>
                 </div>
             </Link>

@@ -1,5 +1,21 @@
 @import '../../style.scss';
 
+.border-1 {
+    border: 1px solid #dcd8d8;
+    padding: 12px 8px;
+    border-radius: 10px;
+}
+
+.input-share {
+    margin-bottom: 10px;
+    outline: none;
+    width: calc(100% - 20px);
+    color: #000;
+    padding: 6px 10px;
+    border: 1px solid #dcd8d8;
+    border-radius: 6px;
+}
+
 .update {
     @include themify($themes) {
         position: fixed;

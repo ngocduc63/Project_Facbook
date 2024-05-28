@@ -13,6 +13,7 @@ import { NotifiPostContext } from "../../context/notifiPostContext";
 import useAxiosPrivate from "../../api/axiosPrivate";
 import { convertTimespanToDay, timeAgo } from "../../helps/timer";
 import UpdatePost from "../update/UpdatePost";
+import Share from "../update/Share";
 import Loading from "../loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SocketContext } from "../../context/socketContext";
@@ -29,10 +30,13 @@ const Post = React.forwardRef(({ post }, ref) => {
   const { currentUser } = useContext(AuthContext);
   const { postId } = useContext(NotifiPostContext);
   const [numComment, setNumComment] = useState(post.num_comment);
+  const [numShare, setNumShare] = useState(post.num_share);
   const [isDelete, setIsDelete] = useState(false);
   const [showPopupUpdate, setShowPopupUpdate] = useState(false);
+  const [showPopupShare, setShowPopupShare] = useState(false);
   const [showPopupLikes, setShowPopupLikes] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataPostShare, setDataPostShare] = useState(post);
 
   const dataRequestLike = {
     'id_post': post.id,
@@ -50,7 +54,8 @@ const Post = React.forwardRef(({ post }, ref) => {
     joinRoomNotifi({ post_id: post.id })
 
     const handleNotification = (data) => {
-      if (data.post_id === post.id && data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
+      if (data.post_id !== post.id) return;
+      if (data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
         const data_rs = dataPost
         dataPost.num_like = data.num_like
         setDataPost(data_rs)
@@ -59,6 +64,10 @@ const Post = React.forwardRef(({ post }, ref) => {
       }
       else if (data.hasOwnProperty('num_comment')) {
         setNumComment(data.num_comment)
+      }
+      else if (data.hasOwnProperty('num_share')) {
+        console.log(data)
+        setNumShare(data.num_share)
       }
     };
     socketio.on("notification_post", handleNotification);
@@ -117,6 +126,14 @@ const Post = React.forwardRef(({ post }, ref) => {
   const handleUpdate = () => {
     setShowPopupUpdate(true);
     setMenuOpen(false);
+  };
+
+  const handleShare = () => {
+    if (dataPostShare.hasOwnProperty('post_share')) {
+      setDataPostShare(post.post_share)
+    }
+
+    setShowPopupShare(true);
   };
 
   const handleShowPopupLikes = () => {
@@ -183,21 +200,19 @@ const Post = React.forwardRef(({ post }, ref) => {
   const postBody = (
     <>
       {showPopupUpdate && <UpdatePost post={post} setShowPopupUpdate={setShowPopupUpdate} setDataPost={setDataPost} dataPost={dataPost} />}
+      {showPopupShare && <Share post={dataPostShare} setShowPopupShare={setShowPopupShare} dataPost={dataPost} />}
       <div className="post">
         <div className="container">
           <div className="user">
-            <div className="userInfo">
-              <img src={LINK_API_AVATAR + post.user.avatar} alt="" />
+            <Link to={`/profile/${post.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
+              <img src={LINK_API_AVATAR + post.user.avatar} alt="" style={{ cursor: 'pointer' }} />
               <div className="details">
-                <Link
-                  to={`/profile/${post.user.id}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
+                <div>
                   <span className="name">{post.user.username}</span>
-                </Link>
+                </div>
                 <span className="date" title={convertTimespanToDay(post.create_at)}>{timeAgo(post.create_at)}</span>
               </div>
-            </div>
+            </Link>
             {(post.user.id === currentUser.id || currentUser.role === 1) && (
               <>
                 <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} className="icon-menu" />
@@ -212,6 +227,7 @@ const Post = React.forwardRef(({ post }, ref) => {
               </>
             )}
           </div>
+
           <div className="content">
             <p>{dataPost.title ? dataPost.title : post.title}</p>
             {
@@ -230,6 +246,44 @@ const Post = React.forwardRef(({ post }, ref) => {
               )
             }
           </div>
+
+          {post.hasOwnProperty('post_share') &&
+            <div className="content-share">
+              <div className="user">
+                <Link to={`/profile/${post.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
+                  <img src={LINK_API_AVATAR + post.post_share.user.avatar} alt="" />
+                  <div className="details">
+                    <div
+                      to={`/profile/${post.post_share.user.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <span className="name">{post.post_share.user.username}</span>
+                    </div>
+                    <span className="date" title={convertTimespanToDay(post.post_share.create_at)}>{timeAgo(post.post_share.create_at)}</span>
+                  </div>
+                </Link>
+              </div>
+              <div className="content">
+                <p>{post.post_share.title ? post.post_share.title : post.post_share.title}</p>
+                {
+                  (
+                    post.post_share.category === 0 && <img src={LINK_API_POST + (post.post_share.image ?? post.post_share.image)} alt="" />
+                  )
+                }
+                {
+                  (
+                    post.post_share.category === 1 && <img src={LINK_API_AVATAR + (post.post_share.image ?? post.post_share.image)} alt="" />
+                  )
+                }
+                {
+                  (
+                    post.post_share.category === 2 && <img src={LINK_API_COVER + (post.post_share.image ?? post.post_share.image)} alt="" />
+                  )
+                }
+              </div>
+            </div>
+          }
+
           <div className="info">
             <div className="item">
               {isLoading && <Loading size={20} />}
@@ -257,9 +311,9 @@ const Post = React.forwardRef(({ post }, ref) => {
               <TextsmsOutlinedIcon />
               {numComment} Comments
             </div>
-            <div className="item">
+            <div className="item" onClick={handleShare}>
               <ShareOutlinedIcon />
-              Share
+              {`${numShare} Share`}
             </div>
           </div>
           {commentOpen && <Comments postId={post.id} isAdmin={currentUser.role === 1 || post.user.id === currentUser.id} />}

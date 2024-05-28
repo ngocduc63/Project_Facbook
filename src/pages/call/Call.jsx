@@ -187,10 +187,16 @@ function Call() {
                                 }
                                 {
                                     !callAccepted && cancelCall && (
-                                        <div className='accept-btn' onClick={handleRecall}>
-                                            <VideocamIcon />
-                                            <span>Gọi lại</span>
-                                        </div>
+                                        <>
+                                            <div className='accept-btn' onClick={handleRecall}>
+                                                <VideocamIcon />
+                                                <span>Gọi lại</span>
+                                            </div>
+                                            <div className='home-btn' onClick={handleBackToHome}>
+                                                <HomeOutlinedIcon />
+                                                <span>Trang chủ</span>
+                                            </div>
+                                        </>
                                     )
                                 }
                                 {callAccepted && callEnded &&

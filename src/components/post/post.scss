@@ -1,5 +1,12 @@
 @import '../../style.scss';
 
+.content-share {
+    border: 1px solid #dcd8d8;
+    padding: 12px 8px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
 .post {
     @include themify($themes) {
         -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
@@ -83,7 +90,7 @@
             }
 
             .content {
-                margin: 20px 0px;
+                margin: 12px 0px;
 
                 img {
                     width: 100%;

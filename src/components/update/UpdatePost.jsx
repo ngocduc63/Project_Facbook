@@ -36,7 +36,13 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                     position: 'top-right',
                 })
             })
-            .catch((error) => { });
+            .catch(() => {
+                toast.success('Chỉnh sửa bài viết thất bại', {
+                    position: 'top-right',
+                })
+
+                setIsLoading(false);
+            });
     }
 
     return (
