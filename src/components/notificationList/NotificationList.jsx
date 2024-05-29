@@ -20,6 +20,7 @@ function NotificationList({ handleSelectNotificationItem }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         const controller = new AbortController()
         const { signal } = controller
 
@@ -31,7 +32,8 @@ function NotificationList({ handleSelectNotificationItem }) {
                 setCountNotification(0)
                 setIsLoading(false);
             })
-            .catch((error) => {
+            .catch(() => {
+                setIsLoading(false);
                 if (signal.aborted) return
             })
 

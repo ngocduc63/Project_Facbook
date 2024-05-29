@@ -35,10 +35,11 @@ const Profile = ({ id }) => {
 
   const userId = +location.pathname.split("/")[2] ? +location.pathname.split("/")[2] : id;
 
-  const { isLoading, data, refetch } = useQuery(["user", userId], () =>
-    axiosPrivate.get("/user-management/user/" + userId).then((res) => {
-      return res.data.data;
-    })
+  const { isLoading, data, refetch, error } = useQuery(["user", userId], () =>
+    axiosPrivate.get("/user-management/user/" + userId)
+      .then((res) => {
+        return res.data.data;
+      })
   );
 
   useEffect(() => {
@@ -143,126 +144,127 @@ const Profile = ({ id }) => {
 
   return (
     <div className="profile">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <div className="images">
-            <div className="body-cover">
-              <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handleOpenPopupCover} />
-              {openPopup === 2 && (
-                <div className="body-edit body-edit-cover">
-                  {/* <div onClick={handleClosePopups}>Xem ảnh bìa</div> */}
-                  {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(2)}>Chỉnh sửa ảnh bìa</div>}
-                </div>
-              )}
-            </div>
+      {error ? <div style={{ fontWeight: 600, marginTop: 20 }}>Không tồn tại người dùng</div> :
+        isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <div className="images">
+              <div className="body-cover">
+                <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handleOpenPopupCover} />
+                {openPopup === 2 && (
+                  <div className="body-edit body-edit-cover">
+                    {/* <div onClick={handleClosePopups}>Xem ảnh bìa</div> */}
+                    {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(2)}>Chỉnh sửa ảnh bìa</div>}
+                  </div>
+                )}
+              </div>
 
-            <div className="body-avatar">
-              <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handleOpenPopupAvatar} />
-              {openPopup === 1 && (
-                <div className="body-edit">
-                  {/* <div onClick={handleClosePopups} >Xem ảnh đại diện</div> */}
-                  {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(1)}>Chỉnh sửa ảnh đại điện</div>}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="profileContainer" onClick={handleClosePopups}>
-            <div className="uInfo">
-              <div className="center">
-                <span>{data.username} {data.nickname && <span>({data.nickname})</span>}</span>
-                {data.description && <span className="description">{data.description}</span>}
-                <div className="info">
-                  <div className="item">
-                    <span>Bạn bè: {data.num_friend}</span>
+              <div className="body-avatar">
+                <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handleOpenPopupAvatar} />
+                {openPopup === 1 && (
+                  <div className="body-edit">
+                    {/* <div onClick={handleClosePopups} >Xem ảnh đại diện</div> */}
+                    {currentUser.id === data.id && <div onClick={() => setOpenUpdateImage(1)}>Chỉnh sửa ảnh đại điện</div>}
                   </div>
-                  <div className="item">
-                    <span>Ngày sinh:</span>
-                    <span>{convertToDate(data.birth_date)}</span>
-                  </div>
-                </div>
-                <div className="buttons">
-                  {
-                    currentUser.id === data.id && (
-                      <>
-                        <button className="item" onClick={handleUpdateProfile}>
-                          Chỉnh sửa thông tin
-                        </button>
-                        <button className="item" onClick={handleChangePassword}>
-                          Đổi mật khẩu
-                        </button>
-                        <button className="item button-exit" onClick={handleLogout} title="Đăng xuất">
-                          <ExitToAppIcon />
-                        </button>
-                      </>
-                    )
-                  }
-                  {
-                    currentUser.id !== userId && (
-                      <>
-                        {
-                          data.isFriend === 0 && (
-                            <>
-                              <button className="item" onClick={handleAddFriend}>
-                                Gửi kết bạn
-                              </button>
-                            </>
-                          )
-                        }
-                        {
-                          data.isFriend === 1 && (
-                            <>
-                              <button className="item" onClick={() => setShowPopupUnfriend(!showPopupUnfriend)}>
-                                Bạn bè
-                                {showPopupUnfriend ? (<ExpandLessIcon />) : (<ExpandMoreIcon />)}
-                              </button>
-                              {
-                                showPopupUnfriend && (
-                                  <>
-                                    <div className="popup-unfriend">
-                                      <button className="item button-exit" onClick={handleCancelFriend}>
-                                        Hủy kết bạn
-                                      </button>
-                                    </div>
-                                  </>
-                                )
-                              }
-                              <button className="item button-mess" onClick={handleShowPopupMess}>
-                                <span>Nhắn tin</span>
-                                <ChatBubbleOutlineIcon />
-                              </button>
-                            </>
-                          )
-                        }
-                        {
-                          data.isFriend === 2 && (
-                            <>
-                              <button className="item button-exit" onClick={handleCancelFriend}>
-                                Hủy lời mời
-                              </button>
-                            </>
-                          )
-                        }
-                        {
-                          data.isFriend === 3 && (
-                            <>
-                              <button className="item" onClick={handleAcceptFriend}>
-                                Chấp nhận kết bạn
-                              </button>
-                            </>
-                          )
-                        }
-                      </>
-                    )
-                  }
-                </div>
+                )}
               </div>
             </div>
-            <div style={{ width: '100%' }}><Posts userId={userId} /></div>
-          </div>
-        </>
-      )}
+            <div className="profileContainer" onClick={handleClosePopups}>
+              <div className="uInfo">
+                <div className="center">
+                  <span>{data.username} {data.nickname && <span>({data.nickname})</span>}</span>
+                  {data.description && <span className="description">{data.description}</span>}
+                  <div className="info">
+                    <div className="item">
+                      <span>Bạn bè: {data.num_friend}</span>
+                    </div>
+                    <div className="item">
+                      <span>Ngày sinh:</span>
+                      <span>{convertToDate(data.birth_date)}</span>
+                    </div>
+                  </div>
+                  <div className="buttons">
+                    {
+                      currentUser.id === data.id && (
+                        <>
+                          <button className="item" onClick={handleUpdateProfile}>
+                            Chỉnh sửa thông tin
+                          </button>
+                          <button className="item" onClick={handleChangePassword}>
+                            Đổi mật khẩu
+                          </button>
+                          <button className="item button-exit" onClick={handleLogout} title="Đăng xuất">
+                            <ExitToAppIcon />
+                          </button>
+                        </>
+                      )
+                    }
+                    {
+                      currentUser.id !== userId && (
+                        <>
+                          {
+                            data.isFriend === 0 && (
+                              <>
+                                <button className="item" onClick={handleAddFriend}>
+                                  Gửi kết bạn
+                                </button>
+                              </>
+                            )
+                          }
+                          {
+                            data.isFriend === 1 && (
+                              <>
+                                <button className="item" onClick={() => setShowPopupUnfriend(!showPopupUnfriend)}>
+                                  Bạn bè
+                                  {showPopupUnfriend ? (<ExpandLessIcon />) : (<ExpandMoreIcon />)}
+                                </button>
+                                {
+                                  showPopupUnfriend && (
+                                    <>
+                                      <div className="popup-unfriend">
+                                        <button className="item button-exit" onClick={handleCancelFriend}>
+                                          Hủy kết bạn
+                                        </button>
+                                      </div>
+                                    </>
+                                  )
+                                }
+                                <button className="item button-mess" onClick={handleShowPopupMess}>
+                                  <span>Nhắn tin</span>
+                                  <ChatBubbleOutlineIcon />
+                                </button>
+                              </>
+                            )
+                          }
+                          {
+                            data.isFriend === 2 && (
+                              <>
+                                <button className="item button-exit" onClick={handleCancelFriend}>
+                                  Hủy lời mời
+                                </button>
+                              </>
+                            )
+                          }
+                          {
+                            data.isFriend === 3 && (
+                              <>
+                                <button className="item" onClick={handleAcceptFriend}>
+                                  Chấp nhận kết bạn
+                                </button>
+                              </>
+                            )
+                          }
+                        </>
+                      )
+                    }
+                  </div>
+                </div>
+              </div>
+              <div style={{ width: '100%' }}><Posts userId={userId} /></div>
+            </div>
+          </>
+        )}
       {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
       {openChangePassword && <UpdatePassword setOpenChangePassword={setOpenChangePassword} />}
       {openUpdateImage !== 0 && <UpdateImage setOpenUpdateImage={setOpenUpdateImage} user={data} isUpdateAvartar={openUpdateImage === 1 ? true : false} />}
