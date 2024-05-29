@@ -1,0 +1,16 @@
+@import '../../style.scss';
+
+.post-page {
+    padding: 20px 40px;
+    min-height: 100vh;
+    min-width: 600px;
+    max-width: 650px;
+
+    @include mobile {
+        padding: 10px;
+    }
+
+    @include tablet {
+        padding: 20px;
+    }
+}

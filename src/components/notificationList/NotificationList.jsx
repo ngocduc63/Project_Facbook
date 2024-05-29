@@ -49,11 +49,11 @@ function NotificationList({ handleSelectNotificationItem }) {
 
     const handleRedirectToProfile = (e, userId) => {
         e.preventDefault();
-        navigate(`profile/${userId}`)
+        navigate(`/profile/${userId}`)
     }
 
     const content = dataNotifications.map((data, index) => {
-        const link = data.type === 1 || data.type === 2 ? `profile/${data.user.id}` : ``
+        const link = data.type === 1 || data.type === 2 ? `/profile/${data.user.id}` : data.type === 5 ? `/post/${data.data.post_share}` : `/post/${data.data.post_id}`
 
         return (
             <Link to={link} className='noti-item' key={index} onClick={(e) => handleSelect(data.type, data.data.post_id)}>

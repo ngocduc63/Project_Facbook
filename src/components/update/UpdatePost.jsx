@@ -61,31 +61,33 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                     </div>
                     <div className='main'>
                         <input className='title' value={input} onChange={(e) => setInput(e.target.value)} />
-                        <div className='image-post'>
-                            <label htmlFor="image">
-                                <div className="imgContainer">
-                                    <img
-                                        src={
-                                            image
-                                                ? URL.createObjectURL(image)
-                                                : post.category === 0 ? LINK_API_POST + (dataPost.image ?? post.image)
-                                                    : post.category === 1 ? LINK_API_AVATAR + (dataPost.image ?? post.image)
-                                                        : LINK_API_COVER + (dataPost.image ?? post.image)
-                                        }
-                                        alt="ảnh"
+                        {!post.hasOwnProperty('post_share') &&
+                            <div className='image-post'>
+                                <label htmlFor="image">
+                                    <div className="imgContainer">
+                                        <img
+                                            src={
+                                                image
+                                                    ? URL.createObjectURL(image)
+                                                    : post.category === 0 ? LINK_API_POST + (dataPost.image ?? post.image)
+                                                        : post.category === 1 ? LINK_API_AVATAR + (dataPost.image ?? post.image)
+                                                            : LINK_API_COVER + (dataPost.image ?? post.image)
+                                            }
+                                            alt="ảnh"
+                                        />
+                                        {post.category === 0 && <CloudUploadIcon className="icon" />}
+                                    </div>
+                                </label>
+                                {post.category === 0 &&
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => setImage(e.target.files[0])}
                                     />
-                                    {post.category === 0 && <CloudUploadIcon className="icon" />}
-                                </div>
-                            </label>
-                            {post.category === 0 &&
-                                <input
-                                    type="file"
-                                    id="image"
-                                    style={{ display: "none" }}
-                                    onChange={(e) => setImage(e.target.files[0])}
-                                />
-                            }
-                        </div>
+                                }
+                            </div>
+                        }
 
                     </div>
                     {!isLoading && <button onClick={handleSubmit}>Xác nhận</button>}
