@@ -4,7 +4,7 @@ import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Comments from "../comments/Comments";
 import React, { useState, useEffect } from "react";
 import { useContext } from "react";
@@ -29,6 +29,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [like, setLike] = useState(0);
   const { currentUser } = useContext(AuthContext);
   const { postId } = useContext(NotifiPostContext);
+  const [numLike, setNumLike] = useState(post.num_like);
   const [numComment, setNumComment] = useState(post.num_comment);
   const [numShare, setNumShare] = useState(post.num_share);
   const [isDelete, setIsDelete] = useState(false);
@@ -37,6 +38,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const [showPopupLikes, setShowPopupLikes] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataPostShare, setDataPostShare] = useState(post);
+  const navigate = useNavigate();
 
   const dataRequestLike = {
     'id_post': post.id,
@@ -62,17 +64,13 @@ const Post = React.forwardRef(({ post }, ref) => {
     const handleNotification = (data) => {
       if (data.post_id !== post.id) return;
       if (data.hasOwnProperty('mess') && data.hasOwnProperty('num_like')) {
-        const data_rs = dataPost
-        dataPost.num_like = data.num_like
-        setDataPost(data_rs)
-
+        setNumLike(data.num_like)
         if (currentUser.id === data.user_id) setLike(prve => prve + 1)
       }
       else if (data.hasOwnProperty('num_comment')) {
         setNumComment(data.num_comment)
       }
       else if (data.hasOwnProperty('num_share')) {
-        console.log(data)
         setNumShare(data.num_share)
       }
     };
@@ -199,6 +197,16 @@ const Post = React.forwardRef(({ post }, ref) => {
     )
   }
 
+  const handleRedirectToProfile = (e) => {
+    e.preventDefault();
+    navigate(`/profile/${post.post_share.user.id}`)
+  }
+
+  const handleRedirectToPost = (e) => {
+    e.preventDefault();
+    navigate(`/post/${post.post_share.id}`)
+  }
+
   const postBody = (
     <>
       {showPopupUpdate && <UpdatePost post={post} setShowPopupUpdate={setShowPopupUpdate} setDataPost={setDataPost} dataPost={dataPost} />}
@@ -206,7 +214,7 @@ const Post = React.forwardRef(({ post }, ref) => {
       <div className="post">
         <div className="container">
           <div className="user">
-            <Link to={`/profile/${post.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link to={`/profile/${post.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }} >
               <img src={LINK_API_AVATAR + post.user.avatar} alt="" style={{ cursor: 'pointer' }} />
               <div className="details">
                 <div>
@@ -254,12 +262,12 @@ const Post = React.forwardRef(({ post }, ref) => {
           </div>
 
           {post.hasOwnProperty('post_share') &&
-            <div className="content-share">
+            <div className="content-share cur-point" onClick={handleRedirectToPost}>
               {post.post_share.is_deleted !== 0 && <span>Bài viết đã bị xóa</span>}
               {post.post_share.is_deleted === 0 &&
                 <>
                   <div className="user">
-                    <Link to={`/profile/${post.post_share.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
+                    <div className="userInfo" style={{ textDecoration: "none", color: "inherit" }} onClick={handleRedirectToProfile}>
                       <img src={LINK_API_AVATAR + post.post_share.user.avatar} alt="" />
                       <div className="details">
                         <div
@@ -270,7 +278,7 @@ const Post = React.forwardRef(({ post }, ref) => {
                         </div>
                         <span className="date" title={convertTimespanToDay(post.post_share.create_at)}>{timeAgo(post.post_share.create_at)}</span>
                       </div>
-                    </Link>
+                    </div>
                   </div>
                   <div className="content">
                     <p>{post.post_share.title ? post.post_share.title : post.post_share.title}</p>
@@ -317,7 +325,7 @@ const Post = React.forwardRef(({ post }, ref) => {
                   </>
                 )
               }
-              <span onClick={handleShowPopupLikes}>{dataPost.num_like ? dataPost.num_like : post?.num_like} Likes</span>
+              <span onClick={handleShowPopupLikes}>{numLike} Likes</span>
               {showPopupLikes && (
                 <ContentListLikes postId={post.id} />
               )}

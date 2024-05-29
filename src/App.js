@@ -2,7 +2,7 @@ import Login from './pages/login/Login';
 import Dashboard from './pages/admin/home/Dashboard';
 import Admin from './pages/admin/Admin';
 import UserDashboard from './pages/admin/user/UserDashboard';
-import PostDashboard from './pages/admin/post/PostDashboard';
+// import PostDashboard from './pages/admin/post/PostDashboard';
 import Register from './pages/register/Register';
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
@@ -25,6 +25,7 @@ import Search from './components/search/Search';
 import Call from './pages/call/Call';
 import { HomeContext } from './context/homeContext';
 import { Suspense } from 'react';
+import PostPage from './pages/post/PostPage';
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -101,6 +102,10 @@ function App() {
                 {
                     path: '/search/:username',
                     element: <Search />,
+                },
+                {
+                    path: '/post/:id',
+                    element: <PostPage />,
                 },
             ],
         },
