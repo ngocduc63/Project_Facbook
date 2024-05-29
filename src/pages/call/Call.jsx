@@ -178,7 +178,7 @@ function Call() {
                         <div className='popup-call'>
                             <div className="buttons">
                                 {
-                                    callAccepted && !callEnded && (
+                                    !callEnded && (
                                         <div className='cancel-btn' onClick={handleEndCall}>
                                             <LocalPhoneIcon />
                                             <span>Kết thúc</span>

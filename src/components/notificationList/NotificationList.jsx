@@ -8,7 +8,6 @@ import { timeAgo } from '../../helps/timer'
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeContext } from '../../context/homeContext';
 import { NotificationContext } from '../../context/notificationContext';
-import { toast } from 'react-toastify';
 
 function NotificationList({ handleSelectNotificationItem }) {
     const navigate = useNavigate();
@@ -21,6 +20,7 @@ function NotificationList({ handleSelectNotificationItem }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         const controller = new AbortController()
         const { signal } = controller
 
@@ -32,13 +32,8 @@ function NotificationList({ handleSelectNotificationItem }) {
                 setCountNotification(0)
                 setIsLoading(false);
             })
-            .catch((error) => {
+            .catch(() => {
                 setIsLoading(false);
-                toast.error('Lỗi tải thông báo',
-                    {
-                        position: 'top-right'
-                    }
-                )
                 if (signal.aborted) return
             })
 
