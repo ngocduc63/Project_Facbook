@@ -44,6 +44,12 @@ const Post = React.forwardRef(({ post }, ref) => {
   }
 
   useEffect(() => {
+    if (post.hasOwnProperty('post_share')) {
+      setDataPostShare(post.post_share)
+    }
+  }, [post]);
+
+  useEffect(() => {
 
     const joinRoomNotifi = (room) => {
       if (room !== "") {
@@ -129,10 +135,6 @@ const Post = React.forwardRef(({ post }, ref) => {
   };
 
   const handleShare = () => {
-    if (dataPostShare.hasOwnProperty('post_share')) {
-      setDataPostShare(post.post_share)
-    }
-
     setShowPopupShare(true);
   };
 
@@ -200,7 +202,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   const postBody = (
     <>
       {showPopupUpdate && <UpdatePost post={post} setShowPopupUpdate={setShowPopupUpdate} setDataPost={setDataPost} dataPost={dataPost} />}
-      {showPopupShare && <Share post={dataPostShare} setShowPopupShare={setShowPopupShare} dataPost={dataPost} />}
+      {showPopupShare && <Share post={dataPostShare} setShowPopupShare={setShowPopupShare} />}
       <div className="post">
         <div className="container">
           <div className="user">
@@ -230,57 +232,70 @@ const Post = React.forwardRef(({ post }, ref) => {
 
           <div className="content">
             <p>{dataPost.title ? dataPost.title : post.title}</p>
-            {
-              (
-                post.category === 0 && <img src={LINK_API_POST + (dataPost.image ?? post.image)} alt="" />
-              )
-            }
-            {
-              (
-                post.category === 1 && <img src={LINK_API_AVATAR + (dataPost.image ?? post.image)} alt="" />
-              )
-            }
-            {
-              (
-                post.category === 2 && <img src={LINK_API_COVER + (dataPost.image ?? post.image)} alt="" />
-              )
+            {dataPost.image &&
+              <>
+                {
+                  (
+                    post.category === 0 && <img src={LINK_API_POST + (dataPost.image ?? post.image)} alt="" />
+                  )
+                }
+                {
+                  (
+                    post.category === 1 && <img src={LINK_API_AVATAR + (dataPost.image ?? post.image)} alt="" />
+                  )
+                }
+                {
+                  (
+                    post.category === 2 && <img src={LINK_API_COVER + (dataPost.image ?? post.image)} alt="" />
+                  )
+                }
+              </>
             }
           </div>
 
           {post.hasOwnProperty('post_share') &&
             <div className="content-share">
-              <div className="user">
-                <Link to={`/profile/${post.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
-                  <img src={LINK_API_AVATAR + post.post_share.user.avatar} alt="" />
-                  <div className="details">
-                    <div
-                      to={`/profile/${post.post_share.user.id}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <span className="name">{post.post_share.user.username}</span>
-                    </div>
-                    <span className="date" title={convertTimespanToDay(post.post_share.create_at)}>{timeAgo(post.post_share.create_at)}</span>
+              {post.post_share.is_deleted !== 0 && <span>Bài viết đã bị xóa</span>}
+              {post.post_share.is_deleted === 0 &&
+                <>
+                  <div className="user">
+                    <Link to={`/profile/${post.post_share.user.id}`} className="userInfo" style={{ textDecoration: "none", color: "inherit" }}>
+                      <img src={LINK_API_AVATAR + post.post_share.user.avatar} alt="" />
+                      <div className="details">
+                        <div
+                          to={`/profile/${post.post_share.user.id}`}
+                          style={{ textDecoration: "none", color: "inherit" }}
+                        >
+                          <span className="name">{post.post_share.user.username}</span>
+                        </div>
+                        <span className="date" title={convertTimespanToDay(post.post_share.create_at)}>{timeAgo(post.post_share.create_at)}</span>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-              <div className="content">
-                <p>{post.post_share.title ? post.post_share.title : post.post_share.title}</p>
-                {
-                  (
-                    post.post_share.category === 0 && <img src={LINK_API_POST + (post.post_share.image ?? post.post_share.image)} alt="" />
-                  )
-                }
-                {
-                  (
-                    post.post_share.category === 1 && <img src={LINK_API_AVATAR + (post.post_share.image ?? post.post_share.image)} alt="" />
-                  )
-                }
-                {
-                  (
-                    post.post_share.category === 2 && <img src={LINK_API_COVER + (post.post_share.image ?? post.post_share.image)} alt="" />
-                  )
-                }
-              </div>
+                  <div className="content">
+                    <p>{post.post_share.title ? post.post_share.title : post.post_share.title}</p>
+                    {post.post_share.image &&
+                      <>
+                        {
+                          (
+                            post.post_share.category === 0 && <img src={LINK_API_POST + (post.post_share.image ?? post.post_share.image)} alt="" />
+                          )
+                        }
+                        {
+                          (
+                            post.post_share.category === 1 && <img src={LINK_API_AVATAR + (post.post_share.image ?? post.post_share.image)} alt="" />
+                          )
+                        }
+                        {
+                          (
+                            post.post_share.category === 2 && <img src={LINK_API_COVER + (post.post_share.image ?? post.post_share.image)} alt="" />
+                          )
+                        }
+                      </>
+                    }
+                  </div>
+                </>
+              }
             </div>
           }
 
