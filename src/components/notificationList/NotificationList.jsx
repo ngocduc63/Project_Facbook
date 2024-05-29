@@ -8,6 +8,7 @@ import { timeAgo } from '../../helps/timer'
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeContext } from '../../context/homeContext';
 import { NotificationContext } from '../../context/notificationContext';
+import { toast } from 'react-toastify';
 
 function NotificationList({ handleSelectNotificationItem }) {
     const navigate = useNavigate();
@@ -32,6 +33,12 @@ function NotificationList({ handleSelectNotificationItem }) {
                 setIsLoading(false);
             })
             .catch((error) => {
+                setIsLoading(false);
+                toast.error('Lỗi tải thông báo',
+                    {
+                        position: 'top-right'
+                    }
+                )
                 if (signal.aborted) return
             })
 
