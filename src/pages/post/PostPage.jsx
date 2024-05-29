@@ -37,7 +37,7 @@ function PostPage() {
                 }, 5)
             })
             .catch((error) => {
-                if (error.response.data.errorCode === 14) {
+                if (error?.response?.data?.errorCode === 14) {
                     toast.error('Bài viết không tồn tại', {
                         position: 'top-right'
                     })
