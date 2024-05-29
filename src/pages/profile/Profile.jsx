@@ -18,9 +18,11 @@ import { toast } from 'react-toastify';
 import { ChatContext } from "../../context/chatContext";
 import useLogout from '../../api/logout'
 import { LINK_API_AVATAR, LINK_API_COVER } from "../../api/const";
+import UpdatePassword from "../../components/update/UpdatePassword";
 
 const Profile = ({ id }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
   const [openUpdateImage, setOpenUpdateImage] = useState(0);
   const [openPopup, setOpenPopup] = useState(0);
   const { currentUser } = useContext(AuthContext);
@@ -47,7 +49,7 @@ const Profile = ({ id }) => {
     refetch();
   }, [userId, isRefetch, refetch]);
 
-  const handelLogout = async () => {
+  const handleLogout = async () => {
     const isSuccess = await logout();
 
     if (isSuccess) {
@@ -57,11 +59,11 @@ const Profile = ({ id }) => {
     }
   }
 
-  const handelUpdateProfile = () => {
+  const handleUpdateProfile = () => {
     setOpenUpdate(true)
   }
 
-  const handelOpenPopupAvatar = () => {
+  const handleOpenPopupAvatar = () => {
     if (openPopup === 1) {
       handleClosePopups()
       return;
@@ -70,7 +72,7 @@ const Profile = ({ id }) => {
     setOpenPopup(1)
   }
 
-  const handelOpenPopupCover = () => {
+  const handleOpenPopupCover = () => {
     if (openPopup === 2) {
       handleClosePopups()
       return;
@@ -83,7 +85,7 @@ const Profile = ({ id }) => {
     setOpenPopup(0);
   };
 
-  const handelAddFriend = () => {
+  const handleAddFriend = () => {
     axiosPrivate.post(('friend-management/add-friend/' + userId))
       .then(() => {
         toast.success("Gửi lời mời thành công", {
@@ -98,7 +100,7 @@ const Profile = ({ id }) => {
       })
   }
 
-  const handelAcceptFriend = () => {
+  const handleAcceptFriend = () => {
     axiosPrivate.put(('/friend-management/accept/' + userId))
       .then(() => {
         toast.success("Xác nhận lời mời thành công", {
@@ -113,7 +115,7 @@ const Profile = ({ id }) => {
       })
   }
 
-  const handelCancelFriend = () => {
+  const handleCancelFriend = () => {
     axiosPrivate.delete(('/friend-management/unfriend/' + userId))
       .then(() => {
         toast.success("Hủy kết bạn thành công", {
@@ -128,11 +130,15 @@ const Profile = ({ id }) => {
       })
   }
 
-  const handelShowPopupMess = () => {
+  const handleShowPopupMess = () => {
     axiosPrivate.get((`/friend-management/get-room/${userId}`))
       .then((response) => {
         setRoomCurrent(response?.data?.data?.room_id)
       })
+  }
+
+  const handleChangePassword = () => {
+    setOpenChangePassword(true)
   }
 
   return (
@@ -143,7 +149,7 @@ const Profile = ({ id }) => {
         <>
           <div className="images">
             <div className="body-cover">
-              <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handelOpenPopupCover} />
+              <img src={LINK_API_COVER + data.cover_photo} alt="" className="cover" onClick={handleOpenPopupCover} />
               {openPopup === 2 && (
                 <div className="body-edit body-edit-cover">
                   {/* <div onClick={handleClosePopups}>Xem ảnh bìa</div> */}
@@ -153,7 +159,7 @@ const Profile = ({ id }) => {
             </div>
 
             <div className="body-avatar">
-              <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handelOpenPopupAvatar} />
+              <img src={LINK_API_AVATAR + data.avatar} alt="" className="profilePic" onClick={handleOpenPopupAvatar} />
               {openPopup === 1 && (
                 <div className="body-edit">
                   {/* <div onClick={handleClosePopups} >Xem ảnh đại diện</div> */}
@@ -180,10 +186,13 @@ const Profile = ({ id }) => {
                   {
                     currentUser.id === data.id && (
                       <>
-                        <button className="item" onClick={handelUpdateProfile}>
+                        <button className="item" onClick={handleUpdateProfile}>
                           Chỉnh sửa thông tin
                         </button>
-                        <button className="item button-exit" onClick={handelLogout} title="Đăng xuất">
+                        <button className="item" onClick={handleChangePassword}>
+                          Đổi mật khẩu
+                        </button>
+                        <button className="item button-exit" onClick={handleLogout} title="Đăng xuất">
                           <ExitToAppIcon />
                         </button>
                       </>
@@ -195,7 +204,7 @@ const Profile = ({ id }) => {
                         {
                           data.isFriend === 0 && (
                             <>
-                              <button className="item" onClick={handelAddFriend}>
+                              <button className="item" onClick={handleAddFriend}>
                                 Gửi kết bạn
                               </button>
                             </>
@@ -212,14 +221,14 @@ const Profile = ({ id }) => {
                                 showPopupUnfriend && (
                                   <>
                                     <div className="popup-unfriend">
-                                      <button className="item button-exit" onClick={handelCancelFriend}>
+                                      <button className="item button-exit" onClick={handleCancelFriend}>
                                         Hủy kết bạn
                                       </button>
                                     </div>
                                   </>
                                 )
                               }
-                              <button className="item button-mess" onClick={handelShowPopupMess}>
+                              <button className="item button-mess" onClick={handleShowPopupMess}>
                                 <span>Nhắn tin</span>
                                 <ChatBubbleOutlineIcon />
                               </button>
@@ -229,7 +238,7 @@ const Profile = ({ id }) => {
                         {
                           data.isFriend === 2 && (
                             <>
-                              <button className="item button-exit" onClick={handelCancelFriend}>
+                              <button className="item button-exit" onClick={handleCancelFriend}>
                                 Hủy lời mời
                               </button>
                             </>
@@ -238,7 +247,7 @@ const Profile = ({ id }) => {
                         {
                           data.isFriend === 3 && (
                             <>
-                              <button className="item" onClick={handelAcceptFriend}>
+                              <button className="item" onClick={handleAcceptFriend}>
                                 Chấp nhận kết bạn
                               </button>
                             </>
@@ -255,6 +264,7 @@ const Profile = ({ id }) => {
         </>
       )}
       {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
+      {openChangePassword && <UpdatePassword setOpenChangePassword={setOpenChangePassword} />}
       {openUpdateImage !== 0 && <UpdateImage setOpenUpdateImage={setOpenUpdateImage} user={data} isUpdateAvartar={openUpdateImage === 1 ? true : false} />}
     </div>
   );
