@@ -91,7 +91,7 @@ function Comment({ comment, currentUser, isAdmin = false }) {
                         {menuOpen && (
                             <div className="menu">
                                 <>
-                                    <button onClick={handleUpdate}>Sửa bình luận</button>
+                                    {currentUser === comment.user.id && <button onClick={handleUpdate}>Sửa bình luận</button>}
                                     <button onClick={handleDelete}>Xóa bình luận</button>
                                 </>
                             </div>

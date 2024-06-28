@@ -229,7 +229,7 @@ const Post = React.forwardRef(({ post }, ref) => {
                 {menuOpen && (
                   <div className="menu">
                     <>
-                      <button onClick={handleUpdate}>Sửa bài viết</button>
+                      {currentUser.id === post.user_id && <button onClick={handleUpdate}>Sửa bài viết</button>}
                       <button onClick={handleDelete}>Xóa bài viết</button>
                     </>
                   </div>
