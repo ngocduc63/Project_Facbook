@@ -18,6 +18,8 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
     const [inputDebounce, setInputDebounce] = useState('');
 
     useEffect(() => {
+        setIsLoading(true);
+        console.log('loadinf');
         const controller = new AbortController();
         const { signal } = controller;
 
@@ -30,9 +32,10 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                     setDataFriend((prev) => [...prev, ...data.data.datas]);
                     setHasNextPage(pageNum <= data.data.maxPage - 1);
                     setIsLoading(false);
+                    console.log('loadinf');
+
                 })
                 .catch(err => {
-                    setIsLoading(false);
                     if (signal.aborted) return;
 
                     toast.error("Lỗi không tìm được", {
@@ -52,7 +55,6 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                     setIsLoading(false);
                 })
                 .catch((error) => {
-                    setIsLoading(false);
                     if (signal.aborted) return;
                 });
         }
@@ -117,7 +119,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
 
     const content = dataFriend.map(user => {
         return (
-            <div className='item'>
+            <div className='item' key={user.id}>
                 <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id} onClick={handleClosePopup}>
                     <div className="userInfo">
                         <img
@@ -151,7 +153,7 @@ function PopupFriend({ setIsShowPopupFriend, isPopupFriend = true }) {
                     <div className="search">
                         <input type="text" placeholder="Nhập tên người bạn muốn tìm..." value={inputSearch} onChange={handleInput} />
                     </div>
-                    {isLoading && <Loading />}
+                    {isLoading && <Loading size={20} />}
                     {!isLoading && dataFriend.length <= 0 && <h3 style={{ textAlign: 'center' }}>{isPopupFriend ? 'Không có bạn bè' : 'Không có lời mời'}</h3>}
                     <InfiniteScroll
                         dataLength={dataFriend.length}

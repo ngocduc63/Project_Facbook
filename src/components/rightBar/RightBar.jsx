@@ -111,7 +111,10 @@ const RightBar = () => {
       <div className="rightBar">
         <div className="container">
           <div className="item">
-            <span onClick={handleOpenPopupAddFriend} style={{ cursor: 'pointer' }}>Danh sách lời mời</span>
+            <header style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span onClick={handleOpenPopupAddFriend} style={{ cursor: 'pointer' }}>Danh sách lời mời</span>
+              <span onClick={handleOpenPopupAddFriend} style={{ cursor: 'pointer', textDecoration: 'underLine' }}>Xem tất cả</span>
+            </header>
             {listInvite.map(user =>
             (
               <Link to={"/profile/" + user.friend_id} className="user" key={user.friend_id}>
