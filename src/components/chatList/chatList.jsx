@@ -50,7 +50,7 @@ function ChatList({ handleSelectRoomChat, isChatPage = false }) {
         // set watched chat room
         const roomCurrent = listRoom.find((room) => room._id?.room_id?.$oid === data._id?.room_id?.$oid);
 
-        if (roomCurrent) {
+        if (roomCurrent && !isChatPage) {
             const index = listRoom.indexOf(roomCurrent);
             if (index > -1) {
                 const listRoomNew = [...listRoom];
