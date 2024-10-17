@@ -1,5 +1,5 @@
 // const api_dev = 'http://localhost:5000/';
-const api_product = 'https://facebook-api-5gjf.onrender.com/';
+const api_product = 'http://20.255.58.196:5000/';
 const api = api_product;
 
 export const LINK_API = `${api}`;

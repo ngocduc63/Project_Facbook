@@ -108,6 +108,7 @@ const Navbar = () => {
 
   const handleShowChatPage = () => {
     setIsShowChatPage(true)
+    // navigate('/chat')
   }
 
   const handleShowNotificationList = () => {
