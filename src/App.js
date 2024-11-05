@@ -107,6 +107,10 @@ function App() {
                     path: '/post/:id',
                     element: <PostPage />,
                 },
+                {
+                    path: '/chat',
+                    element: <Chat />,
+                },
             ],
         },
         {
