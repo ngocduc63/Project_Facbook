@@ -8,6 +8,7 @@ import { ChatContext } from '../../context/chatContext'
 import CloseIcon from '@mui/icons-material/Close';
 import PopupFriend from "../popupFriend/PopupFriend";
 import { LINK_API_AVATAR } from "../../api/const";
+import { SocketContext } from "../../context/socketContext";
 
 const RightBar = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -15,6 +16,8 @@ const RightBar = () => {
   const { isRefecthInvite } = useContext(RefecthInviteContext)
   const { dataHiden, setDataHidden, setRoomCurrent } = useContext(ChatContext);
   const [isShowPopupFriend, setIsShowPopupFriend] = useState(false);
+  const { usersOnline } = useContext(SocketContext)
+  const [listUsersOnline, setlistUsersOnline] = useState(usersOnline)
 
   useEffect(() => {
     if (isShowPopupFriend) return;
@@ -39,6 +42,10 @@ const RightBar = () => {
 
     return () => controller.abort();
   }, [axiosPrivate, isRefecthInvite, isShowPopupFriend]);
+
+  useEffect(() => {
+    setlistUsersOnline(usersOnline)
+  }, [usersOnline])
 
   const deleteListInvite = (friend_id) => {
     let newList = listInvite.filter(item => item.friend_id !== friend_id);
@@ -138,29 +145,23 @@ const RightBar = () => {
           </div>
 
           {/* online friend */}
-          {/* <div className="item">
-            <span>Online Friends</span>
-            <div className="user">
-              <div className="userInfo">
-                <img
-                  src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
-                />
-                <div className="online" />
-                <span>User</span>
-              </div>
-            </div>
-            <div className="user">
-              <div className="userInfo">
-                <img
-                  src="https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
-                />
-                <div className="online" />
-                <span>User</span>
-              </div>
-            </div>
-          </div> */}
+          <div className="item">
+            <span>Danh sách người dùng đang online</span>
+            {listUsersOnline?.map(user =>
+              <Link to={"/profile/" + user.id} key={user.id} style={{ textDecoration: "none" }}>
+                <div className="user">
+                  <div className="userInfo">
+                    <img
+                      src={LINK_API_AVATAR + user.avatar}
+                      alt=""
+                    />
+                    <div className="online" />
+                    <span>{user.username}</span>
+                  </div>
+                </div>
+              </Link>
+            )}
+          </div>
         </div>
         <div className="mess-hiden">
           <div className="content">
