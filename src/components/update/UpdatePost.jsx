@@ -37,7 +37,7 @@ const UpdatePost = ({ post, setShowPopupUpdate, setDataPost, dataPost }) => {
                 })
             })
             .catch(() => {
-                toast.success('Chỉnh sửa bài viết thất bại', {
+                toast.error('Chỉnh sửa bài viết thất bại', {
                     position: 'top-right',
                 })
 

@@ -55,7 +55,9 @@ function Comment({ comment, currentUser, isAdmin = false }) {
                 setIsLoading(false);
             })
             .catch(err => {
-                console.log(err);
+                toast.error("Không thể đăng comment", {
+                    position: 'top-right'
+                });
                 setIsLoading(false);
             })
     }

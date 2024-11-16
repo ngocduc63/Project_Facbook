@@ -60,7 +60,7 @@ const Comments = ({ postId, isAdmin = false }) => {
         setRefecthComment(!refecthComment)
       })
       .catch(() => {
-        toast.error("comment post error", {
+        toast.error("Không thể đăng comment", {
           position: 'top-right'
         });
       });

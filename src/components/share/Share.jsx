@@ -37,7 +37,7 @@ const Share = () => {
         refetchHome();
       })
       .catch(() => {
-        toast.success('Lỗi không đăng đươc bài viết', {
+        toast.error('Lỗi không đăng đươc bài viết', {
           position: 'top-right'
         })
         setIsLoading(false);
