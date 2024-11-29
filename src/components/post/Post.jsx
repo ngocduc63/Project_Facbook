@@ -52,6 +52,7 @@ const Post = React.forwardRef(({ post }, ref) => {
   }, [post]);
 
   useEffect(() => {
+    if (!socketio) return;
 
     const joinRoomNotifi = (room) => {
       if (room !== "") {
