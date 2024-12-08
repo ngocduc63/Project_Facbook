@@ -37,6 +37,12 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    if (inputs.firstname.trim() === '' && inputs.lastname.trim() === '') {
+      toastEr("Vui lòng nhập tên")
+      setIsLoading(false);
+      return;
+    }
+
     if (inputs.password !== inputs.cfpassword) {
       toastEr("Mật khẩu không giống nhau")
       setIsLoading(false);
