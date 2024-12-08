@@ -27,6 +27,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     setIsLoading(true);
     e.preventDefault();
+    if (inputs.password.trim() === '') {
+      toastEr("Vui lòng nhập mật khẩu")
+      setIsLoading(false);
+      return;
+    }
+
     try {
       await login(inputs);
       setIsLoading(false);
