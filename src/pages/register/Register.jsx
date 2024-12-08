@@ -64,7 +64,7 @@ const Register = () => {
 
       if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
       else if (errCode === 3) toastEr("Email chưa đúng định dạng")
-      else if (errCode === 4) toastEr("Dộ dài từ 8-16 kí tự và phải bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự đặc biệt (VD: @, #, $,...) và 1 chữ số")
+      else if (errCode === 4) toastEr("Độ dài từ 8-16 kí tự và phải bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự đặc biệt (VD: @, #, $,...) và 1 chữ số")
       else if (errCode === 5) toastEr("Ngày tháng chưa đúng định dạng")
       else if (errCode === 9) toastEr("Tài khoản đã tồn tại")
       else if (errCode === 13) toastEr("Không thể kết nối tới mát chủ")
