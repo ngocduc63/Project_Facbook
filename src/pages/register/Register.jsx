@@ -49,6 +49,12 @@ const Register = () => {
       return;
     }
 
+    if (inputs.gender.trim() === '') {
+      toastEr("Vui lòng chọn giới tính")
+      setIsLoading(false);
+      return;
+    }
+
     const request = {
       'username': inputs.firstname + ' ' + inputs.lastname,
       'email': inputs.email,
