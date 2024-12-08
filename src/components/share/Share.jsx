@@ -23,6 +23,13 @@ const Share = () => {
     setIsLoading(true);
     e.preventDefault();
 
+    if (desc.trim() === "") {
+      toast.error('Không được để trống tiêu đề', {
+        position: 'top-right'
+      })
+      return;
+    }
+
     const formData = new FormData();
     formData.append("data", JSON.stringify({ title: desc, status: 1 }));
     if (file) {
