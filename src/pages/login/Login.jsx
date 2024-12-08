@@ -39,7 +39,7 @@ const Login = () => {
 
       if (errCode === 1) toastEr("Vui lòng nhập đủ thông tin")
       else if (errCode === 3) toastEr("Email chưa đúng định dạng")
-      else if (errCode === 4) toastEr("Mật khẩu phải đủ 6 kí tự trở lên")
+      else if (errCode === 4) toastEr("Dộ dài từ 8-16 kí tự và phải bao gồm ít nhất 1 ký tự viết hoa, 1 ký tự đặc biệt (VD: @, #, $,...) và 1 chữ số")
       else if (errCode === 6) toastEr("Tài khoản không tồn tại")
       else if (errCode === 7) toastEr("Mật khẩu không chính xác")
       else if (errCode === 25) toastEr("Tài khoản của bạn đã bị khóa")
